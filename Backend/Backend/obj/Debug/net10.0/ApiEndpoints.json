@@ -1,0 +1,12 @@
+[
+  {
+    "ContainingType": "Backend.Controllers.SeederController",
+    "Method": "Seed",
+    "RelativePath": "api/Seeder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
