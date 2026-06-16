@@ -1,5 +1,9 @@
+using Application.Commands;
+using ASPLAB2.API.Middleware;
 using Backend;
 using Data.Access;
+using Implementation.Commands;
+using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,6 +34,11 @@ builder.Configuration.Bind(appSettings);
 // - Transient -> pravi se 1 isntanca svaki put kada se zatrazi iz DI container-a
 
 
+// Treba da registrujem IRegisterUserCommand i RegisterUserValidation
+// Treba da DI container-u kazem "Kada se trazi IRegisterUserCommand prosledi klasu EfRegisterUserCommand" i RegiseterUserValidation da registrujem
+// Kako to?
+
+
 
 builder.Services.AddSingleton(appSettings);
 
@@ -41,26 +50,43 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 }
 );
 
+// ISPOD IDU REGISTRACIJE U DI CONTAINER
+// 
+
+// Koju klasu registrujem u DI Container?
+// - IRegisterUserCommand
+
+// Koji lifetime ce klasa imati u DI container-u?
+// - JA bih isao sa Scoped -> 1 instanca na nivou request-a ili transient svaki put nova, ma transient
+// - Mozda bih cak isao i Singleton jer mi treba interfejs, ali prosledice istu klasu koja je vezana za taj interfejs i onda ako se ta klasa koja je vezana za interfejs prosledjuje u vise metoda onda ce sve one mutirati istu klasu, zato ne sme ni na nivou request-a (Scoped) vec mora biti Transient
+
+builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
+builder.Services.AddTransient<RegisterUserValidation>();
+
+
+
+
+
 
 builder.Services.AddAuthentication(options =>
 {
- 
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; 
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(cfg =>
 {
-  
-    cfg.RequireHttpsMetadata = false; 
-    cfg.SaveToken = true; 
+
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
     cfg.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = appSettings.JwtSettings.Issuer,
-        ValidateIssuer = true, 
+        ValidateIssuer = true,
         ValidAudience = "Any",
-        ValidateAudience = true, 
+        ValidateAudience = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JwtSettings.SecretKey)),
-        ValidateIssuerSigningKey = true, 
+        ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
@@ -75,6 +101,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
