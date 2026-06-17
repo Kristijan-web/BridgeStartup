@@ -1,7 +1,8 @@
 ﻿using Application.Commands;
 using Application.DTO;
 using Data.Access;
-using FluentValidation.Results;
+using Domain;
+using FluentValidation;
 using Implementation.Validations;
 
 namespace Implementation.Commands
@@ -37,48 +38,38 @@ namespace Implementation.Commands
 
         public void Execute(RegisterUserDTO dto)
         {
-            try
+
+
+            _validation.ValidateAndThrow(dto); // ako se desi greska onda je greska tipa ValidationException?
+
+            // Sta je problem?
+            // - Dto uspesno doalzi do ove metode i prolazi 42. liniju za validaciju
+            // - The entity type 'RegisterUserDTO' was not found. 
+            // - Greska je u tome sto ORM ne zna za koju tabelu da stage-uje podatke, klasa RegisterUserDTO ne postoji kao klasa u DbSet<> 
+
+            // Treba da se doda defaultni role
+
+            // Sta treba da se uradi
+            // Treba da se napravi konfiguracija za User tabelu i da se za foreign kolonu stavi defaultna vrednost id-a
+
+            User user = new User
             {
+                Username = dto.Username,
+                Password = dto.Password,
+                Email = dto.Email,
+            };
 
-                ValidationResult isRegisterDTOValid = _validation.Validate(dto);
-                if (!isRegisterDTOValid.IsValid)
-                {
-                    // Sta radim ako nije validno, vratim nazad response objekat sa greskom
-                    // Kako da ovo delegiram u catch blok i tamo da handlujem?
-                    // Kako je mislim da ce izgledati proces?
-                    // - Pa pozvace se neka metoda samo i to je to, verovatno nad nekom klasom.
-
-                    return UnprocessableEntity(isRegisterDTOValid.Errors);
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                // Ocekuje da se prosledi objekat 
-
-                // Sada treba da se radi logika za upis u bazu
-
-                // treba da se napise validacija podataka
-
-                // Kako ce ovde ici logika za izvrsavanje komande?
-                // - Prosledice se data podaci validatoru
-                // - Ako prodje onda se pise query logika ka bazi i to je to
-
-                // Kako pozivam validator
-
-                // kako da prosledim objekat po kojem se radi validacija?
-                // - Jedino konstruktork
-
-                // Fora je sto ja ne instanciram ovde validator nego ga dobijam od DI container-a
+            // Nije prosledjen roleId usera
+            // - Moja hipoteza je da EF core po defaultu assign-uje RoleId = 0 a on ne postoji po referencijalnom integritetu i zato baza 
 
 
+            _context.Add(user);
+            _context.SaveChanges();
 
-                // Ako pukne validacija u .Validate() metodi, hoce li odmah da se vrati nazad response?
-                // Ako hoce koji response kod ce da vrati 
-
-
-            }
         }
+
+
     }
 }
+
+
