@@ -7,10 +7,6 @@ using System.Text;
 
 namespace ASPLAB2.API.JWT
 {
-
-    // Cemu sluzi ova klasa?
-    // - Da kreira JWT token, to radi preko metode MakeToken
-
     public class JwtHandler
     {
         private readonly AppSettings _appSettings;

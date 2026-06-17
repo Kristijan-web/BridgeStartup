@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Exceptions;
+using FluentValidation;
 
 namespace ASPLAB2.API.Middleware
 {
@@ -38,6 +39,16 @@ namespace ASPLAB2.API.Middleware
 
                     await context.Response.WriteAsJsonAsync(errors); // -> upisuje podatke u response body, ova operacija je asinhrona
                     return;
+                }
+                if (ex is LoginException loginException)
+                {
+                    // Exception za ne validne login kredencijale
+                    context.Response.StatusCode = 400;
+
+
+                    await context.Response.WriteAsJsonAsync(loginException.Message);
+                    return;
+
                 }
 
 
