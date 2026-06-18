@@ -12,43 +12,36 @@ namespace Backend.Controllers
     public class AuthController : ControllerBase
     {
 
-        [HttpPost]
+        [HttpPost("register")]
+
         public IActionResult Register([FromServices] IRegisterUserCommand registerCommand, RegisterUserDTO dto)
         {
-            // treba DTO od korisnika
+
 
             registerCommand.Execute(dto);
 
-            // Kako luka prosledjuje objekat za validaciju?
-            // - Sigurno registruje klasu u DI container
-            // - Ta klasa mora da se prosledi ode
-            // Kako se onda klasa za validator prosledjuje execute-u metodi kada ona prima samo DTO
-            // - Ne prosledjuje se, validator se poziva u controller-u!
 
             return Created();
 
         }
 
-        // Koja ce biti Http metoda za login?
-        // - GET
 
-        [HttpGet]
+        [HttpPost("login")]
         public IActionResult Login([FromServices] ILoginQuery loginQuery, [FromServices] JwtHandler jwt, LoginDTO dto)
         {
 
-            // Dodaj hash-ovanje korisnikovog passworda
-
-            LoginResponseDTO userData = loginQuery.Execute(dto);
+            User userData = loginQuery.Execute(dto);
 
 
-            User user = new User
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, userData.Password))
             {
-                Username = userData.Username,
-                Email = userData.Email,
-                Id = userData.Id,
-            };
+                return Unauthorized();
+            }
 
-            var jwtToken = jwt.MakeToken(user);
+
+
+            var jwtToken = jwt.MakeToken(userData);
 
             // Kod ispod stavlja jwt token u http-only kolacic
             //Response.Cookies.Append("jwt", jwtToken, new CookieOptions
@@ -59,8 +52,17 @@ namespace Backend.Controllers
             //    Expires = DateTimeOffset.UtcNow.AddSeconds(600)
             //});
 
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO
+            {
+                Id = userData.Id,
+                Username = userData.Username,
+                Email = userData.Email,
+                Role = userData.Role.Name
+            };
+
             return Ok(new
             {
+                user = loginResponseDTO,
                 token = jwtToken
             });
 

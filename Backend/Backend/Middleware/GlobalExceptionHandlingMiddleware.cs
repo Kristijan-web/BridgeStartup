@@ -45,8 +45,12 @@ namespace ASPLAB2.API.Middleware
                     // Exception za ne validne login kredencijale
                     context.Response.StatusCode = 400;
 
+                    var errors = new
+                    {
+                        message = loginException.Message
+                    };
 
-                    await context.Response.WriteAsJsonAsync(loginException.Message);
+                    await context.Response.WriteAsJsonAsync(errors);
                     return;
 
                 }

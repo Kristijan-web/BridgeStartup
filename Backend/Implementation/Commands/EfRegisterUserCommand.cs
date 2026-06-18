@@ -40,27 +40,20 @@ namespace Implementation.Commands
         {
 
 
-            _validation.ValidateAndThrow(dto); // ako se desi greska onda je greska tipa ValidationException?
+            _validation.ValidateAndThrow(dto);
 
-            // Sta je problem?
-            // - Dto uspesno doalzi do ove metode i prolazi 42. liniju za validaciju
-            // - The entity type 'RegisterUserDTO' was not found. 
-            // - Greska je u tome sto ORM ne zna za koju tabelu da stage-uje podatke, klasa RegisterUserDTO ne postoji kao klasa u DbSet<> 
 
-            // Treba da se doda defaultni role
 
-            // Sta treba da se uradi
-            // Treba da se napravi konfiguracija za User tabelu i da se za foreign kolonu stavi defaultna vrednost id-a
+            string hash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             User user = new User
             {
                 Username = dto.Username,
-                Password = dto.Password,
+                Password = hash,
                 Email = dto.Email,
             };
 
-            // Nije prosledjen roleId usera
-            // - Moja hipoteza je da EF core po defaultu assign-uje RoleId = 0 a on ne postoji po referencijalnom integritetu i zato baza 
+
 
 
             _context.Add(user);
