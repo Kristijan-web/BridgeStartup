@@ -13,19 +13,9 @@ namespace Backend.Controllers
         [HttpGet]
         public IActionResult GetUsers([FromServices] IUsersQuery query, [FromQuery] SearchUsersDTO dto)
         {
-            // Ajde da uradim filtraciju usera
-
-            // Kako se radi filtracija user-a
-            // - Treba mi IQueriable object
-
-            // Kako dolazim do IQueryable objekta?
-
-
-
 
             IEnumerable<User> users = query.Execute(dto);
 
-            // Sada sve ovo mora da prebacim u DTO, al zasto odmah iz baze nisam vratio DTO
 
             IEnumerable<UserResponseDTO> usersDTO = users.Select(x => new UserResponseDTO
             {
@@ -37,6 +27,26 @@ namespace Backend.Controllers
 
 
             return Ok(usersDTO);
+
+        }
+
+        // 
+        [HttpGet("{id}")]
+        public IActionResult GetUser(int id, [FromServices] IUserQuery query)
+        {
+
+            User user = query.Execute(id);
+
+
+            UserResponseDTO userDTO = new UserResponseDTO
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role.Name
+            };
+
+
+            return Ok(userDTO);
 
         }
     }

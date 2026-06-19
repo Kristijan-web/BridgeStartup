@@ -55,6 +55,21 @@ namespace ASPLAB2.API.Middleware
 
                 }
 
+                if (ex is EntityNotFoundException EntityException)
+                {
+                    context.Response.StatusCode = 401;
+
+                    var message = new
+                    {
+                        message = EntityException.Message
+                    };
+
+                    await context.Response.WriteAsJsonAsync(message);
+
+                    return;
+
+                }
+
 
                 //if (ex is UnauthorizedUseCaseException)
                 //{
@@ -69,7 +84,7 @@ namespace ASPLAB2.API.Middleware
                 await context.Response.WriteAsJsonAsync(new
                 {
                     message = "An unexpected error has occured. " +
-                              $"Please contact support using this parameter: id treba da dodam."
+                              $"Please contact support using this parameter: "
                 });
 
                 throw;

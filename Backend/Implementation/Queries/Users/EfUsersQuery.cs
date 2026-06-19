@@ -27,6 +27,14 @@ namespace Implementation.Queries.Users
 
             IQueryable<User> query = _context.Users.Include(x => x.Role).AsQueryable();
 
+            // Mogu da napravim extension metodu nad tipom IQueryable
+
+            // U kom sloju cu praviti extension metodu?
+            // - pa treba da se da jasna implementacija i time bi isao u Implementation sloj
+
+
+
+
             int curPage = dto.Page != null ? dto.Page.Value : 1;
             int pageSize = 5;
             int skipPages = (curPage - 1) * pageSize;
