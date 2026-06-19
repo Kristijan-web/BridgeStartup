@@ -1,4 +1,4 @@
-﻿using Application.DTO;
+﻿using Application.DTO.Auth;
 using Application.Exceptions;
 using Application.Queries;
 using Data.Access;

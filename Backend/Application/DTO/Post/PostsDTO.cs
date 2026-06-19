@@ -1,4 +1,4 @@
-﻿namespace Application.DTO
+﻿namespace Application.DTO.Post
 {
     public class PostsDTO
     {

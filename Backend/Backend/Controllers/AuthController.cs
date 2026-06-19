@@ -1,5 +1,5 @@
 ﻿using Application.Commands;
-using Application.DTO;
+using Application.DTO.Auth;
 using Application.Queries;
 using ASPLAB2.API.JWT;
 using Domain;

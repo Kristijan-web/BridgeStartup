@@ -1,4 +1,4 @@
-﻿using Application.DTO;
+﻿using Application.DTO.Auth;
 
 namespace Application.Commands
 {

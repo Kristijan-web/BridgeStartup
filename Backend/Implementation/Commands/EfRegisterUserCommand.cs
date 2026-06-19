@@ -1,5 +1,5 @@
 ﻿using Application.Commands;
-using Application.DTO;
+using Application.DTO.Auth;
 using Data.Access;
 using Domain;
 using FluentValidation;

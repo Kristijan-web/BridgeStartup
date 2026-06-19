@@ -77,6 +77,27 @@
         }
       }
     },
+    "/api/Posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "Title",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Seeder": {
       "get": {
         "tags": [
@@ -122,6 +143,9 @@
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "Posts"
     },
     {
       "name": "Seeder"

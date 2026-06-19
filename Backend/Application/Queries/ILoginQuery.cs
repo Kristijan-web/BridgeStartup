@@ -1,4 +1,4 @@
-﻿using Application.DTO;
+﻿using Application.DTO.Auth;
 using Domain;
 
 namespace Application.Queries

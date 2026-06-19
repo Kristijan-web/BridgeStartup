@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "Application.DTO.LoginDTO",
+        "Type": "Application.DTO.Auth.LoginDTO",
         "IsRequired": true
       }
     ],
@@ -25,8 +25,24 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "Application.DTO.RegisterUserDTO",
+        "Type": "Application.DTO.Auth.RegisterUserDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostsController",
+    "Method": "GetAllPosts",
+    "RelativePath": "api/Posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

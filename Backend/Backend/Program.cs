@@ -66,7 +66,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
-
+builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 
 // Koji lifetime ce JWTHandler klasa?, logicno transient, nema smisla da bude singleton i da se jwt za nekog korisnika overwrite-uje tudjim podacima
 
