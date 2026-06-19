@@ -23,7 +23,7 @@ namespace Implementation.Queries.Users
 
             // Sada da dohvatim user-a
 
-            User user = _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == id);
+            User? user = _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == id);
 
             if (user == null)
             {

@@ -43,8 +43,35 @@ namespace Backend.Controllers
             });
 
 
-
             return Ok(postsDTO);
+
+        }
+
+        [HttpGet("{id}")]
+
+        public IActionResult GetPost(int id, [FromServices] IPostQuery query)
+        {
+
+            Post post = query.Execute(id);
+
+            // sada post da prebacim u DTO
+
+            PostsResponseDTO postDTO = new PostsResponseDTO
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Description = post.Description,
+                Email = post.Email,
+                Phone = post.Phone,
+                User = new UserDTO
+                {
+                    Username = post.User.Username,
+                    Email = post.User.Email
+                }
+
+            };
+
+            return Ok(postDTO);
 
         }
 
