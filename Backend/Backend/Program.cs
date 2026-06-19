@@ -5,7 +5,9 @@ using ASPLAB2.API.Middleware;
 using Backend;
 using Data.Access;
 using Implementation.Commands;
-using Implementation.Queries;
+using Implementation.Queries.Auth;
+using Implementation.Queries.Posts;
+using Implementation.Queries.Users;
 using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -67,7 +69,7 @@ builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
-
+builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 // Koji lifetime ce JWTHandler klasa?, logicno transient, nema smisla da bude singleton i da se jwt za nekog korisnika overwrite-uje tudjim podacima
 
 builder.Services.AddTransient<JwtHandler>();

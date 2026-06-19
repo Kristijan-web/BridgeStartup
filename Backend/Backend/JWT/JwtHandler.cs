@@ -32,6 +32,8 @@ namespace ASPLAB2.API.JWT
 
                  new Claim(JwtRegisteredClaimNames.Iss, _appSettings.JwtSettings.Issuer, ClaimValueTypes.String), // Iss je issuer
                  new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64), // iat je issuedAt
+
+                 new Claim(ClaimTypes.Role, user.Role.Name),
                  new Claim("Username", user.Username),
                  new Claim("Email", user.Email),
                  new Claim("Id", user.Id.ToString()),

@@ -4,7 +4,7 @@ using Data.Access;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Implementation.Queries
+namespace Implementation.Queries.Posts
 {
     public class EfPostsQuery : IPostsQuery
     {

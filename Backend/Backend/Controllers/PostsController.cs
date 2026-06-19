@@ -1,6 +1,7 @@
 ﻿using Application.DTO.Post;
 using Application.Queries;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -9,6 +10,15 @@ namespace Backend.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
+
+        // Koji response kod ce vratiti jwt autorizacija i da li ce se ona razlikovati od tipa neispravnog jwt-a?
+        // - nesto od 403 ili 404
+        // Koju poruku ce vratiti jwt autorizacjia
+
+        // Kako bi isla sintaksa da hocu da dopustim samo one cija je role-a "user"
+
+        [Authorize(Roles = "user")]
+
         [HttpGet]
 
         public IActionResult GetAllPosts(IPostsQuery query, [FromQuery] PostsDTO dto)

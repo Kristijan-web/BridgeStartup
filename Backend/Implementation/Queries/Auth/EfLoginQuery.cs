@@ -5,7 +5,7 @@ using Data.Access;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Implementation.Queries
+namespace Implementation.Queries.Auth
 {
     public class EfLoginQuery : ILoginQuery
     {
