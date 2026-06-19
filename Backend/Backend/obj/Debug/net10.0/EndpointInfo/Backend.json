@@ -115,26 +115,27 @@
         "tags": [
           "Users"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchUsersDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchUsersDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchUsersDTO"
-              }
+        "parameters": [
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           },
-          "required": true
-        },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -167,17 +168,6 @@
           },
           "email": {
             "type": "string"
-          }
-        }
-      },
-      "SearchUsersDTO": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": [
-              "null",
-              "string"
-            ]
           }
         }
       }

@@ -25,9 +25,25 @@ namespace Implementation.Queries.Users
         public IEnumerable<User> Execute(SearchUsersDTO dto)
         {
 
+            IQueryable<User> query = _context.Users.Include(x => x.Role).AsQueryable();
+
+            int curPage = dto.Page != null ? dto.Page.Value : 1;
+            int pageSize = 5;
+            int skipPages = (curPage - 1) * pageSize;
 
 
-            IEnumerable<User> users = _context.Users.Include(x => x.Role).ToList();
+            query = query.Skip(skipPages).Take(pageSize);
+
+
+            if (!String.IsNullOrEmpty(dto.Email))
+            {
+
+                query = query.Where(x => x.Email.Contains(dto.Email));
+            }
+
+
+
+            IEnumerable<User> users = query.ToList();
 
             return users;
         }

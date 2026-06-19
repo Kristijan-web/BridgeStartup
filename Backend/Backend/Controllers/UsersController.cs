@@ -13,6 +13,15 @@ namespace Backend.Controllers
         [HttpGet]
         public IActionResult GetUsers([FromServices] IUsersQuery query, [FromQuery] SearchUsersDTO dto)
         {
+            // Ajde da uradim filtraciju usera
+
+            // Kako se radi filtracija user-a
+            // - Treba mi IQueriable object
+
+            // Kako dolazim do IQueryable objekta?
+
+
+
 
             IEnumerable<User> users = query.Execute(dto);
 

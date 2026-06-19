@@ -7,5 +7,6 @@
         // Po email-u
 
         public string? Email { get; set; }
+        public int? Page { get; set; }
     }
 }
