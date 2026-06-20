@@ -1,10 +1,12 @@
 using Application.Commands;
+using Application.ExceptionLogging;
 using Application.Queries;
 using ASPLAB2.API.JWT;
 using ASPLAB2.API.Middleware;
 using Backend;
 using Data.Access;
 using Implementation.Commands;
+using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
 using Implementation.Queries.Posts;
 using Implementation.Queries.Users;
@@ -72,6 +74,7 @@ builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
 builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
+builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
 builder.Services.AddTransient<JwtHandler>();
 
 

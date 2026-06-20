@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.ExceptionLogging;
+using Application.Exceptions;
 using FluentValidation;
 
 namespace ASPLAB2.API.Middleware
@@ -6,11 +7,11 @@ namespace ASPLAB2.API.Middleware
     public class GlobalExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        //private readonly IExceptionLogger _logger;
-        public GlobalExceptionHandlingMiddleware(RequestDelegate next)
+        private readonly IExceptionLogger _logger;
+        public GlobalExceptionHandlingMiddleware(RequestDelegate next, IExceptionLogger logger)
         {
             _next = next;
-            //_logger = logger;
+            _logger = logger;
         }
 
         /*
@@ -78,13 +79,22 @@ namespace ASPLAB2.API.Middleware
                 //}
 
                 context.Response.StatusCode = 500;
-                //Guid id = _logger.Log(ex);
-                //Generalni izuzetak (neocekivan) -> Response code 500, logging
+
+                //Guid id = new Guid();
+                //DateTime timeOfError = DateTime.Now;
+                //var logMessage = ex.Message;
+                //var StackTrace = ex.StackTrace;
+
+                //string FullLogMessage = $"id: {id}, time of error: {timeOfError}, error message: {logMessage}, stack trace: {StackTrace}";
+
+                //_logger.LogInformation(FullLogMessage);
+
+                Guid id = _logger.Log(ex);
 
                 await context.Response.WriteAsJsonAsync(new
                 {
-                    message = "An unexpected error has occured. " +
-                              $"Please contact support using this parameter: "
+                    message = $"An unexpected error has occured." +
+                              $"Please contact support using this parameter: {id}"
                 });
 
                 throw;

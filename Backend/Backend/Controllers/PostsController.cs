@@ -11,11 +11,6 @@ namespace Backend.Controllers
     public class PostsController : ControllerBase
     {
 
-        // Koji response kod ce vratiti jwt autorizacija i da li ce se ona razlikovati od tipa neispravnog jwt-a?
-        // - nesto od 403 ili 404
-        // Koju poruku ce vratiti jwt autorizacjia
-
-        // Kako bi isla sintaksa da hocu da dopustim samo one cija je role-a "user"
 
         [Authorize(Roles = "user")]
 
@@ -52,9 +47,9 @@ namespace Backend.Controllers
         public IActionResult GetPost(int id, [FromServices] IPostQuery query)
         {
 
+
             Post post = query.Execute(id);
 
-            // sada post da prebacim u DTO
 
             PostsResponseDTO postDTO = new PostsResponseDTO
             {
