@@ -10,7 +10,7 @@ import { Meta } from '@angular/platform-browser';
                 <div>
                     <p class="text-sm font-black uppercase tracking-[0.22em] text-cyan-700">Startup opportunities</p>
                     <h1 class="mt-4 max-w-2xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Bridge the gap between founders and builders.</h1>
-                    <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">BridgeStartup je staticki board za startup objave. Founder moze da predstavi ideju, stack, kontakt i fazu projekta, a developeri mogu brzo da procene da li im odgovara.</p>
+                    <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">BridgeStartup is a static board for startup posts. Founders can present an idea, stack, contact details, and project stage, while developers can quickly decide whether it fits them.</p>
                 </div>
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -46,8 +46,8 @@ import { Meta } from '@angular/platform-browser';
                             <span class="rounded-lg bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-700">Node.js</span>
                             <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">PostgreSQL</span>
                         </div>
-                        <h3 class="text-xl font-black">Platforma za mentorstvo</h3>
-                        <p class="mt-3 flex-1 leading-7 text-slate-600">Founder trazi tim za MVP platforme koja spaja iskusne mentore sa mladim preduzetnicima. Fokus je na profilima, terminima i placanju.</p>
+                        <h3 class="text-xl font-black">Mentorship platform</h3>
+                        <p class="mt-3 flex-1 leading-7 text-slate-600">The founder is looking for a team to build an MVP platform that connects experienced mentors with young entrepreneurs. The focus is on profiles, scheduling, and payments.</p>
                         <div class="mt-5 border-t border-slate-200 pt-4 text-sm">
                             <p class="font-bold text-slate-800">+381 60 118 2400</p>
                             <p class="mt-1 font-bold text-indigo-600">hello@mentorloop.dev</p>
@@ -61,8 +61,8 @@ import { Meta } from '@angular/platform-browser';
                             <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">FastAPI</span>
                             <span class="rounded-lg bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">AI</span>
                         </div>
-                        <h3 class="text-xl font-black">AI asistent za CV</h3>
-                        <p class="mt-3 flex-1 leading-7 text-slate-600">Startup pravi alat koji kandidatima pomaze da prilagode CV za konkretan oglas. Potreban je prototip sa uploadom i analizom teksta.</p>
+                        <h3 class="text-xl font-black">AI resume assistant</h3>
+                        <p class="mt-3 flex-1 leading-7 text-slate-600">The startup is building a tool that helps candidates tailor their resume to a specific job posting. A prototype with upload and text analysis is needed.</p>
                         <div class="mt-5 border-t border-slate-200 pt-4 text-sm">
                             <p class="font-bold text-slate-800">+381 64 881 9021</p>
                             <p class="mt-1 font-bold text-indigo-600">team@cvpilot.ai</p>
@@ -76,8 +76,8 @@ import { Meta } from '@angular/platform-browser';
                             <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Supabase</span>
                             <span class="rounded-lg bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-700">Tailwind</span>
                         </div>
-                        <h3 class="text-xl font-black">Marketplace za event prostore</h3>
-                        <p class="mt-3 flex-1 leading-7 text-slate-600">Tim iz Beograda trazi frontend developera za katalog prostora, filtere, upite za rezervaciju i jednostavan owner dashboard.</p>
+                        <h3 class="text-xl font-black">Event venue marketplace</h3>
+                        <p class="mt-3 flex-1 leading-7 text-slate-600">A Belgrade-based team is looking for a frontend developer for a venue catalog, filters, booking inquiries, and a simple owner dashboard.</p>
                         <div class="mt-5 border-t border-slate-200 pt-4 text-sm">
                             <p class="font-bold text-slate-800">+381 63 440 2211</p>
                             <p class="mt-1 font-bold text-indigo-600">founder@spaceyard.co</p>
