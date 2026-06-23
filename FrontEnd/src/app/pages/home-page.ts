@@ -4,7 +4,7 @@ import { Meta } from '@angular/platform-browser';
 @Component({
   selector: 'app-home-page',
   imports: [],
-  template: `  <main>
+  template: `  
         <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
                 <div>
@@ -36,7 +36,7 @@ import { Meta } from '@angular/platform-browser';
                         <p class="text-sm font-black uppercase tracking-[0.22em] text-indigo-600">Posts</p>
                         <h2 class="mt-2 text-3xl font-black tracking-tight">Fresh startup ideas</h2>
                     </div>
-                    <p class="max-w-md text-sm leading-6 text-slate-500">Hard-coded primeri objava sa opisom, kontaktom i badge-ovima za tehnologije.</p>
+                   
                 </div>
 
                 <div class="grid gap-5 lg:grid-cols-3">
@@ -87,7 +87,7 @@ import { Meta } from '@angular/platform-browser';
                 </div>
             </div>
         </section>
-    </main> `,
+   `,
   styles: ``,
 })
 export class HomePage {
@@ -96,7 +96,7 @@ export class HomePage {
   constructor() {
     this.meta.updateTag({
       name: 'description',
-      content: 'Pregledaj objave, projekte i prilike na BridgeStartup platformi.'
+      content: 'Browse posts, projects, and opportunities on the BridgeStartup platform.'
     });
   }
 }

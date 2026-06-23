@@ -6,9 +6,22 @@ import { Footer } from './static/footer';
 @Component({
   selector: 'app-user',
   imports: [Header, RouterOutlet, Footer],
-  template: ` <app-header></app-header>
-               <router-outlet></router-outlet>
-               <app-footer></app-footer>
+  template: `
+  
+    <div class="flex min-h-screen flex-col">
+
+        <app-header />
+
+        <main class="flex-1">
+          <router-outlet />
+        </main>
+
+       <app-footer />
+
+    </div>
+
+             
+          
   `,
   styles: ``,
 })
