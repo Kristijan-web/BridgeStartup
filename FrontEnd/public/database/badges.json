@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "Name": "C#",
+    "CreatedAt": "2026-06-17T15:49:11.616",
+    "UpdatedAt": null,
+    "DeletedAt": null
+  },
+  {
+    "Id": 2,
+    "Name": "C",
+    "CreatedAt": "2026-06-17T15:49:11.616",
+    "UpdatedAt": null,
+    "DeletedAt": null
+  },
+  {
+    "Id": 3,
+    "Name": "JavaScript",
+    "CreatedAt": "2026-06-17T15:49:11.616",
+    "UpdatedAt": null,
+    "DeletedAt": null
+  },
+  {
+    "Id": 4,
+    "Name": "Typescript",
+    "CreatedAt": "2026-06-17T15:49:11.616",
+    "UpdatedAt": null,
+    "DeletedAt": null
+  }
+]

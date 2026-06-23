@@ -9,26 +9,38 @@ import { Meta } from '@angular/platform-browser';
             <div>
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-indigo-600">Contact us</p>
                 <h1 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Reach the BridgeStartup team.</h1>
-                <p class="mt-5 text-lg leading-8 text-slate-600">The contact page is static and shows direct communication details. No form, no sending, no dynamic behavior.</p>
+                <p class="mt-5 text-lg leading-8 text-slate-600">Send a note about your startup post, partnership idea, or feedback for the platform.</p>
+                <div class="mt-8 space-y-4 text-slate-700">
+                    <p class="font-bold text-slate-950">support@bridgestartup.dev</p>
+                    <p class="font-bold text-slate-950">+381 60 111 2233</p>
+                    <p class="leading-7">Belgrade, Serbia</p>
+                </div>
             </div>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-                <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-sm font-black uppercase tracking-[0.18em] text-slate-500">Email</p>
-                    <p class="mt-3 text-xl font-black text-indigo-600">support@bridgestartup.dev</p>
-                    <p class="mt-3 leading-7 text-slate-600">For questions about posts, partnerships, or feedback for the MVP.</p>
+            <form class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                <div class="grid gap-5 sm:grid-cols-2">
+                    <label class="block">
+                        <span class="text-sm font-black uppercase tracking-[0.16em] text-slate-500">Name</span>
+                        <input type="text" placeholder="Your name" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100" />
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-black uppercase tracking-[0.16em] text-slate-500">Email</span>
+                        <input type="email" placeholder="you@example.com" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100" />
+                    </label>
+                    <label class="block sm:col-span-2">
+                        <span class="text-sm font-black uppercase tracking-[0.16em] text-slate-500">Subject</span>
+                        <input type="text" placeholder="What is this about?" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100" />
+                    </label>
+                    <label class="block sm:col-span-2">
+                        <span class="text-sm font-black uppercase tracking-[0.16em] text-slate-500">Message</span>
+                        <textarea rows="6" placeholder="Write your message..." class="mt-2 w-full resize-none rounded-lg border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"></textarea>
+                    </label>
                 </div>
-                <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-sm font-black uppercase tracking-[0.18em] text-slate-500">Phone</p>
-                    <p class="mt-3 text-xl font-black text-cyan-700">+381 60 111 2233</p>
-                    <p class="mt-3 leading-7 text-slate-600">Weekdays from 10:00 to 17:00.</p>
+                <div class="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm font-semibold leading-6 text-slate-500">Static form design only.</p>
+                    <button type="button" class="inline-flex justify-center rounded-lg bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-sm">Send message</button>
                 </div>
-                <div class="rounded-lg border border-slate-200 bg-slate-950 p-6 text-white sm:col-span-2">
-                    <p class="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">Location</p>
-                    <p class="mt-3 text-xl font-black">Belgrade, Serbia</p>
-                    <p class="mt-3 leading-7 text-slate-300">A remote-first project for founders and small startup teams from the region.</p>
-                </div>
-            </div>
+            </form>
         </div>
     </section>`,
   styles: ``,
