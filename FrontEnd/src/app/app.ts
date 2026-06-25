@@ -15,14 +15,8 @@ export class App {
   protected readonly title = signal('FrontEnd');
 }
 
-// Kako da za specificnu rutu vratim odredjenu componentu?
-// - Kako ide sintaksa da napravim samo .ts fajl?
 
-// Kako cu organizovati strukturu projekta?
-// Koje foldere cu imati?
-// - layouts
-// - common
-// - pages
-// 
+// Sada treba da asinhrono dohvatim podatke
 
-// Kako da sada namestim da se ucita home componenta kada se pozove / ruta
+// Da li podatke za post da cuvam globalno ili na nivou componente?
+// -  Posto ce mi vrv trebati podaci na vise componenti kroz aplikaciju, mozda ce mi trebati da prikazem broj ukupnih proizvoda itd..., onda je bolje ici globalno
