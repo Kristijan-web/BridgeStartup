@@ -6,5 +6,11 @@ export interface BadgesInterface {
     // - createdAt
     // - updatedAt
     // - deletedAt
+    
+    id: string,
+    name: string,
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt: Date
 
 }

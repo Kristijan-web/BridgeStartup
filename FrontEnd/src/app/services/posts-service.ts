@@ -1,17 +1,71 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { PostsInterface } from '../interfaces/posts-interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostsService {
 
-  // Sta treba ovaj servis da uradi?
-  // - Treba da asinhrono dohvati: badges.json, post-badges.json, posts.json
-  // - Treba da ih spoji u 1 objekat
-  // - Treba da te podatke ustupi drugim componentama kroz metode
 
-  // Kako cu asinhrono da dohvatim podatke?
-  // - Prvo bih napravio interfejs za format objekta koji ocekujem
-  // - Napravicu 3 interfejsa za badges.json, post-badges.josn i posts.json
+  url = `http://localhost:3000/posts`;
+
+    constructor() {}
+
+  async getAllPosts(): Promise<PostsInterface[]> {
+
+    try {
+      const fetchData = await fetch(this.url, {
+      method: "GET"
+    })
+
+    if(!fetchData.ok || fetchData.status >= 400) {
+      throw new Error("something went wrong")
+
+    }
+
+   return await fetchData.json();
+
+
+    }catch(error) {
+
+      if(error instanceof Error) {
+      console.log(error.message)
+      }
+
+      return []
+
+    }}
+
+  
+  async getPost(id: string): Promise<PostsInterface> {
+
+    try {
+
+    const fetchData = await fetch(`${this.url}/${id}`, {
+      method: "GET"
+    })
+
+    if(!fetchData.ok) {
+      throw new Error("Something went wrong...")
+    }
+
+    return fetchData.json();
+
+    }catch(err) {
+
+      if(err instanceof Error) {
+        console.log(err.message);
+      }
+
+
+      return {}
+
+
+    }
+
+  }
+
+
+
 
 }

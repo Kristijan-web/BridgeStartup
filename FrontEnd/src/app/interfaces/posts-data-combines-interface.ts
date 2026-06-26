@@ -1,3 +1,16 @@
+import { UserInterface } from "./user-interface"
+
+
+
 export interface PostsDataCombinesInterface {
-    // Interfejs treba da sadrzi strukturu objekta kada se podaci post-a popune sa ostalim podacima
+  
+    id: string,
+    title: string,
+    description: string,
+    email: string,
+    phone: number,
+    user: UserInterface,
+    createdAt: Date,
+    updatedAt: string,
+    deletedAt: string
 }

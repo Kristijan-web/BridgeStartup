@@ -6,4 +6,12 @@ export interface PostBadgesInterface {
     // - createdAt
     // - updatedAt
     // - deletedAt
+
+    id: string,
+    badgeId: string,
+    postId: string,
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt: Date,
+    
 }

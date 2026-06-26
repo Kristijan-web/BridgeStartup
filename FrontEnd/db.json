@@ -1,0 +1,212 @@
+{
+  "badges": [
+    {
+      "id": 1,
+      "Name": "C#",
+      "CreatedAt": "2026-06-17T15:49:11.616",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 2,
+      "Name": "C",
+      "CreatedAt": "2026-06-17T15:49:11.616",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 3,
+      "Name": "JavaScript",
+      "CreatedAt": "2026-06-17T15:49:11.616",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 4,
+      "Name": "Typescript",
+      "CreatedAt": "2026-06-17T15:49:11.616",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    }
+  ],
+  "postBadges": [
+    {
+      "id": 1,
+      "BadgeId": 4,
+      "PostId": 4,
+      "CreatedAt": "2026-06-17T15:49:12.113",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 2,
+      "BadgeId": 3,
+      "PostId": 1,
+      "CreatedAt": "2026-06-17T15:49:12.114",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 3,
+      "BadgeId": 1,
+      "PostId": 9,
+      "CreatedAt": "2026-06-17T15:49:12.114",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 4,
+      "BadgeId": 2,
+      "PostId": 10,
+      "CreatedAt": "2026-06-17T15:49:12.114",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "Title": "Intelligent Frozen Table",
+      "Description": "The slim & simple Maple Gaming Keyboard from Dev Era is designed for everyday use.",
+      "Email": "Sylvester_Smitham@yahoo.com",
+      "Phone": "(601) 695-6017 x6329",
+      "UserId": 7,
+      "CreatedAt": "2026-06-17T15:49:12.058",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 2,
+      "Title": "Rustic Metal Gloves",
+      "Description": "The slim & simple Maple Gaming Keyboard from Dev Era combines comfort and durability.",
+      "Email": "Grace_Tremblay@yahoo.com",
+      "Phone": "087-953-2769",
+      "UserId": 6,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 3,
+      "Title": "Intelligent Metal Gloves",
+      "Description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM and reliable performance.",
+      "Email": "Giuseppe.Kautzer@yahoo.com",
+      "Phone": "(505) 994-8034 x0370",
+      "UserId": 4,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 4,
+      "Title": "Incredible Concrete Fish",
+      "Description": "The Nagasaki Lander is the trademarked name of several advanced products in the collection.",
+      "Email": "Austyn.Hane@gmail.com",
+      "Phone": "508-485-1359",
+      "UserId": 1,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 5,
+      "Title": "Small Granite Mouse",
+      "Description": "The Nagasaki Lander is the trademarked name of several premium items available today.",
+      "Email": "Estelle.Goyette51@hotmail.com",
+      "Phone": "395-858-1459",
+      "UserId": 4,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 6,
+      "Title": "Handcrafted Fresh Computer",
+      "Description": "Andy shoes are designed to keep in mind durability, comfort and the needs of daily work.",
+      "Email": "King71@hotmail.com",
+      "Phone": "665-687-6867",
+      "UserId": 2,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 7,
+      "Title": "Incredible Soft Soap",
+      "Description": "New range of formal shirts are designed keeping you in mind with a clean modern style.",
+      "Email": "Geovanny.Nicolas@yahoo.com",
+      "Phone": "895-913-4042 x561",
+      "UserId": 6,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 8,
+      "Title": "Incredible Metal Bacon",
+      "Description": "New range of formal shirts are designed keeping you in mind with comfort and quality.",
+      "Email": "Lauren.Stamm80@hotmail.com",
+      "Phone": "523-695-0811 x4590",
+      "UserId": 2,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 9,
+      "Title": "Tasty Cotton Hat",
+      "Description": "The Appleotech B340 is an affordable wireless mouse with great performance for daily use.",
+      "Email": "Lavonne93@gmail.com",
+      "Phone": "(278) 866-9674",
+      "UserId": 8,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    },
+    {
+      "id": 10,
+      "Title": "Rustic Frozen Table",
+      "Description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM for smooth productivity.",
+      "Email": "Charles.Stehr59@yahoo.com",
+      "Phone": "450-216-6677",
+      "UserId": 1,
+      "CreatedAt": "2026-06-17T15:49:12.060",
+      "UpdatedAt": null,
+      "DeletedAt": null
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "userName": "Petar"
+    },
+    {
+      "id": 2,
+      "userName": "Marko"
+    },
+    {
+      "id": 3,
+      "userName": "Jovan"
+    },
+    {
+      "id": 4,
+      "userName": "Nikola"
+    },
+    {
+      "id": 5,
+      "userName": "Milan"
+    },
+    {
+      "id": 6,
+      "userName": "Stefan"
+    },
+    {
+      "id": 7,
+      "userName": "Korisnik 7"
+    },
+    {
+      "id": 8,
+      "userName": "Korisnik 8"
+    }
+  ]
+}
