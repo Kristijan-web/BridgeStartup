@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { PostItem } from './post-item';
-import { PostsService } from '../../services/posts-service';
-import { PostsInterface } from '../../interfaces/posts-interface';
+import { PostsService } from '../../../../services/posts-service';
+import { PostsInterface } from '../../../../interfaces/posts-interface';
+import { PostItem } from './postsItem/posts-item';
+
 
 @Component({
   selector: 'app-posts',
@@ -35,7 +36,7 @@ export class Posts {
   
     postsService: PostsService = inject(PostsService) 
 
-  posts= signal<PostsInterface[]>([]);
+    posts= signal<PostsInterface[]>([]);
 
   
   ngOnInit() {
@@ -43,9 +44,6 @@ export class Posts {
     this.postsService.getAllPosts().then(data => {
       this.posts.set(data);
     });
-   
-
-
     
   }
 

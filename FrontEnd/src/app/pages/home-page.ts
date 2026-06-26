@@ -2,8 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { HomeDesign } from '../components/HomeDesign/home-design';
 
-// Sta hocu da uradim?
-// - Prvo napravim componentu Post-item koja ce bidi pozvavna u foreach-u
+
 
 @Component({
   selector: 'app-home-page',
