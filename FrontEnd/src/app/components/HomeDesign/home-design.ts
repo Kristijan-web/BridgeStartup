@@ -42,16 +42,10 @@ import { PostItem } from './post-item';
                 </div>
 
                 <div class="grid gap-5 lg:grid-cols-3">
-              // OVDE SE UBACUJE ARTIKLE
-              // Za svaki element u array-u poziva se jedan post-item
-              // Kako se to radi?
-              // Prvo mi treba niz post-ova sa back-a
-              // Ovo znaci da prvo moram da uzmem podatke iz DI container-a
+           
+              @for (post of posts(); track post.id) {
 
-              // sada treba da se koristi strukturna direktiva 
-              @for (post of this.posts(); track post.id) {
-
-                <post-item></post-item>
+                <app-post-item [post]="post"></app-post-item>
 
               }
 
@@ -73,6 +67,7 @@ export class HomeDesign {
     this.postsService.getAllPosts().then(data => {
       this.posts.set(data);
     });
+   
 
 
     

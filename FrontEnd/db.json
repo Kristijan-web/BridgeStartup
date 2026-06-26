@@ -2,177 +2,177 @@
   "badges": [
     {
       "id": 1,
-      "Name": "C#",
-      "CreatedAt": "2026-06-17T15:49:11.616",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "name": "C#",
+      "createdAt": "2026-06-17T15:49:11.616",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 2,
-      "Name": "C",
-      "CreatedAt": "2026-06-17T15:49:11.616",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "name": "C",
+      "createdAt": "2026-06-17T15:49:11.616",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 3,
-      "Name": "JavaScript",
-      "CreatedAt": "2026-06-17T15:49:11.616",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "name": "JavaScript",
+      "createdAt": "2026-06-17T15:49:11.616",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 4,
-      "Name": "Typescript",
-      "CreatedAt": "2026-06-17T15:49:11.616",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "name": "Typescript",
+      "createdAt": "2026-06-17T15:49:11.616",
+      "updatedAt": null,
+      "deletedAt": null
     }
   ],
   "postBadges": [
     {
       "id": 1,
-      "BadgeId": 4,
-      "PostId": 4,
-      "CreatedAt": "2026-06-17T15:49:12.113",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "badgeId": 4,
+      "postId": 4,
+      "createdAt": "2026-06-17T15:49:12.113",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 2,
-      "BadgeId": 3,
-      "PostId": 1,
-      "CreatedAt": "2026-06-17T15:49:12.114",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "badgeId": 3,
+      "postId": 1,
+      "createdAt": "2026-06-17T15:49:12.114",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 3,
-      "BadgeId": 1,
-      "PostId": 9,
-      "CreatedAt": "2026-06-17T15:49:12.114",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "badgeId": 1,
+      "postId": 9,
+      "createdAt": "2026-06-17T15:49:12.114",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 4,
-      "BadgeId": 2,
-      "PostId": 10,
-      "CreatedAt": "2026-06-17T15:49:12.114",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "badgeId": 2,
+      "postId": 10,
+      "createdAt": "2026-06-17T15:49:12.114",
+      "updatedAt": null,
+      "deletedAt": null
     }
   ],
   "posts": [
     {
       "id": 1,
-      "Title": "Intelligent Frozen Table",
-      "Description": "The slim & simple Maple Gaming Keyboard from Dev Era is designed for everyday use.",
-      "Email": "Sylvester_Smitham@yahoo.com",
-      "Phone": "(601) 695-6017 x6329",
-      "UserId": 7,
-      "CreatedAt": "2026-06-17T15:49:12.058",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Intelligent Frozen Table",
+      "description": "The slim & simple Maple Gaming Keyboard from Dev Era is designed for everyday use.",
+      "email": "Sylvester_Smitham@yahoo.com",
+      "phone": "(601) 695-6017 x6329",
+      "userId": 7,
+      "createdAt": "2026-06-17T15:49:12.058",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 2,
-      "Title": "Rustic Metal Gloves",
-      "Description": "The slim & simple Maple Gaming Keyboard from Dev Era combines comfort and durability.",
-      "Email": "Grace_Tremblay@yahoo.com",
-      "Phone": "087-953-2769",
-      "UserId": 6,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Rustic Metal Gloves",
+      "description": "The slim & simple Maple Gaming Keyboard from Dev Era combines comfort and durability.",
+      "email": "Grace_Tremblay@yahoo.com",
+      "phone": "087-953-2769",
+      "userId": 6,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 3,
-      "Title": "Intelligent Metal Gloves",
-      "Description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM and reliable performance.",
-      "Email": "Giuseppe.Kautzer@yahoo.com",
-      "Phone": "(505) 994-8034 x0370",
-      "UserId": 4,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Intelligent Metal Gloves",
+      "description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM and reliable performance.",
+      "email": "Giuseppe.Kautzer@yahoo.com",
+      "phone": "(505) 994-8034 x0370",
+      "userId": 4,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 4,
-      "Title": "Incredible Concrete Fish",
-      "Description": "The Nagasaki Lander is the trademarked name of several advanced products in the collection.",
-      "Email": "Austyn.Hane@gmail.com",
-      "Phone": "508-485-1359",
-      "UserId": 1,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Incredible Concrete Fish",
+      "description": "The Nagasaki Lander is the trademarked name of several advanced products in the collection.",
+      "email": "Austyn.Hane@gmail.com",
+      "phone": "508-485-1359",
+      "userId": 1,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 5,
-      "Title": "Small Granite Mouse",
-      "Description": "The Nagasaki Lander is the trademarked name of several premium items available today.",
-      "Email": "Estelle.Goyette51@hotmail.com",
-      "Phone": "395-858-1459",
-      "UserId": 4,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Small Granite Mouse",
+      "description": "The Nagasaki Lander is the trademarked name of several premium items available today.",
+      "email": "Estelle.Goyette51@hotmail.com",
+      "phone": "395-858-1459",
+      "userId": 4,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 6,
-      "Title": "Handcrafted Fresh Computer",
-      "Description": "Andy shoes are designed to keep in mind durability, comfort and the needs of daily work.",
-      "Email": "King71@hotmail.com",
-      "Phone": "665-687-6867",
-      "UserId": 2,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Handcrafted Fresh Computer",
+      "description": "Andy shoes are designed to keep in mind durability, comfort and the needs of daily work.",
+      "email": "King71@hotmail.com",
+      "phone": "665-687-6867",
+      "userId": 2,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 7,
-      "Title": "Incredible Soft Soap",
-      "Description": "New range of formal shirts are designed keeping you in mind with a clean modern style.",
-      "Email": "Geovanny.Nicolas@yahoo.com",
-      "Phone": "895-913-4042 x561",
-      "UserId": 6,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Incredible Soft Soap",
+      "description": "New range of formal shirts are designed keeping you in mind with a clean modern style.",
+      "email": "Geovanny.Nicolas@yahoo.com",
+      "phone": "895-913-4042 x561",
+      "userId": 6,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 8,
-      "Title": "Incredible Metal Bacon",
-      "Description": "New range of formal shirts are designed keeping you in mind with comfort and quality.",
-      "Email": "Lauren.Stamm80@hotmail.com",
-      "Phone": "523-695-0811 x4590",
-      "UserId": 2,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Incredible Metal Bacon",
+      "description": "New range of formal shirts are designed keeping you in mind with comfort and quality.",
+      "email": "Lauren.Stamm80@hotmail.com",
+      "phone": "523-695-0811 x4590",
+      "userId": 2,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 9,
-      "Title": "Tasty Cotton Hat",
-      "Description": "The Appleotech B340 is an affordable wireless mouse with great performance for daily use.",
-      "Email": "Lavonne93@gmail.com",
-      "Phone": "(278) 866-9674",
-      "UserId": 8,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Tasty Cotton Hat",
+      "description": "The Appleotech B340 is an affordable wireless mouse with great performance for daily use.",
+      "email": "Lavonne93@gmail.com",
+      "phone": "(278) 866-9674",
+      "userId": 8,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     },
     {
       "id": 10,
-      "Title": "Rustic Frozen Table",
-      "Description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM for smooth productivity.",
-      "Email": "Charles.Stehr59@yahoo.com",
-      "Phone": "450-216-6677",
-      "UserId": 1,
-      "CreatedAt": "2026-06-17T15:49:12.060",
-      "UpdatedAt": null,
-      "DeletedAt": null
+      "title": "Rustic Frozen Table",
+      "description": "New ABC 13 9370, 13 35, 5th Gen Core A5-8250U, 8GB RAM for smooth productivity.",
+      "email": "Charles.Stehr59@yahoo.com",
+      "phone": "450-216-6677",
+      "userId": 1,
+      "createdAt": "2026-06-17T15:49:12.060",
+      "updatedAt": null,
+      "deletedAt": null
     }
   ],
   "users": [

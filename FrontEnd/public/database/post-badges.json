@@ -1,34 +1,34 @@
 [
   {
-    "Id": 1,
-    "BadgeId": 4,
-    "PostId": 4,
-    "CreatedAt": "2026-06-17T15:49:12.113",
-    "UpdatedAt": null,
-    "DeletedAt": null
+    "id": 1,
+    "badgeId": 4,
+    "postId": 4,
+    "createdAt": "2026-06-17T15:49:12.113",
+    "updatedAt": null,
+    "deletedAt": null
   },
   {
-    "Id": 2,
-    "BadgeId": 3,
-    "PostId": 1,
-    "CreatedAt": "2026-06-17T15:49:12.114",
-    "UpdatedAt": null,
-    "DeletedAt": null
+    "id": 2,
+    "badgeId": 3,
+    "postId": 1,
+    "createdAt": "2026-06-17T15:49:12.114",
+    "updatedAt": null,
+    "deletedAt": null
   },
   {
-    "Id": 3,
-    "BadgeId": 1,
-    "PostId": 9,
-    "CreatedAt": "2026-06-17T15:49:12.114",
-    "UpdatedAt": null,
-    "DeletedAt": null
+    "id": 3,
+    "badgeId": 1,
+    "postId": 9,
+    "createdAt": "2026-06-17T15:49:12.114",
+    "updatedAt": null,
+    "deletedAt": null
   },
   {
-    "Id": 4,
-    "BadgeId": 2,
-    "PostId": 10,
-    "CreatedAt": "2026-06-17T15:49:12.114",
-    "UpdatedAt": null,
-    "DeletedAt": null
+    "id": 4,
+    "badgeId": 2,
+    "postId": 10,
+    "createdAt": "2026-06-17T15:49:12.114",
+    "updatedAt": null,
+    "deletedAt": null
   }
 ]

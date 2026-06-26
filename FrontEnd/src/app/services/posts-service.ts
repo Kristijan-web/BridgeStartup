@@ -37,7 +37,7 @@ export class PostsService {
     }}
 
   
-  async getPost(id: string): Promise<PostsInterface> {
+  async getPost(id: string): Promise<PostsInterface | undefined> {
 
     try {
 
@@ -58,7 +58,7 @@ export class PostsService {
       }
 
 
-      return {}
+      return undefined
 
 
     }
