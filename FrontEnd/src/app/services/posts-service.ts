@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { PostsInterface } from '../interfaces/posts-interface';
+import { url } from '../consts/consts';
 
 @Injectable({
   providedIn: 'root',
@@ -7,14 +8,14 @@ import { PostsInterface } from '../interfaces/posts-interface';
 export class PostsService {
 
 
-  url = `http://localhost:3000/posts`;
+
 
     constructor() {}
 
   async getAllPosts(): Promise<PostsInterface[]> {
 
     try {
-      const fetchData = await fetch(this.url, {
+      const fetchData = await fetch(`${url}/posts`, {
       method: "GET"
     })
 
@@ -41,7 +42,7 @@ export class PostsService {
 
     try {
 
-    const fetchData = await fetch(`${this.url}/${id}`, {
+    const fetchData = await fetch(`${url}/posts/${id}`, {
       method: "GET"
     })
 

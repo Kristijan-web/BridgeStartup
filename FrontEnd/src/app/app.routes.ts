@@ -3,6 +3,7 @@ import { HomePage } from './pages/home-page';
 import { UserLayout } from './layouts/user/user-layout';
 import { AboutUsPage } from './pages/about-us-page';
 import { ContactPage } from './pages/contact-page';
+import { PostDetailsPage } from './pages/post-details-page';
 
 export const routes: Routes = [
     {
@@ -16,7 +17,6 @@ export const routes: Routes = [
 
             },
             {
-                
                 path: "about",
                 component: AboutUsPage,
                 title: 'About us'
@@ -25,6 +25,11 @@ export const routes: Routes = [
                 path: "contact",
                 component: ContactPage,
                 title: "Contact us"
+            }, 
+            {
+                path: "posts/:id",
+                component: PostDetailsPage,
+            title: "Post details"
             }
         ]
     }
