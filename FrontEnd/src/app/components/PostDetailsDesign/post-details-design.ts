@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PostsService } from '../../services/posts-service';
+import { PostsInterface } from '../../interfaces/posts-interface';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-post-details-design',
-  imports: [],
+  imports: [DatePipe],
   template: `  <main class="flex-1">
       <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <a href="#" class="inline-flex items-center rounded-lg bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">
@@ -19,17 +23,14 @@ import { Component } from '@angular/core';
 
             <p class="text-sm font-black uppercase tracking-[0.22em] text-indigo-600">Post detail</p>
             <h1 class="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              Intelligent Frozen Table
+              {{ post()?.title }}
             </h1>
 
-            <p class="mt-5 text-lg leading-8 text-slate-600">
-              The slim &amp; simple Maple Gaming Keyboard from Dev Era is designed for everyday use.
-            </p>
-
+        
             <div class="mt-8 grid gap-4 border-y border-slate-200 py-6 sm:grid-cols-3">
               <div>
                 <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Created</span>
-                <span class="mt-2 block font-bold text-slate-950">Jun 17, 2026</span>
+                <span class="mt-2 block font-bold text-slate-950">{{ post()?.createdAt | date:'dd.MM.yyyy.' }}</span>
               </div>
               <div>
                 <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Founder</span>
@@ -45,14 +46,9 @@ import { Component } from '@angular/core';
               <h2 class="text-2xl font-black tracking-tight">Project overview</h2>
               <div class="mt-4 space-y-4 leading-8 text-slate-600">
                 <p>
-                  This startup post is presented as a focused opportunity card expanded into a readable detail page.
-                  The founder can explain the idea, show the preferred stack, and leave direct contact information for
-                  developers who want to join the first build.
+                  {{ post()?.description }}
                 </p>
-                <p>
-                  The current BridgeStartup design is intentionally static and clean, so the post detail keeps the same
-                  simple structure: strong title, visible stack badges, concise description, and a clear contact panel.
-                </p>
+          
               </div>
             </div>
 
@@ -64,11 +60,11 @@ import { Component } from '@angular/core';
               <div class="mt-5 space-y-4">
                 <div>
                   <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Phone</span>
-                  <p class="mt-2 font-bold text-slate-950">(601) 695-6017 x6329</p>
+                  <p class="mt-2 font-bold text-slate-950">{{ post()?.phone }}</p>
                 </div>
                 <div>
                   <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Email</span>
-                  <p class="mt-2 break-words font-bold text-indigo-600">Sylvester_Smitham@yahoo.com</p>
+                  <p class="mt-2 break-words font-bold text-indigo-600">{{post()?.email}}</p>
                 </div>
               </div>
               <a href="mailto:Sylvester_Smitham@yahoo.com" class="mt-6 inline-flex w-full justify-center rounded-lg bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-sm">
@@ -97,5 +93,24 @@ import { Component } from '@angular/core';
   styles: ``,
 })
 export class PostDetailsDesign {
-  // Ova componenta treba da pokupi id iz urla i da prosledi endpointu 
+
+
+  private postsService = inject(PostsService);
+  private route = inject(ActivatedRoute);
+
+  post = signal<PostsInterface | undefined>(undefined);
+
+  id!: string;
+
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id')!;
+    console.log(this.id);
+
+    this.postsService.getPost(this.id).then(data => {
+      this.post.set(data);
+    })
+
+
+  }
+
 }
