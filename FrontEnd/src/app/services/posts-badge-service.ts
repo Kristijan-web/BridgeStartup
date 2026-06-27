@@ -10,7 +10,7 @@ export class PostsBadgeService {
 
   async getPostBadges(id: string): Promise<PostBadgesInterface[] | undefined> {
 try {
-     const fetchData = await fetch(`${url}/postBadges`, {
+     const fetchData = await fetch(`${url}/postBadges?postId=${id}`, {
        method: "GET"
     })
 

@@ -16,7 +16,7 @@ import { BadgesService } from '../../../../../services/badges-service';
   template: `<article class="flex min-h-[340px] flex-col rounded-lg border border-slate-200 bg-[#f8fbff] p-6 shadow-sm">
                         <div class="mb-4 flex flex-wrap gap-2">
                             // ovde idu dinamicki podaci
-                            @for (badge of badges(); track badge.id) {
+                            @for (badge of postBadges; track badge.id) {
                                 <app-badge-item [badgeName]="badge.name"></app-badge-item>
                             }
 
@@ -45,7 +45,7 @@ export class PostItem {
     // Sta sad radim?
     // Pravim servis kojim dohvatam sve podatke sa /badges endpoint-a
     
-    badgesIds = signal<PostBadgesInterface[] | undefined>([]); // -> niz objekata
+    postBadgesIds = signal<PostBadgesInterface[] | undefined>([]); // -> niz objekata
     badgesIdsArray: string[] = []; // -> sada imam niz id-eva, sada iz svih dobijenih badgeva izvlacim samo one ciji se id nalazi u badgesIdsArray
 
 
@@ -58,18 +58,26 @@ export class PostItem {
     return this.badgesIdsArray.includes(badge.id);
    })
 
+   // Pravi se jedna componenta za svaki element
   ngOnInit() {
+    // Sta dohvata linija ispod?
+    // Dohvata badge id-eve za prosledjeni post
+    
+    // BUG JE U TOME STO SE NE DOHVATAJU BADGEVE ZA PROSLEDJEN POST, vec se gleda id kolona u postBadges jsonu a ne PostId, tu je greska
+    // FIXANO VODI RACUNA DA NISAM JOS NEGDE TAKO
     this.postBadgesService.getPostBadges(this.post().id).then(data => {
-      this.badgesIds.set(data);
+      this.postBadgesIds.set(data);
+      console.log(data);
     })
 
     this.badgesService.getAllBadges().then(data => {
       this.badges.set(data);
     })
 
-    this.badgesIds()?.forEach((element: PostBadgesInterface) => {
+    this.postBadgesIds()?.forEach((element: PostBadgesInterface) => {
       this.badgesIdsArray.push(element.id);
     });
+;
   }
 
   
