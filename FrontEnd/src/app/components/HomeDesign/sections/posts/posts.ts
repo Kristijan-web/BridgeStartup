@@ -38,12 +38,20 @@ export class Posts {
 
     posts= signal<PostsInterface[]>([]);
 
+
+    // treba da dohvatim badg-ove za specificni post
+
+
   
   ngOnInit() {
  
     this.postsService.getAllPosts().then(data => {
       this.posts.set(data);
     });
+
+    // specificnost post-a
+    // treba mi id post-a
+    
     
   }
 
