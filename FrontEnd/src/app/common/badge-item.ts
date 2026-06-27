@@ -3,7 +3,7 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'app-badge-item',
   imports: [],
-  template: ` <span class="rounded-lg bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">{{ badgeName() }}</span> `,
+  template: ` <span class="rounded-lg bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">ALOOOOOOOOO</span> `,
   styles: ``,
 })
 export class BadgeItem {
@@ -16,7 +16,7 @@ export class BadgeItem {
   badgeName = input.required<string>();
 
 }
-
+// {{ badgeName() }}
 // Sta sad treba da se uradi
 // - Componenta koja prosledjuje prop treba da prosledi naziv badgeva
 // Ja bih napravio PostBadges servis, koji ce da kada se prosledi id post-a, dohvatiti niz objekata gde ce svaki objekat biti 1 badge za taj post
