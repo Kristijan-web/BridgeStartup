@@ -15,24 +15,24 @@ import { BadgeItem } from '../../../../../common/badge-item';
   imports: [RouterLink, BadgeItem],
   template: `
     <article
-      class="flex min-h-[340px] flex-col rounded-lg border border-slate-200 bg-[#f8fbff] p-6 shadow-sm"
+      class="flex h-[340px] flex-col overflow-hidden rounded-lg border border-slate-200 bg-[#f8fbff] p-6 shadow-sm"
     >
-      <div class="mb-4 flex flex-wrap gap-2">
+      <div class="mb-4 flex max-h-7 flex-wrap gap-2 overflow-hidden">
         @for (badge of postBadges(); track badge.id) {
           <app-badge-item [badgeName]="badge.name"></app-badge-item>
         }
       </div>
 
-      <h3 class="text-xl font-black">{{ post().title }}</h3>
+      <h3 class="line-clamp-2 text-xl font-black">{{ post().title }}</h3>
 
-      <p class="mt-3 flex-1 leading-7 text-slate-600">
+      <p class="mt-3 line-clamp-4 flex-1 leading-7 text-slate-600">
         {{ post().description }}
       </p>
 
       <div class="mt-5 border-t border-slate-200 pt-4 text-sm">
-        <p class="font-bold text-slate-800">{{ post().phone }}</p>
+        <p class="truncate font-bold text-slate-800">{{ post().phone }}</p>
 
-        <p class="mt-1 font-bold text-indigo-600">
+        <p class="mt-1 truncate font-bold text-indigo-600">
           {{ post().email }}
         </p>
 

@@ -8,6 +8,8 @@ import { BadgesService } from '../../services/badges-service';
 import { PostBadgesInterface } from '../../interfaces/post-badges-interface';
 import { BadgesInterface } from '../../interfaces/badges-interface';
 import { BadgeItem } from '../../common/badge-item';
+import { UserService } from '../../services/user-service';
+import { UserInterface } from '../../interfaces/user-interface';
 
 @Component({
   selector: 'app-post-details-design',
@@ -40,7 +42,7 @@ import { BadgeItem } from '../../common/badge-item';
               </div>
               <div>
                 <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Founder</span>
-                <span class="mt-2 block font-bold text-slate-950">Unknown user</span>
+                <span class="mt-2 block font-bold text-slate-950">{{ userPost()?.username }}</span>
               </div>
               <div>
                 <span class="block text-xs font-black uppercase tracking-[0.16em] text-slate-500">Status</span>
@@ -110,6 +112,7 @@ export class PostDetailsDesign {
   private route = inject(ActivatedRoute);
   private postBadgesService = inject(PostsBadgeService);
   private badgesService = inject(BadgesService);
+  private userService = inject(UserService);
   // Sta sad treba da uradim?
   id!: string;
 
@@ -118,6 +121,10 @@ export class PostDetailsDesign {
   postBadgesIds = signal<PostBadgesInterface[] | undefined>([])
   // treba mi signal za badges
   badges = signal<BadgesInterface[]>([])
+
+  userPost = signal<UserInterface | undefined>(undefined);
+
+  // Treba da dohvatim usera iz post-a
 
   // sada mi treba computed da se filteruju badgeve
 
@@ -137,17 +144,25 @@ export class PostDetailsDesign {
     return filteredBadges;
   })
 
+  // treba mi computed koji ce se trigerovati kada se promeni vrednost polja this.post()
+
+  postUser = computed(() => {
+    // samo posa
+  })
+// Sta sad treba da se uradi?
+// - Treba da se pozove userServis i dohvati user za prosledjeni post-id
+// 
 
 
 
-  ngOnInit() {
+ async ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
 
-    this.postsService.getPost(this.id).then(data => {
+    await this.postsService.getPost(this.id).then(data => {
       this.post.set(data);
+      // mora drugi asinhroni zahtev ovde da se napravi
     })
-// Sta radi metoda ispod?
-// - Dohvata post za specifican post  
+
     this.postBadgesService
       .getPostBadges(this.id)
       .then(data => {
@@ -159,6 +174,18 @@ export class PostDetailsDesign {
       .then(data => {
         this.badges.set(data);
       });
+
+
+    this.userService.getUser(this.post()?.userId).then(data => {
+
+      console.log('ALOOO')
+      console.log(this.post()?.userId);
+
+      console.log(data);
+
+        this.userPost.set(data);
+
+    })
 
   }
 

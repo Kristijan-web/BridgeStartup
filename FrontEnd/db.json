@@ -258,35 +258,35 @@
   "users": [
     {
       "id": 1,
-      "userName": "Petar"
+      "username": "Petar"
     },
     {
       "id": 2,
-      "userName": "Marko"
+      "username": "Marko"
     },
     {
       "id": 3,
-      "userName": "Jovan"
+      "username": "Jovan"
     },
     {
       "id": 4,
-      "userName": "Nikola"
+      "username": "Nikola"
     },
     {
       "id": 5,
-      "userName": "Milan"
+      "username": "Milan"
     },
     {
       "id": 6,
-      "userName": "Stefan"
+      "username": "Stefan"
     },
     {
       "id": 7,
-      "userName": "Korisnik 7"
+      "username": "Korisnik 7"
     },
     {
       "id": 8,
-      "userName": "Korisnik 8"
+      "username": "Korisnik 8"
     }
   ]
 }

@@ -50,7 +50,7 @@ export class PostsService {
       throw new Error("Something went wrong...")
     }
 
-    return fetchData.json();
+    return await fetchData.json();
 
     }catch(err) {
 

@@ -14,7 +14,7 @@ try {
        method: "GET"
     })
 
-    return fetchData.json();
+    return await fetchData.json();
 
 }catch(err) {
   if (err instanceof Error) {
