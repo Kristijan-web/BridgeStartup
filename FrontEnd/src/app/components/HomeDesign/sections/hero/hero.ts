@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { PostsService } from '../../../../services/posts-service';
+import { PostsInterface } from '../../../../interfaces/posts-interface';
+import { BadgesService } from '../../../../services/badges-service';
+import { BadgesInterface } from '../../../../interfaces/badges-interface';
+import { UserService } from '../../../../services/user-service';
+import { UserInterface } from '../../../../interfaces/user-interface';
 
 @Component({
   selector: 'app-hero',
@@ -12,20 +18,47 @@ import { Component } from '@angular/core';
                 </div>
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                        <span class="block text-2xl font-black text-indigo-600">6</span>
+                        <span class="block text-2xl font-black text-indigo-600">{{posts().length}}</span>
                         <span class="text-sm font-semibold text-slate-500">open posts</span>
                     </div>
                     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                        <span class="block text-2xl font-black text-emerald-600">24</span>
+                        <span class="block text-2xl font-black text-emerald-600">{{badges().length}}</span>
                         <span class="text-sm font-semibold text-slate-500">stack badges</span>
                     </div>
                     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                        <span class="block text-2xl font-black text-amber-500">0</span>
-                        <span class="text-sm font-semibold text-slate-500">dynamic parts</span>
+                        <span class="block text-2xl font-black text-amber-500">{{users().length }}</span>
+                        <span class="text-sm font-semibold text-slate-500">registered users</span>
                     </div>
                 </div>
             </div>
         </section> `,
   styles: ``,
 })
-export class Hero {}
+export class Hero {
+
+
+    private postService = inject(PostsService)
+    private badgesService = inject(BadgesService);
+    private userService = inject(UserService);
+
+    posts = signal<PostsInterface[]>([])
+    badges = signal<BadgesInterface[]>([])
+    users = signal<UserInterface[]>([])
+
+    ngOnInit() {
+        // asinhroni poziv
+
+        this.postService.getAllPosts().then(data => {
+            this.posts.set(data);
+        })
+
+        this.badgesService.getAllBadges().then(data => {
+            this.badges.set(data);
+        })
+        this.userService.getUsers().then(data => {
+            this.users.set(data);
+        })
+    }
+
+
+}

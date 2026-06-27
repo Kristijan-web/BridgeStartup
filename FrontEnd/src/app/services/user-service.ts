@@ -7,7 +7,24 @@ import { UserInterface } from '../interfaces/user-interface';
 })
 export class UserService {
 
-  // samo mi treba metoda koja ce da dohvati user-a
+
+  async getUsers(): Promise<UserInterface[]> {
+    try {
+
+      const fetchData = await fetch(`${url}/users`, {
+        method: "GET"
+      })
+
+      return await fetchData.json();
+
+
+    }catch(error) {
+      if(error instanceof Error) {
+        console.log(error.message);
+      }
+      return []
+    }
+  }
 
   async getUser(id: string | undefined): Promise<UserInterface | undefined> {
     try {           
@@ -29,5 +46,7 @@ export class UserService {
 
 
   }
+
+  
 
 }
