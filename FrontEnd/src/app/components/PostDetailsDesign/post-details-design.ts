@@ -1,24 +1,30 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostsService } from '../../services/posts-service';
 import { PostsInterface } from '../../interfaces/posts-interface';
 import { DatePipe } from '@angular/common';
+import { PostsBadgeService } from '../../services/posts-badge-service';
+import { BadgesService } from '../../services/badges-service';
+import { PostBadgesInterface } from '../../interfaces/post-badges-interface';
+import { BadgesInterface } from '../../interfaces/badges-interface';
+import { BadgeItem } from '../../common/badge-item';
 
 @Component({
   selector: 'app-post-details-design',
-  imports: [DatePipe],
+  imports: [DatePipe, BadgeItem, RouterLink],
   template: `  <main class="flex-1">
       <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <a href="#" class="inline-flex items-center rounded-lg bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">
+        <a routerLink="" class="inline-flex items-center cursor-pointer rounded-lg bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">
           Back to posts
         </a>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
           <article class="rounded-lg border border-slate-200 bg-[#f8fbff] p-6 shadow-sm sm:p-8">
             <div class="mb-5 flex flex-wrap gap-2">
-              <span class="rounded-lg bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">JavaScript</span>
-              <span class="rounded-lg bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-700">MVP</span>
-              <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Open post</span>
+              @for(badge of postBadges(); track badge.id) {
+                  <app-badge-item [badgeName]="badge.name"></app-badge-item>
+              }
+
             </div>
 
             <p class="text-sm font-black uppercase tracking-[0.22em] text-indigo-600">Post detail</p>
@@ -75,9 +81,9 @@ import { DatePipe } from '@angular/common';
             <div class="rounded-lg border border-slate-200 bg-[#f8fbff] p-6 shadow-sm">
               <p class="text-sm font-black uppercase tracking-[0.22em] text-cyan-700">Stack</p>
               <div class="mt-5 flex flex-wrap gap-2">
-                <span class="rounded-lg bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">JavaScript</span>
-                <span class="rounded-lg bg-cyan-50 px-3 py-1 text-xs font-black text-cyan-700">Frontend</span>
-                <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Static MVP</span>
+              @for(badge of postBadges(); track badge.id) {
+                  <app-badge-item [badgeName]="badge.name"></app-badge-item>
+              }
               </div>
             </div>
 
@@ -94,22 +100,65 @@ import { DatePipe } from '@angular/common';
 })
 export class PostDetailsDesign {
 
+  // treba da dinamicki ispisem badge-eve
+  
+  // Sta mi je potrebno da bi prikazao badgeve?
+  // - computed polje koja racuna kada se promeni signal
+  // Fale mi badges i post bagdes
 
   private postsService = inject(PostsService);
   private route = inject(ActivatedRoute);
+  private postBadgesService = inject(PostsBadgeService);
+  private badgesService = inject(BadgesService);
+  // Sta sad treba da uradim?
+  id!: string;
 
   post = signal<PostsInterface | undefined>(undefined);
+  // treba mi signal za postBadgesIds
+  postBadgesIds = signal<PostBadgesInterface[] | undefined>([])
+  // treba mi signal za badges
+  badges = signal<BadgesInterface[]>([])
 
-  id!: string;
+  // sada mi treba computed da se filteruju badgeve
+
+  // kako ide sintaksa za computed??
+  // To je neka funkcija
+  postBadges = computed(() => {
+
+    const badgeIds = this.postBadgesIds()?.map(postBadge => Number(postBadge.badgeId));
+
+    const filteredBadges = this.badges().filter(badge =>{   
+         
+    return  badgeIds?.includes(Number(badge.id))
+    }
+    
+    );
+  
+    return filteredBadges;
+  })
+
+
+
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
-    console.log(this.id);
 
     this.postsService.getPost(this.id).then(data => {
       this.post.set(data);
     })
+// Sta radi metoda ispod?
+// - Dohvata post za specifican post  
+    this.postBadgesService
+      .getPostBadges(this.id)
+      .then(data => {
+        this.postBadgesIds.set(data);
+      });
 
+    this.badgesService
+      .getAllBadges()
+      .then(data => {
+        this.badges.set(data);
+      });
 
   }
 
