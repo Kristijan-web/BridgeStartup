@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain
+﻿namespace Domain
 {
     public class Role : Entity
     {
@@ -16,8 +12,10 @@ namespace Domain
 
         // Ko referencira Role? HashSet
         // - User
+        // - RoleUseCases
 
-        public virtual HashSet<User> Users{ get; set; }
+        public virtual HashSet<User> Users { get; set; }
+        public virtual HashSet<RoleUseCases> RoleUseCases { get; set; }
 
 
     }

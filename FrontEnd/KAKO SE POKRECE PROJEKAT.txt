@@ -1,0 +1,1 @@
+JSON fajlovi se usluzu preko biblioteke json-server koja simulira rad servera, da bi pokrenuli json server u konzoli se kuca: json-server --watch db.json
