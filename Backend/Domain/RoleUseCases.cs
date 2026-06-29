@@ -2,14 +2,7 @@
 {
     public class RoleUseCases : Entity
     {
-        // treba id role i id use case-a
 
-        // Koga referencira RoleUseCases?
-        // - Role
-        // - UseCases
-
-        // Ko referencira RoleUseCases?
-        // - Niko
 
 
         public long UseCasesId { get; set; }
