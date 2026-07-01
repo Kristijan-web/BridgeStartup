@@ -1,10 +1,13 @@
+using Application;
 using Application.Commands;
 using Application.ExceptionLogging;
 using Application.Queries;
 using ASPLAB2.API.JWT;
 using ASPLAB2.API.Middleware;
 using Backend;
+using Backend.JWT;
 using Data.Access;
+using Implementation;
 using Implementation.Commands;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
@@ -14,6 +17,7 @@ using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,7 +70,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Koji lifetime ce klasa imati u DI container-u?
 // - JA bih isao sa Scoped -> 1 instanca na nivou request-a ili transient svaki put nova, ma transient
 // - Mozda bih cak isao i Singleton jer mi treba interfejs, ali prosledice istu klasu koja je vezana za taj interfejs i onda ako se ta klasa koja je vezana za interfejs prosledjuje u vise metoda onda ce sve one mutirati istu klasu, zato ne sme ni na nivou request-a (Scoped) vec mora biti Transient
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
@@ -77,6 +81,56 @@ builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
 builder.Services.AddTransient<JwtHandler>();
 
+
+builder.Services.AddScoped<IApplicationUser>(container =>
+{
+    var accessor = container.GetService<IHttpContextAccessor>(); //service locator -> uzima objekat iz DI container-a koji implementira IHttpContextAccessor
+
+    if (accessor.HttpContext == null) // -> samo proverava da li ovo pokusava da se izvrsi preko http zahteva, da se radilo preko background servisa onda ne bi postojao HTTP zahtev
+
+    {
+        // sta je ovaj if proverio?
+        // - Ovo sluzi u slucaju da neka klasa van HTTP context-a trazi ovaj interfejs, u tom slucaju bacamo gresku, recimo background servis trazi ovaj interfejs i mi to ne dozvoljavamo
+        return new UnauthorizedUser(); // ovo verovatno on sam pravi
+
+        // Ako bih napravio svoj custom exception i njega throw-ovo da li bi on upao u global exception handling middleware, ako je throw bacen na ovom mestu?
+    }
+
+    if (!accessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
+    {
+        return new UnauthorizedUser();
+    }
+
+    var header = accessor.HttpContext.Request.Headers.Authorization; //Bearer token
+    var headerParts = header.ToString().Split(" ");
+
+
+    if (headerParts.Count() != 2 || headerParts[0] != "Bearer")
+    {
+        return new UnauthorizedUser();
+    }
+
+    var token = headerParts[1];
+
+    var handler = new JwtSecurityTokenHandler();
+    var jwtToken = handler.ReadJwtToken(token);
+
+    //jwtToken.Claims
+    // Sta je JwtUser objekat, cemu on sluzi?
+    // - JwtUser je verovatno DTO
+    // - Ovaj objekat ce se proslediti onome ko trazi IApplicationUser
+    // - Recimo useCaseHandler trazi IApplicationUser, on ce dobiti ovaj boejatk, ovo je samo obican DTO
+    return new JwtUser
+    {
+        // Kada se pravi JWT token za user-a, da li se njegove funkcionalnosti upisuju u claimove tokena?
+        // ovde vali UseCasesids!!!
+        Id = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id").Value),
+        Username = jwtToken.Claims.FirstOrDefault(x => x.Type == "Username").Value,
+        Email = jwtToken.Claims.FirstOrDefault(x => x.Type == "Email").Value,
+        // treba da se izvuku i funkcionalnosti
+        AllowedUseCases = jwtToken.Claims.FirstOrDefault(x => x.Type == "AllowedUseCases").Value
+    };
+});
 
 
 

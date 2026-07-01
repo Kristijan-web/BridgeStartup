@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Access
 {
+    // Cemu sluzi ovaj Data access sloj?
+    // - On zna kako se podaci čuvaju i čitaju iz baze preko konkretnog ORM-a.
     public class ApplicationDbContext : DbContext
     {
 
@@ -26,12 +28,6 @@ namespace Data.Access
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
-            // refleksija
-
-            // kako se postize refleksija
-            // - Dodaje se referenca na projekat u kojem se nalaze klase koje implementiraju IEntityTypeConfiguration<> interfejs
-
-            // Kako se to radi?
 
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
@@ -48,6 +44,8 @@ namespace Data.Access
         public DbSet<Post> Posts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RoleUseCases> RoleUseCases { get; set; }
+        public DbSet<UseCases> UseCases { get; set; }
 
     }
 }

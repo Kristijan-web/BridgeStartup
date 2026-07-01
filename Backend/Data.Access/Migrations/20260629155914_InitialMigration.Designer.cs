@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Access.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260613173748_InitialMigration")]
+    [Migration("20260629155914_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -153,6 +153,59 @@ namespace Data.Access.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Domain.RoleUseCases", b =>
+                {
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UseCasesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("RoleId", "UseCasesId");
+
+                    b.HasIndex("UseCasesId");
+
+                    b.ToTable("RoleUseCases");
+                });
+
+            modelBuilder.Entity("Domain.UseCases", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UseCaseId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UseCases");
+                });
+
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Property<long>("Id")
@@ -169,14 +222,16 @@ namespace Data.Access.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L);
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -186,6 +241,9 @@ namespace Data.Access.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 
@@ -222,6 +280,25 @@ namespace Data.Access.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.RoleUseCases", b =>
+                {
+                    b.HasOne("Domain.Role", "Role")
+                        .WithMany("RoleUseCases")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.UseCases", "UseCases")
+                        .WithMany("RoleUsesCase")
+                        .HasForeignKey("UseCasesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("UseCases");
+                });
+
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.HasOne("Domain.Role", "Role")
@@ -245,7 +322,14 @@ namespace Data.Access.Migrations
 
             modelBuilder.Entity("Domain.Role", b =>
                 {
+                    b.Navigation("RoleUseCases");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Domain.UseCases", b =>
+                {
+                    b.Navigation("RoleUsesCase");
                 });
 
             modelBuilder.Entity("Domain.User", b =>

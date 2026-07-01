@@ -152,11 +152,11 @@ namespace Data.Access.Migrations
 
             modelBuilder.Entity("Domain.RoleUseCases", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<long>("RoleId")
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<long>("UseCasesId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -164,18 +164,13 @@ namespace Data.Access.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("RoleId")
+                    b.Property<long>("Id")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("UseCasesId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
+                    b.HasKey("RoleId", "UseCasesId");
 
                     b.HasIndex("UseCasesId");
 

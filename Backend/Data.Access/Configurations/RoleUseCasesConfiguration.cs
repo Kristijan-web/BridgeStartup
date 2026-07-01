@@ -8,7 +8,6 @@ namespace Data.Access.Configurations
     {
         public void Configure(EntityTypeBuilder<RoleUseCases> builder)
         {
-            // ovde sad konfiugurisem
 
             builder.HasKey(x => new { x.RoleId, x.UseCasesId });
         }
