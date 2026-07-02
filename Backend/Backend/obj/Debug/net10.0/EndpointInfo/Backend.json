@@ -135,6 +135,16 @@
             "description": "OK"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Seeder"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/Users": {

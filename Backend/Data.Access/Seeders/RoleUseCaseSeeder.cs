@@ -7,9 +7,6 @@ namespace Data.Access.Seeders
         public RoleUseCaseSeeder(ApplicationDbContext _context)
         {
 
-
-
-
             List<string> userUseCases = new List<string> { "register-user", "login", "get-post", "get-all-posts", "get-user", "get-all-users" };
             // mora da se napravi za admin role-u
 

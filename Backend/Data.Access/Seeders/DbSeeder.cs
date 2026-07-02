@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Data.Access.Seeders
+﻿namespace Data.Access.Seeders
 {
     public class DbSeeder
     {
@@ -17,6 +13,8 @@ namespace Data.Access.Seeders
             UserSeeder userSeeder = new UserSeeder(_context);
             PostSeeder postSeeder = new PostSeeder(_context);
             BadgePostSeeder badgePostSeeder = new BadgePostSeeder(_context);
+            UseCaseSeeder useCaseSeeder = new UseCaseSeeder(_context);
+            RoleUseCaseSeeder roleUseCaseSeeder = new RoleUseCaseSeeder(_context);
 
 
         }

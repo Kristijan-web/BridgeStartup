@@ -74,6 +74,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Backend.Controllers.SeederController",
+    "Method": "ClearDbRecords",
+    "RelativePath": "api/Seeder",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Backend.Controllers.UsersController",
     "Method": "GetUsers",
     "RelativePath": "api/Users",
