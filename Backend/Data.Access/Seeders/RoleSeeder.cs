@@ -1,8 +1,4 @@
-﻿using Bogus;
-using Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Domain;
 
 namespace Data.Access.Seeders
 {
@@ -13,8 +9,8 @@ namespace Data.Access.Seeders
 
 
 
-            List<Role> roles = new List<Role> { 
-                new Role { Name = "user" }, 
+            List<Role> roles = new List<Role> {
+                new Role { Name = "user" },
                 new Role {Name = "admin"}
             };
 
