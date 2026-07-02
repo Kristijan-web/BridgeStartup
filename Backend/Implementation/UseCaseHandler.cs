@@ -33,7 +33,6 @@ namespace Implementation
 
             IsAuthorized(cmd.Id);
 
-
             cmd.Execute(dto);
 
         }

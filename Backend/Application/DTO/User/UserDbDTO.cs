@@ -1,18 +1,13 @@
-﻿namespace Application.DTO.Auth
+﻿namespace Application.DTO.User
 {
-    public class LoginResponseDTO
+    public class UserDbDTO
     {
-        // koje podatke vracam korisniku?
-        // - Email
-        // - Username
-
         public long Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-
         public string Password { get; set; }
         public string Role { get; set; }
-
         public IEnumerable<string> AllowedUseCases { get; set; } = new List<string>();
+
     }
 }

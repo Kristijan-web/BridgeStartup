@@ -1,4 +1,4 @@
-﻿namespace Application.DTO
+﻿namespace Application.DTO.User
 {
 
     // Parametri po kojima je dozvoljeno search-anje user-a

@@ -1,8 +1,9 @@
 ﻿using Application.Commands;
 using Application.DTO.Auth;
+using Application.DTO.User;
 using Application.Queries;
 using ASPLAB2.API.JWT;
-using Domain;
+using Implementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -12,14 +13,21 @@ namespace Backend.Controllers
     public class AuthController : ControllerBase
     {
 
+        UseCaseHandler _handler;
+        public AuthController(UseCaseHandler handler)
+        {
+            _handler = handler;
+
+        }
+
         [HttpPost("register")]
 
         public IActionResult Register([FromServices] IRegisterUserCommand registerCommand, RegisterUserDTO dto)
         {
 
 
-            registerCommand.Execute(dto);
 
+            _handler.ExecuteCommand(registerCommand, dto);
 
             return Created();
 
@@ -30,42 +38,21 @@ namespace Backend.Controllers
         public IActionResult Login([FromServices] ILoginQuery loginQuery, [FromServices] JwtHandler jwt, LoginDTO dto)
         {
 
-            User userData = loginQuery.Execute(dto);
 
-
+            UserDbDTO userData = _handler.ExecuteQuery(loginQuery, dto);
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, userData.Password))
             {
                 return Unauthorized();
             }
 
-
-
             var jwtToken = jwt.MakeToken(userData);
-
-            // Kod ispod stavlja jwt token u http-only kolacic
-            //Response.Cookies.Append("jwt", jwtToken, new CookieOptions
-            //{
-            //    HttpOnly = true,
-            //    Secure = true,
-            //    SameSite = SameSiteMode.None,
-            //    Expires = DateTimeOffset.UtcNow.AddSeconds(600)
-            //});
-
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO
-            {
-                Id = userData.Id,
-                Username = userData.Username,
-                Email = userData.Email,
-                Role = userData.Role.Name
-            };
 
             return Ok(new
             {
-                user = loginResponseDTO,
+                user = userData,
                 token = jwtToken
             });
-
 
 
         }

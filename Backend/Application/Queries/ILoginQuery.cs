@@ -1,10 +1,10 @@
 ﻿using Application.DTO.Auth;
-using Domain;
+using Application.DTO.User;
 
 namespace Application.Queries
 {
     // response su korisnikovi podaci, to jest objekat
-    public interface ILoginQuery : IQuery<LoginDTO, User>
+    public interface ILoginQuery : IQuery<LoginDTO, UserDbDTO>
     {
 
     }

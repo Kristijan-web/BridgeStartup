@@ -116,11 +116,7 @@ builder.Services.AddScoped<IApplicationUser>(container =>
     var handler = new JwtSecurityTokenHandler();
     var jwtToken = handler.ReadJwtToken(token);
 
-    //jwtToken.Claims
-    // Sta je JwtUser objekat, cemu on sluzi?
-    // - JwtUser je verovatno DTO
-    // - Ovaj objekat ce se proslediti onome ko trazi IApplicationUser
-    // - Recimo useCaseHandler trazi IApplicationUser, on ce dobiti ovaj boejatk, ovo je samo obican DTO
+
     return new JwtUser
     {
         // Kada se pravi JWT token za user-a, da li se njegove funkcionalnosti upisuju u claimove tokena?

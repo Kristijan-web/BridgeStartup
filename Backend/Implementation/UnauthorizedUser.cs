@@ -27,10 +27,10 @@ namespace Implementation
 
         public string Username => "unauthorized user";
 
-        public string Email => "unathorizeduser@gmail.com";
+        public string Email => "unauthorizeduser@gmail.com";
 
         // treba mi niz stringova
-        public IEnumerable<string> AllowedUseCases => new List<string> { "register" };
+        public IEnumerable<string> AllowedUseCases => new List<string> { };
     }
 
 }
