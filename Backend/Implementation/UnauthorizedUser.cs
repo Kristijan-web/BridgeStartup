@@ -30,7 +30,7 @@ namespace Implementation
         public string Email => "unauthorizeduser@gmail.com";
 
         // treba mi niz stringova
-        public IEnumerable<string> AllowedUseCases => new List<string> { };
+        public IEnumerable<string> AllowedUseCases => new List<string> { "register-user", "login" };
     }
 
 }

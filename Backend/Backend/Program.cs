@@ -81,6 +81,7 @@ builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
 builder.Services.AddTransient<JwtHandler>();
+builder.Services.AddScoped<UseCaseHandler>();
 
 
 builder.Services.AddScoped<IApplicationUser>(container =>

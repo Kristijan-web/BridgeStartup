@@ -8,7 +8,7 @@
 
         public string Role { get; set; }
 
-        IEnumerable<string> AllowedUseCases { get; set; } = new List<string>();
+        public IEnumerable<string> AllowedUseCases { get; set; } = new List<string>();
 
 
 

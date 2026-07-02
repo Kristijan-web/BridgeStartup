@@ -48,9 +48,17 @@ namespace Backend.Controllers
 
             var jwtToken = jwt.MakeToken(userData);
 
+
             return Ok(new
             {
-                user = userData,
+                user = new
+                {
+                    userData.Id,
+                    userData.Username,
+                    userData.Email,
+                    userData.Role,
+                    userData.AllowedUseCases
+                },
                 token = jwtToken
             });
 

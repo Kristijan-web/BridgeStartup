@@ -48,7 +48,7 @@ namespace ASPLAB2.API.Middleware
 
 
 
-                    await context.Response.WriteAsJsonAsync(loginException.Message);
+                    await context.Response.WriteAsJsonAsync(new { message = loginException.Message });
                     return;
 
                 }
@@ -58,7 +58,7 @@ namespace ASPLAB2.API.Middleware
                     context.Response.StatusCode = 404;
 
 
-                    await context.Response.WriteAsJsonAsync(EntityException.Message);
+                    await context.Response.WriteAsJsonAsync(new { message = EntityException.Message });
 
                     return;
 
@@ -68,7 +68,7 @@ namespace ASPLAB2.API.Middleware
                     context.Response.StatusCode = 401;
 
 
-                    await context.Response.WriteAsJsonAsync(NotAuthorized.Message);
+                    await context.Response.WriteAsJsonAsync(new { message = NotAuthorized.Message });
 
                     return;
 
