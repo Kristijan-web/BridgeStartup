@@ -17,6 +17,7 @@ using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -127,8 +128,9 @@ builder.Services.AddScoped<IApplicationUser>(container =>
         Id = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id").Value),
         Username = jwtToken.Claims.FirstOrDefault(x => x.Type == "Username").Value,
         Email = jwtToken.Claims.FirstOrDefault(x => x.Type == "Email").Value,
-        // treba da se izvuku i funkcionalnosti
-        AllowedUseCases = jwtToken.Claims.FirstOrDefault(x => x.Type == "AllowedUseCases").Value
+        AllowedUseCases = JsonConvert.DeserializeObject<List<string>>(
+         jwtToken.Claims.FirstOrDefault(x => x.Type == "AllowedUseCases")?.Value ?? "[]"
+)
     };
 });
 

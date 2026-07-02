@@ -19,8 +19,8 @@ namespace Implementation.Commands
         // Kao get i set
         // Sta ako hocu samo get 
 
-        public string Id { get; } = "Register-user";
-        public string Name { get; } = "Register user";
+        public string Id { get; } = "register-user";
+        public string Name { get; } = "register user";
 
         private ApplicationDbContext _context;
 

@@ -1,28 +1,37 @@
-﻿using Application.Commands;
+﻿using Application;
+using Application.Commands;
+using Application.Exceptions;
 using Application.Queries;
 
 namespace Implementation
 {
     public class UseCaseHandler
     {
-        // Ova klasa treba da izvrsava i query i command metode
 
-        // Zasto ova klasa uopste postoje?
-        // - Da bi radila autorizaciju na osnovu funkcionalnosti 
-        // - Ako odredjena komanda/query ne pripada u niz funkcionalnosti koje ima korisnik onda nece moci da izvrsi tu komandu/query
 
-        // Sta mi je potrebno?
-        // - IApplicationUser interfejs
-        // - po 1 metoda za query i command
-        // - 1 metoda za autorizaciju
+        IApplicationUser _user;
 
-        // ajde prvo da napisem metodu za komandu
+        public UseCaseHandler(IApplicationUser user)
+        {
+            _user = user;
 
-        // Koje parametre prima ExecuteCommand?
-        // - Komandu
-        // - Podatke za komandu
+        }
+
+        private void IsAuthorized(string useCaseId)
+        {
+
+            if (!_user.AllowedUseCases.Contains(useCaseId))
+            {
+                throw new NotAuthorizedException(useCaseId);
+            }
+
+
+        }
+
         public void ExecuteCommand<T>(ICommand<T> cmd, T dto)
         {
+
+            IsAuthorized(cmd.Id);
 
 
             cmd.Execute(dto);
@@ -33,7 +42,7 @@ namespace Implementation
         public Tresponse ExecuteQuery<Tdata, Tresponse>(IQuery<Tdata, Tresponse> query, Tdata dto)
         {
 
-
+            IsAuthorized(query.Id);
 
             return query.Execute(dto);
 

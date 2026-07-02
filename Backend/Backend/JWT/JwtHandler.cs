@@ -1,6 +1,7 @@
 ﻿using Backend;
 using Domain;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,6 +16,7 @@ namespace ASPLAB2.API.JWT
     {
         private readonly AppSettings _appSettings;
 
+
         public JwtHandler(AppSettings appSettings)
         {
             this._appSettings = appSettings;
@@ -23,9 +25,16 @@ namespace ASPLAB2.API.JWT
 
         public string MakeToken(User user)
         {
+
+
             Guid tokenGuid = Guid.NewGuid();
 
             string tokenId = tokenGuid.ToString();
+
+            // kod ispod ce u odnosu na korisnikov role-u dohvatiti njegove funkcionalnosti
+
+            IEnumerable<string> useCaseIds = user.Role.RoleUseCases.Select(x => x.UseCases.UseCaseId).ToList();
+
 
             var claims = new List<Claim>
             {
@@ -37,6 +46,11 @@ namespace ASPLAB2.API.JWT
                  new Claim("Username", user.Username),
                  new Claim("Email", user.Email),
                  new Claim("Id", user.Id.ToString()),
+                 // mora biblioteka da se instalira
+                 new Claim("AllowedUseCases", JsonConvert.SerializeObject(useCaseIds)),
+
+
+
 
             };
 
