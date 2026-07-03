@@ -1,8 +1,5 @@
 ﻿using Bogus;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Data.Access.Seeders
 {
@@ -13,7 +10,7 @@ namespace Data.Access.Seeders
             List<Role> roles = _context.Roles.ToList();
 
 
-            
+
             Faker<User> userFaker = new Faker<User>();
 
             userFaker.RuleFor(x => x.Username, f => f.Internet.UserName());
@@ -26,7 +23,7 @@ namespace Data.Access.Seeders
             _context.AddRange(users);
             _context.SaveChanges();
 
-            
+
 
 
         }

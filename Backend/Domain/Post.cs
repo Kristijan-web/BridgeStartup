@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain
+﻿namespace Domain
 {
-    public class Post: Entity
+    public class Post : Entity
     {
         // Koje kolone ce imati post
         // - Title
@@ -23,7 +19,7 @@ namespace Domain
         // Ko referencira Post? Hashset
         // - Badge_Post
 
-        public virtual HashSet<Badge_Post> BadgePosts{ get; set; }
+        public virtual HashSet<Badge_Post> BadgePosts { get; set; }
 
         // Koga referencira Post?
         // - User
@@ -31,6 +27,7 @@ namespace Domain
         public long UserId { get; set; }
         public virtual User User { get; set; }
 
+        public virtual HashSet<PostApplication> PostApplications { get; set; }
 
 
     }

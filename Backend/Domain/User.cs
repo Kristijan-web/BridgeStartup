@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain
+﻿namespace Domain
 {
-    public class User: Entity   
+    public class User : Entity
     {
         // Koje kolone ce imati user?
         // - Username
@@ -24,6 +20,8 @@ namespace Domain
         // Ko referencira usera? Hashset
         // - Post
         public virtual HashSet<Post> Posts { get; set; }
+
+        public virtual HashSet<PostApplication> PostApplications { get; set; }
 
 
 

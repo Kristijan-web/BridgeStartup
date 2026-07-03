@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Access.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260701191257_RefactoredRoleUseCasesTable")]
-    partial class RefactoredRoleUseCasesTable
+    [Migration("20260703145123_update-database")]
+    partial class updatedatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,6 +125,42 @@ namespace Data.Access.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Domain.PostApplication", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("PostId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostApplications");
                 });
 
             modelBuilder.Entity("Domain.Role", b =>
@@ -277,6 +313,25 @@ namespace Data.Access.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.PostApplication", b =>
+                {
+                    b.HasOne("Domain.Post", "Post")
+                        .WithMany("PostApplications")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("PostApplications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.RoleUseCases", b =>
                 {
                     b.HasOne("Domain.Role", "Role")
@@ -315,6 +370,8 @@ namespace Data.Access.Migrations
             modelBuilder.Entity("Domain.Post", b =>
                 {
                     b.Navigation("BadgePosts");
+
+                    b.Navigation("PostApplications");
                 });
 
             modelBuilder.Entity("Domain.Role", b =>
@@ -331,6 +388,8 @@ namespace Data.Access.Migrations
 
             modelBuilder.Entity("Domain.User", b =>
                 {
+                    b.Navigation("PostApplications");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618

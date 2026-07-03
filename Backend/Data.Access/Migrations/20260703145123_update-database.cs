@@ -5,7 +5,7 @@
 namespace Data.Access.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class updatedatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,7 +89,6 @@ namespace Data.Access.Migrations
                 {
                     UseCasesId = table.Column<long>(type: "bigint", nullable: false),
                     RoleId = table.Column<long>(type: "bigint", nullable: false),
-                    Id = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -166,6 +165,35 @@ namespace Data.Access.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PostApplications",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    PostId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostApplications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostApplications_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostApplications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BadgePosts_BadgeId",
                 table: "BadgePosts",
@@ -175,6 +203,16 @@ namespace Data.Access.Migrations
                 name: "IX_BadgePosts_PostId",
                 table: "BadgePosts",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostApplications_PostId",
+                table: "PostApplications",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostApplications_UserId",
+                table: "PostApplications",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
@@ -203,6 +241,9 @@ namespace Data.Access.Migrations
         {
             migrationBuilder.DropTable(
                 name: "BadgePosts");
+
+            migrationBuilder.DropTable(
+                name: "PostApplications");
 
             migrationBuilder.DropTable(
                 name: "RoleUseCases");

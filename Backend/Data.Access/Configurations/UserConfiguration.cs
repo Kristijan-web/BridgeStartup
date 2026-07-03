@@ -17,6 +17,11 @@ namespace Data.Access.Configurations
 
             builder.HasIndex(x => x.Email).IsUnique();
 
+            // Treba da kazem da kada se brise user da se to ne dozvoli ako postoji userid u tabeli PostApplications?
+            // - Da bih to uspeo moram li da pravim i konfiguraciju za PostApplications?
+
+            // Kontam da pre mora da se ode u PostAPpliucations, jer je tu foreign key
+
 
         }
     }

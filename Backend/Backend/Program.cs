@@ -174,7 +174,7 @@ app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles(); // usluzuje fajlove iz wwwroot foldera
 app.MapControllers();
 
 app.Run();
