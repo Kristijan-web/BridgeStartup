@@ -74,6 +74,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
+builder.Services.AddTransient<IApplyToPostCommand, EfApplyToPostCommand>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();

@@ -1,7 +1,8 @@
-﻿using Application.DTO.Post;
+﻿using Application.Commands;
+using Application.DTO.Post;
 using Application.Queries;
 using Domain;
-using Microsoft.AspNetCore.Authorization;
+using Implementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -12,7 +13,7 @@ namespace Backend.Controllers
     {
 
 
-        [Authorize(Roles = "user")]
+
 
         [HttpGet]
 
@@ -69,6 +70,26 @@ namespace Backend.Controllers
             return Ok(postDTO);
 
         }
+        // kako ide sintaksa da ruta bude /posts/apply
+
+        [HttpPost("apply")]
+        // trebaju mi i podaci from body
+        public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IApplyToPostCommand cmd, [FromBody] PostApplyDTO dto)
+        {
+
+            // mora da izvucem tekst fajla i prosledim metodi u handleru
+            // Kog tipa podatka je fajl?
+            // Objekat
+
+            //_handler.ExecuteCommand(cmd, ) --> drugi argument mora da bude u formatu dto-a navedenog u IApplyToPostCommand
+
+            // Da li je ovo command ili query
+            // - Command
+
+            return Ok();
+        }
+
+
 
 
     }
