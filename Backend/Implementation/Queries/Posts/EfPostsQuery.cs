@@ -25,6 +25,8 @@ namespace Implementation.Queries.Posts
         public IEnumerable<Post> Execute(PostsDTO dto)
         {
 
+            // SAmo da vratim ovde DTO
+
             // Sta mi je potrebno da bih dohvatio sve post-ove?
             // - context
 

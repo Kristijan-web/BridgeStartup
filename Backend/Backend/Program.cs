@@ -80,6 +80,7 @@ builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
 builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
+builder.Services.AddTransient<IGetUserPostsQuery, EfGetUserPosts>();
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
 builder.Services.AddTransient<JwtHandler>();
 builder.Services.AddScoped<UseCaseHandler>();
@@ -99,6 +100,17 @@ builder.Services.AddScoped<IApplicationUser>(container =>
         // Ako bih napravio svoj custom exception i njega throw-ovo da li bi on upao u global exception handling middleware, ako je throw bacen na ovom mestu?
     }
 
+
+    //foreach (var header1 in accessor.HttpContext.Request.Headers)
+    //{
+    //    Console.WriteLine(header1.Key);
+    //    if(header1.Key.Contains("Authorization"))
+    //    {
+    //        Console.WriteLine($"Vrednost kljuca je {accessor.HttpContext.Request.Headers["Authorization"]}");
+    //    }
+    //}
+
+    // U Ovaj ispod if upada Authorization
     if (!accessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
     {
         return new UnauthorizedUser();
@@ -113,11 +125,23 @@ builder.Services.AddScoped<IApplicationUser>(container =>
         return new UnauthorizedUser();
     }
 
+    //Console.WriteLine("DOSAO DOVDE EEEEE");
+
     var token = headerParts[1];
 
     var handler = new JwtSecurityTokenHandler();
     var jwtToken = handler.ReadJwtToken(token);
 
+    // Mogao bih da svaki put kada se trazi IApplicationUser
+
+    // Ko trazi IApplicationUser?
+    // - 
+
+    // Sta je IApplicationUser, cemu ona sluzi?
+    // - To je Interfejs koji kada se zatrazi iz DI container-a se izvlace podaci korisnika tako sto se desifruje JWT, ako jwt ne postoji onda korisnik nije ulogovan.
+
+    // Koliko cesto trazim ovaj interfejs?
+    // Svaki put kada se posalje request koji pokusava da izvrsi neki query ili komandu, to jest pokusava da promeni stanje baze ili nesto da procita iz baze.
 
     return new JwtUser
     {

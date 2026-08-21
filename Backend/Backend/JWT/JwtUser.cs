@@ -2,7 +2,7 @@
 
 namespace Backend.JWT
 {
-    public class JwtUser : IApplicationUser
+    public class JwtUser : IApplicationUser // potpis -> kako izgleda objekat user-a iz jwt-a
     {
         // obican dto
         public long Id { get; set; }

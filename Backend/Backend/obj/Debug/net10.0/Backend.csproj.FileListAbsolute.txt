@@ -344,3 +344,7 @@ C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Backend\obj\Debug\net10.0\Backe
 C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Backend\obj\Debug\net10.0\ref\Backend.dll
 C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\Backend.staticwebassets.runtime.json
+C:\Users\krist\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\Backend.staticwebassets.runtime.json
+C:\Users\krist\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\krist\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\FluentValidation.dll
+C:\Users\krist\Desktop\BridgeStartup\Backend\Backend\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -44,6 +44,8 @@ namespace ASPLAB2.API.JWT
 
             //IEnumerable<string> useCaseIds = user.Role.RoleUseCases.Select(x => x.UseCases.UseCaseId).ToList();
 
+            Console.WriteLine("ALOO");
+            Console.WriteLine(JsonConvert.SerializeObject(user.AllowedUseCases));
 
             var claims = new List<Claim>
             {

@@ -16,5 +16,7 @@
 
         public DateTime? DeletedAt { get; set; }
 
+        // admin -> lista funkcionalnosti 
+        // - super-admin -> funkciolnaosti
     }
 }

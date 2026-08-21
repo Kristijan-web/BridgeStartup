@@ -170,18 +170,16 @@ namespace Data.Access.Migrations
                 name: "PostApplications",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     PostId = table.Column<long>(type: "bigint", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostApplications", x => x.Id);
+                    table.PrimaryKey("PK_PostApplications", x => new { x.UserId, x.PostId });
                     table.ForeignKey(
                         name: "FK_PostApplications_Posts_PostId",
                         column: x => x.PostId,
@@ -209,11 +207,6 @@ namespace Data.Access.Migrations
                 name: "IX_PostApplications_PostId",
                 table: "PostApplications",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostApplications_UserId",
-                table: "PostApplications",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",

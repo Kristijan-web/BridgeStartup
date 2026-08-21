@@ -12,34 +12,42 @@ namespace Backend.Controllers
     public class PostsController : ControllerBase
     {
 
+        private UseCaseHandler _handler;
+        public PostsController(UseCaseHandler handler)
+        {
+            _handler = handler;
+        }
 
 
 
         [HttpGet]
 
-        public IActionResult GetAllPosts(IPostsQuery query, [FromQuery] PostsDTO dto)
+        public IActionResult GetAllPosts([FromServices] IPostsQuery query, [FromQuery] PostsDTO dto)
         {
 
             // prosledjuje se dto a dto nije ni poslat, OVO JE PROBLEM
-            IEnumerable<Post> posts = query.Execute(dto);
-
-            IEnumerable<PostsResponseDTO> postsDTO = posts.Select(x => new PostsResponseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                Email = x.Email,
-                Phone = x.Phone,
-
-                User = new UserDTO
-                {
-                    Username = x.User.Username,
-                    Email = x.User.Email
-                }
-            });
 
 
-            return Ok(postsDTO);
+
+            //IEnumerable<Post> posts = query.Execute(dto);
+
+            //IEnumerable<PostsResponseDTO> postsDTO = posts.Select(x => new PostsResponseDTO
+            //{
+            //    Id = x.Id,
+            //    Title = x.Title,
+            //    Description = x.Description,
+            //    Email = x.Email,
+            //    Phone = x.Phone,
+
+            //    User = new UserDTO
+            //    {
+            //        Username = x.User.Username,
+            //        Email = x.User.Email
+            //    }
+            //});
+
+
+            return Ok(_handler.ExecuteQuery(query, dto));
 
         }
 

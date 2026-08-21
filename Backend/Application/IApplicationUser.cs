@@ -2,7 +2,7 @@
 {
     public interface IApplicationUser
     {
-        // Cemu sluzi ovaj interfejs
+        // Cemu sluzi ovaj interfejs?
         // - Da definise koje podatke ce sadrzati user i njegove funkcionalnosti
 
         // Ko ce koristiti ovaj interfejs?

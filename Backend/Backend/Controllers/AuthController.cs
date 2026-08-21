@@ -57,7 +57,6 @@ namespace Backend.Controllers
                     userData.Username,
                     userData.Email,
                     userData.Role,
-                    userData.AllowedUseCases
                 },
                 token = jwtToken
             });

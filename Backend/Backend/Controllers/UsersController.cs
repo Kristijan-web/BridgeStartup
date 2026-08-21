@@ -1,6 +1,7 @@
 ﻿using Application.DTO.User;
 using Application.Queries;
 using Domain;
+using Implementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -49,5 +50,21 @@ namespace Backend.Controllers
             return Ok(userDTO);
 
         }
+
+        [HttpGet("{id}/getPosts")]
+
+        // Sta je sve potrebno 
+        // - Handler
+        // - Query
+        // - Id
+        public IActionResult getUserPosts(int id, [FromServices] UseCaseHandler _handler, [FromServices] IGetUserPostsQuery query) {
+
+
+
+            return Ok(_handler.ExecuteQuery(query,id));
+       
+        }
     }
 }
+
+// MyPosts

@@ -19,6 +19,7 @@ namespace Implementation
 
         private void IsAuthorized(string useCaseId)
         {
+            Console.WriteLine(string.Join(", ", _user.AllowedUseCases));
 
             if (!_user.AllowedUseCases.Contains(useCaseId))
             {
