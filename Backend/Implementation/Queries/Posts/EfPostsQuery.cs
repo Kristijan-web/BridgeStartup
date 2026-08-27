@@ -1,5 +1,5 @@
 ﻿using Application.DTO.Post;
-using Application.Queries;
+using Application.Queries.Posts;
 using Data.Access;
 using Domain;
 using Microsoft.EntityFrameworkCore;
@@ -22,27 +22,27 @@ namespace Implementation.Queries.Posts
 
         }
 
-        public IEnumerable<Post> Execute(PostsDTO dto)
+        public IEnumerable<PostsResponseDTO> Execute(PostsFilterDTO dto)
         {
 
-            // SAmo da vratim ovde DTO
+      
 
-            // Sta mi je potrebno da bih dohvatio sve post-ove?
-            // - context
+            List<PostsResponseDTO> posts = _context.Posts.Include(x => x.User).Select(x => new PostsResponseDTO {
+            Id = x.Id,
+            Title = x.Title,
+            Description = x.Description,
+            Email = x.Email,
+            Phone = x.Phone,
+            User = new UserDTO
+            {
+                Username = x.User.Username,
+                Email = x.User.Email
+            }
 
-            // Kako ide logika za dohvatanje svih proizvoda
-            // - Samo se pozove context objekat i dohvate se svi post-ovi
-
-            // treba da se eager load-uju korisnikovi podaci
-
-            List<Post> posts = _context.Posts.Include(x => x.User).ToList();
+            }).ToList();
 
 
 
-            //IEnumerable<Post> posts = new List<Post>
-            //    {
-            //        new Post()
-            //    };
 
             return posts;
         }

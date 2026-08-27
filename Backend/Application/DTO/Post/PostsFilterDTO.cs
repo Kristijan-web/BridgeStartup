@@ -1,6 +1,6 @@
 ﻿namespace Application.DTO.Post
 {
-    public class PostsDTO
+    public class PostsFilterDTO
     {
         // Sta mi je potrebno za filtraciju?
         // Po kojim kolona cu dozvoliti filtraciju?

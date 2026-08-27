@@ -1,6 +1,6 @@
 ﻿using Application.Commands;
 using Application.DTO.Post;
-using Application.Queries;
+using Application.Queries.Posts;
 using Domain;
 using Implementation;
 using Microsoft.AspNetCore.Mvc;
@@ -22,30 +22,8 @@ namespace Backend.Controllers
 
         [HttpGet]
 
-        public IActionResult GetAllPosts([FromServices] IPostsQuery query, [FromQuery] PostsDTO dto)
+        public IActionResult GetAllPosts([FromServices] IPostsQuery query, [FromQuery] PostsFilterDTO dto)
         {
-
-            // prosledjuje se dto a dto nije ni poslat, OVO JE PROBLEM
-
-
-
-            //IEnumerable<Post> posts = query.Execute(dto);
-
-            //IEnumerable<PostsResponseDTO> postsDTO = posts.Select(x => new PostsResponseDTO
-            //{
-            //    Id = x.Id,
-            //    Title = x.Title,
-            //    Description = x.Description,
-            //    Email = x.Email,
-            //    Phone = x.Phone,
-
-            //    User = new UserDTO
-            //    {
-            //        Username = x.User.Username,
-            //        Email = x.User.Email
-            //    }
-            //});
-
 
             return Ok(_handler.ExecuteQuery(query, dto));
 
@@ -56,45 +34,30 @@ namespace Backend.Controllers
         public IActionResult GetPost(int id, [FromServices] IPostQuery query)
         {
 
-
-            Post post = query.Execute(id);
-
-
-            PostsResponseDTO postDTO = new PostsResponseDTO
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Description = post.Description,
-                Email = post.Email,
-                Phone = post.Phone,
-                User = new UserDTO
-                {
-                    Username = post.User.Username,
-                    Email = post.User.Email
-                }
-
-            };
-
-            return Ok(postDTO);
+            return Ok(_handler.ExecuteQuery(query, id));
 
         }
         // kako ide sintaksa da ruta bude /posts/apply
 
         [HttpPost("apply")]
-        // trebaju mi i podaci from body
-        public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IApplyToPostCommand cmd, [FromBody] PostApplyDTO dto)
+        
+        public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)
         {
 
-            // mora da izvucem tekst fajla i prosledim metodi u handleru
-            // Kog tipa podatka je fajl?
-            // Objekat
 
-            //_handler.ExecuteCommand(cmd, ) --> drugi argument mora da bude u formatu dto-a navedenog u IApplyToPostCommand
+            ApplyToPostDTO postDTO = new ApplyToPostDTO
+            {
+                UserId = dto.UserId,
+                PostId = dto.PostId,
+                FileName = dto.userFile.FileName,
+                ContentType = dto.userFile.ContentType,
+                FileLength = dto.userFile.Length,
+                FileStream = dto.userFile.OpenReadStream()
 
-            // Da li je ovo command ili query
-            // - Command
+            };
 
-            return Ok();
+            _handler.ExecuteCommand(cmd, postDTO);
+            return NoContent();
         }
 
 

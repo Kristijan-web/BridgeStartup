@@ -2,6 +2,7 @@ using Application;
 using Application.Commands;
 using Application.ExceptionLogging;
 using Application.Queries;
+using Application.Queries.Posts;
 using ASPLAB2.API.JWT;
 using ASPLAB2.API.Middleware;
 using Backend;
@@ -9,6 +10,7 @@ using Backend.JWT;
 using Data.Access;
 using Implementation;
 using Implementation.Commands;
+using Implementation.Commands.Posts;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
 using Implementation.Queries.Posts;
@@ -74,10 +76,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
-builder.Services.AddTransient<IApplyToPostCommand, EfApplyToPostCommand>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
+// treba da dodam interface za upload fajla loklano
+// Da li cu koristiti Transient, Singleton ili Scoped?
+// - Singleton pravi instancu objekta za ceo tok rada aplikacije
+// - Transient pravi novu isntancu svaki put kada se zatrazi iz DI container-a
+// - Scoped pravi novu instancu svaki put kada stigne novi requesjt, tako da ce instanca vaziti za rokt trajanja request-a
+
+// Da li za x klasu koristiti Singleton?
+// - Genericko pitanje koje se postavlja je "Da li klasa x sadrzi polja(fields) i ako sadrzi da li mi pravi problem ako bi se ona menjala sa svakim novim request-om?
+
+builder.Services.AddTransient<IUploadPostFileToCommand, EfUploadPostFileToLocal>();
 builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IGetUserPostsQuery, EfGetUserPosts>();

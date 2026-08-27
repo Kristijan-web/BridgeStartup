@@ -132,19 +132,30 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PostApplyDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PostApplyDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PostApplyDTO"
+                "type": "object",
+                "properties": {
+                  "UserId": {
+                    "pattern": "^-?(?:0|[1-9]\\d*)$",
+                    "type": [
+                      "integer",
+                      "string"
+                    ],
+                    "format": "int64"
+                  },
+                  "PostId": {
+                    "pattern": "^-?(?:0|[1-9]\\d*)$",
+                    "type": [
+                      "integer",
+                      "string"
+                    ],
+                    "format": "int64"
+                  },
+                  "userFile": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
               }
             }
           },
@@ -281,30 +292,6 @@
           },
           "password": {
             "type": "string"
-          }
-        }
-      },
-      "PostApplyDTO": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int64"
-          },
-          "postId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int64"
-          },
-          "userFile": {
-            "$ref": "#/components/schemas/IFormFile"
           }
         }
       },

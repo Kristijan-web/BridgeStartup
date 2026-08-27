@@ -1,5 +1,6 @@
-﻿using Application.Exceptions;
-using Application.Queries;
+﻿using Application.DTO.Post;
+using Application.Exceptions;
+using Application.Queries.Posts;
 using Data.Access;
 using Domain;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,23 @@ namespace Implementation.Queries.Posts
             _context = context;
         }
 
-        public Post Execute(int id)
+        public PostsResponseDTO Execute(int id)
         {
 
+            PostsResponseDTO? post = _context.Posts.Where(x => x.Id == id).Include(x => x.User).Select(x => new PostsResponseDTO
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Email = x.Email,
+                Phone = x.Phone,
+                User = new UserDTO
+                {
+                    Username = x.User.Username,
+                    Email = x.User.Email
+                }
 
-            Post? post = _context.Posts.Include(x => x.User).FirstOrDefault(x => x.Id == id);
+            }).FirstOrDefault();
 
             if (post == null)
             {

@@ -17,6 +17,6 @@ namespace Application.DTO.User
         public string Email { get; set; }
         public string Username { get; set; }
 
-        public IEnumerable<PostsDTO> Posts { get; set; } = new List<PostsDTO>();
+        public IEnumerable<PostsFilterDTO> Posts { get; set; } = new List<PostsFilterDTO>();
     }
 }

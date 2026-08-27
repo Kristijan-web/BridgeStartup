@@ -38,7 +38,7 @@ namespace Implementation.Queries.Users
               Email = x.Email,
               Username = x.Username,
 
-              Posts = x.Posts.Select(y => new PostsDTO
+              Posts = x.Posts.Select(y => new PostsFilterDTO
               {
                   Title = y.Title,
 
