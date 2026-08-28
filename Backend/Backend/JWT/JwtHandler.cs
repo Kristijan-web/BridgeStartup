@@ -45,6 +45,8 @@ namespace ASPLAB2.API.JWT
             //IEnumerable<string> useCaseIds = user.Role.RoleUseCases.Select(x => x.UseCases.UseCaseId).ToList();
 
             Console.WriteLine("ALOO");
+            // Sta prikazuje komanda ispod?
+            // - Ispisuje AllowedUseCase-ove koje user sme da izvrsi, dohvacene iz baze
             Console.WriteLine(JsonConvert.SerializeObject(user.AllowedUseCases));
 
             var claims = new List<Claim>

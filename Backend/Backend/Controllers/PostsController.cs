@@ -1,7 +1,7 @@
 ﻿using Application.Commands;
 using Application.DTO.Post;
 using Application.Queries.Posts;
-using Domain;
+//using Domain;
 using Implementation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +40,7 @@ namespace Backend.Controllers
         // kako ide sintaksa da ruta bude /posts/apply
 
         [HttpPost("apply")]
-        
+
         public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)
         {
 

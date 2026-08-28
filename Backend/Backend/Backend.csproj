@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Implementation\Implementation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\CVs\" />
+  </ItemGroup>
+
 </Project>
