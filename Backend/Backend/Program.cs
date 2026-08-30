@@ -2,6 +2,7 @@ using Application;
 using Application.Commands;
 using Application.ExceptionLogging;
 using Application.Queries;
+using Application.Queries.PostApplications;
 using Application.Queries.Posts;
 using ASPLAB2.API.JWT;
 using ASPLAB2.API.Middleware;
@@ -14,6 +15,7 @@ using Implementation.Commands.Posts;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
 using Implementation.Queries.Posts;
+using Implementation.Queries.PostsApplication;
 using Implementation.Queries.Users;
 using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -79,6 +81,7 @@ builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
+builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
 // treba da dodam interface za upload fajla loklano
 // Da li cu koristiti Transient, Singleton ili Scoped?
 // - Singleton pravi instancu objekta za ceo tok rada aplikacije
