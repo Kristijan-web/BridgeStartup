@@ -1,5 +1,6 @@
 using Application;
 using Application.Commands;
+using Application.Commands.PostApplications;
 using Application.ExceptionLogging;
 using Application.Queries;
 using Application.Queries.PostApplications;
@@ -11,6 +12,7 @@ using Backend.JWT;
 using Data.Access;
 using Implementation;
 using Implementation.Commands;
+using Implementation.Commands.PostApplications;
 using Implementation.Commands.Posts;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
@@ -82,6 +84,8 @@ builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
+builder.Services.AddTransient<IPostApplicationQuery, EfPostApplicationQuery>();
+builder.Services.AddTransient<IUpdatePostApplicationCommand, EfUpdatePostApplicationCommand>();
 // treba da dodam interface za upload fajla loklano
 // Da li cu koristiti Transient, Singleton ili Scoped?
 // - Singleton pravi instancu objekta za ceo tok rada aplikacije

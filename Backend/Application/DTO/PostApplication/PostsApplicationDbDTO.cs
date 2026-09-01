@@ -2,6 +2,8 @@
 {
     public class PostsApplicationDbDTO
     {
+
+
         public string FilePath;
 
         public long UserId;

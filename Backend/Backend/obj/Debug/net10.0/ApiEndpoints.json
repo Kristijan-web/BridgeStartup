@@ -32,6 +32,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Backend.Controllers.PostApplicationsController",
+    "Method": "GetAllPostApplications",
+    "RelativePath": "api/PostApplications",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Backend.Controllers.PostsController",
     "Method": "GetAllPosts",
     "RelativePath": "api/Posts",

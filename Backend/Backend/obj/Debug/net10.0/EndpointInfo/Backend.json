@@ -77,6 +77,27 @@
         }
       }
     },
+    "/api/PostApplications": {
+      "get": {
+        "tags": [
+          "PostApplications"
+        ],
+        "parameters": [
+          {
+            "name": "Title",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Posts": {
       "get": {
         "tags": [
@@ -314,6 +335,9 @@
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "PostApplications"
     },
     {
       "name": "Posts"
