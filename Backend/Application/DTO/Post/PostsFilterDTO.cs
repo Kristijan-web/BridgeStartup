@@ -7,5 +7,9 @@
 
         // - po title-u
         public string? Title { get; set; }
+
+        // Ovo moze biti niz stringova
+
+        public List<string> Badge { get; set; } = new List<string>();
     }
 }

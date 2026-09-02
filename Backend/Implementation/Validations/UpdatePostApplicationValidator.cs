@@ -1,5 +1,4 @@
 ﻿using Application.DTO.PostApplication.Command;
-using Data.Access;
 using FluentValidation;
 
 namespace Implementation.Validations
@@ -13,7 +12,9 @@ namespace Implementation.Validations
         {
             RuleLevelCascadeMode = CascadeMode.Stop;
 
-            RuleFor(x => x.Fi)
+            // mora da postoji Putanja fajla, Al kako to 
+
+
 
         }
 

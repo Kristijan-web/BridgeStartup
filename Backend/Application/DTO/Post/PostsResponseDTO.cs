@@ -10,6 +10,8 @@
         public string? Phone { get; set; }
         public UserDTO User { get; set; }
 
+        public IEnumerable<string> Badges { get; set; } = new List<string>();
+
     }
 
     public class UserDTO
@@ -17,4 +19,6 @@
         public string Username { get; set; }
         public string Email { get; set; }
     }
+
+
 }

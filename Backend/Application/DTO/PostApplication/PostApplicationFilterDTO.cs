@@ -1,6 +1,6 @@
 ﻿namespace Application.DTO.PostApplication
 {
-    public class PostApplicationDTO
+    public class PostApplicationFilterDTO
     {
         public long UserId;
         public long PostId;

@@ -33,7 +33,7 @@
   },
   {
     "ContainingType": "Backend.Controllers.PostApplicationsController",
-    "Method": "GetAllPostApplications",
+    "Method": "PostsApplications",
     "RelativePath": "api/PostApplications",
     "HttpMethod": "GET",
     "IsController": true,
@@ -43,6 +43,58 @@
         "Name": "Title",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostApplicationsController",
+    "Method": "PostApplication",
+    "RelativePath": "api/PostApplications/{PostId}/{UserId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "filters",
+        "Type": "Application.DTO.PostApplication.PostApplicationFilterDTO",
+        "IsRequired": false
+      },
+      {
+        "Name": "PostId",
+        "Type": "",
+        "IsRequired": true
+      },
+      {
+        "Name": "UserId",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostApplicationsController",
+    "Method": "UpdatePostApplication",
+    "RelativePath": "api/PostApplications/{PostId}/{UserId}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "UserId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Application.DTO.PostApplication.Command.PostApplicationUpdateDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -58,6 +110,11 @@
       {
         "Name": "Title",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Badge",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],

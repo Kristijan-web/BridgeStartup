@@ -16,9 +16,6 @@ namespace Backend.Controllers
         public UseCaseHandler _handler;
         public PostApplicationsController(UseCaseHandler handler)
         {
-            string name;
-
-
 
             _handler = handler;
         }
@@ -47,6 +44,10 @@ namespace Backend.Controllers
         public IActionResult UpdatePostApplication([FromServices] IUpdatePostApplicationCommand cmd, long PostId, long UserId, [FromBody] PostApplicationUpdateDTO body)
         {
 
+
+            // ma necu dozvoliti update-ovanje vec submitovane prijave na post
+
+            // Nema smisla, update fajla treba da bude ponovno uploadovanje slike 
 
             PostApplicationUpdateDTO dto = new PostApplicationUpdateDTO
             {

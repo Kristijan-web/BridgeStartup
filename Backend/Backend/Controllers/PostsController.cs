@@ -25,6 +25,8 @@ namespace Backend.Controllers
         public IActionResult GetAllPosts([FromServices] IPostsQuery query, [FromQuery] PostsFilterDTO dto)
         {
 
+            // Ovde mora da se uradi filtiracija
+
             return Ok(_handler.ExecuteQuery(query, dto));
 
         }

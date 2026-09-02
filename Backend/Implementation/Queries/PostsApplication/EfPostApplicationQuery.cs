@@ -4,7 +4,7 @@ using Data.Access;
 
 namespace Implementation.Queries.PostsApplication
 {
-    public class PostApplicationQuery : IPostApplicationQuery
+    public class EfPostApplicationQuery : IPostApplicationQuery
     {
         public string Id => "get-post-application";
 
@@ -12,7 +12,7 @@ namespace Implementation.Queries.PostsApplication
 
         public ApplicationDbContext _context;
 
-        public PostApplicationQuery(ApplicationDbContext context)
+        public EfPostApplicationQuery(ApplicationDbContext context)
         {
 
             _context = context;
