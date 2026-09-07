@@ -1,6 +1,7 @@
 using Application;
 using Application.Commands;
 using Application.Commands.PostApplications;
+using Application.Commands.Posts;
 using Application.ExceptionLogging;
 using Application.Queries;
 using Application.Queries.PostApplications;
@@ -83,6 +84,8 @@ builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
+builder.Services.AddTransient<IUpdatePostCommand, EfUpdatePostCommand>();
+
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
 builder.Services.AddTransient<IPostApplicationQuery, EfPostApplicationQuery>();
 builder.Services.AddTransient<IUpdatePostApplicationCommand, EfUpdatePostApplicationCommand>();

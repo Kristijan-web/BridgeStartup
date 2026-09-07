@@ -1,4 +1,5 @@
 ﻿using Application.Commands;
+using Application.Commands.Posts;
 using Application.DTO.Post;
 using Application.Queries.Posts;
 //using Domain;
@@ -41,7 +42,7 @@ namespace Backend.Controllers
         }
         // kako ide sintaksa da ruta bude /posts/apply
 
-        [HttpPost("apply")]
+        [HttpPost]
 
         public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)
         {
@@ -61,6 +62,31 @@ namespace Backend.Controllers
             _handler.ExecuteCommand(cmd, postDTO);
             return NoContent();
         }
+
+        // Treba mi update post-a
+        // Koju http metodu cu da koristim?
+        // - Radim update onda je put ili patch
+        // - Da li cu raditi delimicne update-ove objekta?
+        // - Da -> onda je patch metoda
+
+        // Iz rute mi treba id post-a koji update-ujem
+        [HttpPatch("{PostId}")]
+
+        // Update podaci dolaze iz body-a?
+        // - Da
+        public IActionResult UpdatePost([FromServices] IUpdatePostCommand cmd, [FromBody] UpdatePostDTO dto, [FromRoute] long PostId)
+        {
+
+            // Da li ce se id iz query string-a mapirati u DTO?
+
+            dto.PostId = PostId;
+
+            _handler.ExecuteCommand(cmd, dto);
+            return NoContent();
+        }
+
+
+
 
 
 
