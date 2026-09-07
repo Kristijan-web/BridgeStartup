@@ -344,7 +344,7 @@
         ],
         "parameters": [
           {
-            "name": "Email",
+            "name": "Username",
             "in": "query",
             "schema": {
               "type": "string"
@@ -360,6 +360,20 @@
                 "string"
               ],
               "format": "int32"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],

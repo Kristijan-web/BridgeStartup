@@ -46,12 +46,6 @@ namespace Implementation.Queries.Posts
             if (dto.Badge.Count > 0)
             {
 
-
-
-
-
-
-
                 posts = posts.Where(x => x.BadgePosts.Any(x => dto.Badge.Contains(x.Badge.Name)));
 
 

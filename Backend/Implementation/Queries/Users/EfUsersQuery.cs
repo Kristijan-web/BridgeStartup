@@ -24,36 +24,44 @@ namespace Implementation.Queries.Users
 
         public IEnumerable<User> Execute(SearchUsersDTO dto)
         {
+            IQueryable<User> query = _context.Users
+                                              .Include(x => x.Role);
 
-            IQueryable<User> query = _context.Users.Include(x => x.Role).AsQueryable();
-
-            // Mogu da napravim extension metodu nad tipom IQueryable
-
-            // U kom sloju cu praviti extension metodu?
-            // - pa treba da se da jasna implementacija i time bi isao u Implementation sloj
-
-
-
-
-            int curPage = dto.Page != null ? dto.Page.Value : 1;
-            int pageSize = 5;
-            int skipPages = (curPage - 1) * pageSize;
-
-
-            query = query.Skip(skipPages).Take(pageSize);
-
-
-            if (!String.IsNullOrEmpty(dto.Email))
+            // FILTER
+            if (!String.IsNullOrEmpty(dto.Username))
             {
-
-                query = query.Where(x => x.Email.Contains(dto.Email));
+                query = query.Where(x => x.Username.Contains(dto.Username));
             }
 
 
+            // SORTIRANJE
+            if (!String.IsNullOrEmpty(dto.sortBy))
+            {
+                if (dto.sortBy.ToLower() == "createdat")
+                {
+                    if (dto.sortOrder?.ToLower() == "desc")
+                    {
+                        query = query.OrderByDescending(x => x.CreatedAt);
+                    }
+                    else
+                    {
+                        query = query.OrderBy(x => x.CreatedAt);
+                    }
+                }
+            }
 
-            IEnumerable<User> users = query.ToList();
 
-            return users;
+            // PAGINACIJA
+            int curPage = dto.Page ?? 1;
+            int pageSize = 5;
+
+            int skipUsers = (curPage - 1) * pageSize;
+
+            query = query.Skip(skipUsers)
+                         .Take(pageSize);
+
+
+            return query.ToList();
         }
 
 

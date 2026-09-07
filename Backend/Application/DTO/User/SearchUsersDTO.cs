@@ -6,7 +6,11 @@
     {
         // Po email-u
 
-        public string? Email { get; set; }
+        public string? Username { get; set; }
         public int? Page { get; set; }
+        public string? sortBy { get; set; }
+
+        public string? sortOrder { get; set; }
     }
+
 }
