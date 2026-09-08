@@ -1,72 +1,24 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { ApiService } from './api-service';
 import { PostsInterface } from '../interfaces/posts-interface';
-import { url } from '../consts/consts';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class PostsService {
-
-
-
-
-    constructor() {}
-
-  async getAllPosts(): Promise<PostsInterface[]> {
-
-    try {
-      const fetchData = await fetch(`${url}/posts`, {
-      method: "GET"
-    })
-
-    if(!fetchData.ok || fetchData.status >= 400) {
-      throw new Error("something went wrong")
-
-    }
-
-   return await fetchData.json();
-
-
-    }catch(error) {
-
-      if(error instanceof Error) {
-      console.log(error.message)
-      }
-
-      return []
-
-    }}
-
-  
-  async getPost(id: string): Promise<PostsInterface | undefined> {
-
-    try {
-
-    const fetchData = await fetch(`${url}/posts/${id}`, {
-      method: "GET"
-    })
-
-    if(!fetchData.ok) {
-      throw new Error("Something went wrong...")
-    }
-
-    return await fetchData.json();
-
-    }catch(err) {
-
-      if(err instanceof Error) {
-        console.log(err.message);
-      }
-
-
-      return undefined
-
-
-    }
-
+  private api = inject(ApiService);
+  getAllPosts(title = '', sortOrder: 'asc' | 'desc' = 'asc'): Promise<PostsInterface[]> {
+    const query = new URLSearchParams();
+    if (title.trim()) query.set('Title', title.trim());
+    query.set('SortBy', 'title');
+    query.set('SortOrder', sortOrder);
+    return this.api.request('/Posts?' + query);
   }
-
-
-
-
+  getPost(id: string | number): Promise<PostsInterface> {
+    return this.api.request('/Posts/' + encodeURIComponent(id));
+  }
+  applyToPost(postId: number, file: File): Promise<void> {
+    const form = new FormData();
+    form.set('PostId', String(postId));
+    form.set('userFile', file, file.name);
+    return this.api.request('/Posts', { method: 'POST', body: form });
+  }
 }

@@ -1,59 +1,71 @@
-# FrontEnd
+# BridgeStartup
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.12.
+Angular frontend connected to the ASP.NET Core API in ../Backend. JSON Server is no longer used.
 
-## Development server
+## Run locally
 
-To start a local development server, run:
+Start the backend in one terminal:
 
-```bash
-ng serve
-```
+    dotnet run --project ../Backend/Backend/Backend.csproj --launch-profile https
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Start the frontend in another:
 
-## Code scaffolding
+    npm install
+    npm start
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Open http://localhost:4200. Sign in at /login with your existing active admin account, then open /admin/users or /admin/posts.
 
-```bash
-ng generate component component-name
-```
+The backend requires its existing SQL Server connection, schema, and roles. Public registration also requires working SMTP settings and email activation. Admin-created accounts can be activated directly in the admin form.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+proxy.conf.json forwards /api requests to https://localhost:7086, matching the backend's HTTPS launch profile. Change that target if your API runs elsewhere. The proxy accepts the local development certificate. For production, serve the built frontend with an /api reverse proxy to ASP.NET and an index.html fallback for frontend routes.
 
-```bash
-ng generate --help
-```
+## Features
 
-## Building
+- Public post list, title search, backend title sorting (A to Z / Z to A), and post details with embedded author/badge data.
+- CV applications from the selected post, with sign-in return navigation, file validation, and duplicate-application feedback.
+- Login, registration, saved JWT session, expiry handling, and logout across tabs.
+- Admin user creation, listing, editing, role/activation management, and deletion.
+- Admin post creation, listing, editing, founder assignment, badge editing, and deletion.
+- Validation messages, loading states, retries, search, and delete confirmations.
 
-To build the project run:
+Admin routes require a validated JWT and an active account whose current database role is admin. Disabled/deleted users and demoted admins lose access even when their JWT has not expired. Passwords are BCrypt-hashed and never returned in user responses. Leaving a password blank during an edit preserves it.
 
-```bash
-ng build
-```
+Deleting a user or post sets the existing DeletedAt fields. Deleted users lose access, and their posts/applications are hidden. Deleted emails remain reserved by the database's unique email index. Admins cannot delete themselves, deactivate themselves, or change their own role. Saving other changes to your own account signs you out so you can log in with the updated details.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Logout removes the browser session, clears the current user, stops the expiry timer, and returns to /login. The backend uses stateless JWTs and has no logout/revocation endpoint; a copied token remains valid until its expiry unless the account is disabled/deleted. Expired sessions and authenticated 401 responses also sign the browser out.
 
-## Running unit tests
+## API routes used by the frontend
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+| Method | Route | Purpose |
+| --- | --- | --- |
+| POST | /api/Auth/login | Email/password login; returns user and token |
+| POST | /api/Auth/register | Register; activation email required |
+| GET | /api/Posts?Title=...&SortBy=title&SortOrder=asc | Public posts, title filter, and backend sorting (`asc` or `desc`) |
+| GET | /api/Posts/{id} | Public details including author and badges |
+| GET | /api/admin/roles | Role choices |
+| GET, POST | /api/Users | Admin list/create users |
+| GET, PUT, DELETE | /api/Users/{id} | Admin read/update/delete user |
+| POST (JSON) | /api/Posts | Admin create post |
+| PATCH, DELETE | /api/Posts/{id} | Admin update/delete post |
+| POST (multipart) | /api/Posts | Apply to the selected post with a CV |
 
-```bash
-ng test
-```
+UsersController owns user CRUD, and PostsController owns post CRUD and applications. Existing user/post queries and the post update command are reused. AdminController only supplies role choices; the old /api/admin/users and /api/admin/posts API routes have been removed. The frontend admin page URLs remain /admin/users and /admin/posts.
 
-## Running end-to-end tests
+POST /api/Posts distinguishes JSON post creation from multipart applications by Content-Type. Applications submit PostId and userFile. The server gets the applicant's identity from the validated JWT, ignoring any submitted UserId. /api/Posts/apply is also accepted as a multipart alias. Do not manually set Content-Type when sending FormData: the browser supplies the multipart boundary.
 
-For end-to-end (e2e) testing, run:
+Applications accept non-empty PDF, DOC, or DOCX files up to 5 MB. The server validates the file signature and writes a PostApplication record after the upload finishes. Duplicate applications return HTTP 409. Uploaded CVs use generated filenames under Backend/Backend/App_Data/Applications, outside the publicly served wwwroot folder. Override Uploads:ApplicationsPath to use another private directory; the backend process needs write access to it. An application requires the existing apply-to-post-locally permission on the user's role.
 
-```bash
-ng e2e
-```
+GET /api/Users returns all active (not deleted) records when Page is omitted, so admin lists and founder selectors include every account. Supplying Page retains the existing five-record pagination. Post PATCH preserves omitted fields, accepts null to clear email/phone, and accepts [] to remove all badges.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Validation
 
-## Additional Resources
+    npm test
+    npm run build
+    dotnet run --project tests/backend/Backend.IntegrationTests.csproj
+    npm run test:browser
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Frontend tests exercise sessions, guards, HTTP errors, CRUD routing/state, sorting parameters, and multipart payloads. Backend integration checks use an isolated in-memory SQLite database and test authentication, authorization, CRUD, partial updates, sorting, uploads, duplicates, and soft deletion. They do not modify your SQL Server data. Test CVs are stored under the ignored test build directory.
+
+Browser checks require a production build and run headless Edge against isolated API fixtures. On a different machine, set BROWSER_PATH to a Chromium/Chrome/Edge executable. The checks cover login, user/post CRUD, sorting, CV submission, duplicate feedback, logout, and the mobile layout. Screenshots are written under tmp/.
+
+Production output: dist/FrontEnd/browser.

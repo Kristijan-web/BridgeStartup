@@ -24,11 +24,10 @@ using Implementation.Queries.PostsApplication;
 using Implementation.Queries.Users;
 using Implementation.UseCases.Commands;
 using Implementation.Validations;
+using Implementation.Validators.Posts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -87,6 +86,8 @@ builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
+builder.Services.AddTransient<ICreatePostCommand, EfCreatePostCommand>();
+builder.Services.AddTransient<CreatePostValidation>();
 builder.Services.AddTransient<IUpdatePostCommand, EfUpdatePostCommand>();
 
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
@@ -116,81 +117,30 @@ builder.Services.AddTransient<JwtHandler>();
 builder.Services.AddScoped<UseCaseHandler>();
 
 
+builder.Services.AddScoped<Backend.Authorization.AdminAccessFilter>();
 builder.Services.AddScoped<IApplicationUser>(container =>
 {
-    var accessor = container.GetService<IHttpContextAccessor>(); //service locator -> uzima objekat iz DI container-a koji implementira IHttpContextAccessor
-
-    if (accessor.HttpContext == null) // -> samo proverava da li ovo pokusava da se izvrsi preko http zahteva, da se radilo preko background servisa onda ne bi postojao HTTP zahtev
-
-    {
-        // sta je ovaj if proverio?
-        // - Ovo sluzi u slucaju da neka klasa van HTTP context-a trazi ovaj interfejs, u tom slucaju bacamo gresku, recimo background servis trazi ovaj interfejs i mi to ne dozvoljavamo
-        return new UnauthorizedUser(); // ovo verovatno on sam pravi
-
-        // Ako bih napravio svoj custom exception i njega throw-ovo da li bi on upao u global exception handling middleware, ako je throw bacen na ovom mestu?
-    }
-
-
-    //foreach (var header1 in accessor.HttpContext.Request.Headers)
-    //{
-    //    Console.WriteLine(header1.Key);
-    //    if(header1.Key.Contains("Authorization"))
-    //    {
-    //        Console.WriteLine($"Vrednost kljuca je {accessor.HttpContext.Request.Headers["Authorization"]}");
-    //    }
-    //}
-
-    // U Ovaj ispod if upada Authorization
-    if (!accessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
-    {
+    var principal = container.GetRequiredService<IHttpContextAccessor>().HttpContext?.User;
+    if (principal?.Identity?.IsAuthenticated != true ||
+        !long.TryParse(principal.FindFirst("Id")?.Value, out var id))
         return new UnauthorizedUser();
-    }
 
-    var header = accessor.HttpContext.Request.Headers.Authorization; //Bearer token
-    var headerParts = header.ToString().Split(" ");
-
-
-    if (headerParts.Count() != 2 || headerParts[0] != "Bearer")
-    {
-        return new UnauthorizedUser();
-    }
-
-    //Console.WriteLine("DOSAO DOVDE EEEEE");
-
-    var token = headerParts[1];
-
-    var handler = new JwtSecurityTokenHandler();
-    var jwtToken = handler.ReadJwtToken(token);
-
-    // Mogao bih da svaki put kada se trazi IApplicationUser
-
-    // Ko trazi IApplicationUser?
-    // - 
-
-    // Sta je IApplicationUser, cemu ona sluzi?
-    // - To je Interfejs koji kada se zatrazi iz DI container-a se izvlace podaci korisnika tako sto se desifruje JWT, ako jwt ne postoji onda korisnik nije ulogovan.
-
-    // Koliko cesto trazim ovaj interfejs?
-    // Svaki put kada se posalje request koji pokusava da izvrsi neki query ili komandu, to jest pokusava da promeni stanje baze ili nesto da procita iz baze.
+    var context = container.GetRequiredService<ApplicationDbContext>();
+    var user = context.Users.Include(x => x.Role).ThenInclude(x => x.RoleUseCases)
+        .ThenInclude(x => x.UseCases).SingleOrDefault(x => x.Id == id);
+    if (user == null || user.ActivatedAt == null) return new UnauthorizedUser();
 
     return new JwtUser
     {
-        // Kada se pravi JWT token za user-a, da li se njegove funkcionalnosti upisuju u claimove tokena?
-        // ovde vali UseCasesids!!!
-        Id = int.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id").Value),
-        Username = jwtToken.Claims.FirstOrDefault(x => x.Type == "Username").Value,
-        Email = jwtToken.Claims.FirstOrDefault(x => x.Type == "Email").Value,
-        AllowedUseCases = JsonConvert.DeserializeObject<List<string>>(
-         jwtToken.Claims.FirstOrDefault(x => x.Type == "AllowedUseCases")?.Value ?? "[]"
-)
+        Id = user.Id,
+        Username = user.Username,
+        Email = user.Email,
+        AllowedUseCases = user.Role.RoleUseCases
+            .Where(x => x.DeletedAt == null && x.UseCases.DeletedAt == null)
+            .Select(x => x.UseCases.UseCaseId)
+            .Union(new UnauthorizedUser().AllowedUseCases).ToList()
     };
 });
-
-
-
-
-
-
 builder.Services.AddAuthentication(options =>
 {
 
@@ -202,6 +152,20 @@ builder.Services.AddAuthentication(options =>
 
     cfg.RequireHttpsMetadata = false;
     cfg.SaveToken = true;
+    cfg.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async tokenContext =>
+        {
+            if (!long.TryParse(tokenContext.Principal?.FindFirst("Id")?.Value, out var id))
+            {
+                tokenContext.Fail("Invalid user identifier.");
+                return;
+            }
+            var context = tokenContext.HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
+            if (!await context.Users.AnyAsync(x => x.Id == id && x.ActivatedAt != null))
+                tokenContext.Fail("This account is no longer active.");
+        }
+    };
     cfg.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = appSettings.JwtSettings.Issuer,

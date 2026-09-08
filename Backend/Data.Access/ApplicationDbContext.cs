@@ -1,4 +1,4 @@
-﻿using Domain;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Access
@@ -30,6 +30,10 @@ namespace Data.Access
 
 
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            builder.Entity<User>().HasQueryFilter(x => x.DeletedAt == null);
+            builder.Entity<Post>().HasQueryFilter(x => x.DeletedAt == null && x.User.DeletedAt == null);
+            builder.Entity<PostApplication>().HasQueryFilter(x => x.DeletedAt == null &&
+                x.User.DeletedAt == null && x.Post.DeletedAt == null && x.Post.User.DeletedAt == null);
 
 
 

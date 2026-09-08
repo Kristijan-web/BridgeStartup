@@ -1,4 +1,4 @@
-﻿using Application.DTO.User;
+using Application.DTO.User;
 using Application.Queries;
 using Domain;
 using Implementation;
@@ -20,6 +20,7 @@ namespace Backend.Controllers
 
             IEnumerable<UserResponseDTO> usersDTO = users.Select(x => new UserResponseDTO
             {
+                Id = x.Id,
                 Username = x.Username,
                 Email = x.Email,
                 Role = x.Role.Name
@@ -41,6 +42,7 @@ namespace Backend.Controllers
 
             UserResponseDTO userDTO = new UserResponseDTO
             {
+                Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
                 Role = user.Role.Name

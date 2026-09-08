@@ -20,5 +20,3 @@ export class PostDetailsPage {
   }
 
 }
-  // url = `http://localhost:3000/posts`;
-

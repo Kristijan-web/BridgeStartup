@@ -1,1 +1,10 @@
-JSON fajlovi se usluzu preko biblioteke json-server koja simulira rad servera, da bi pokrenuli json server u konzoli se kuca: json-server --watch db.json
+Backend (prvi terminal):
+dotnet run --project ../Backend/Backend/Backend.csproj --launch-profile https
+
+Frontend (drugi terminal):
+npm install
+npm start
+
+Otvorite http://localhost:4200.
+Prijavite se admin nalogom na /login, zatim otvorite /admin/users ili /admin/posts.
+JSON Server se vise ne koristi. Detalji i test komande su u README.md.

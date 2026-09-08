@@ -1,4 +1,4 @@
-﻿using Application.DTO.Post;
+using Application.DTO.Post;
 using Application.Exceptions;
 using Application.Queries.Posts;
 using Data.Access;
@@ -32,6 +32,7 @@ namespace Implementation.Queries.Posts
                 Description = x.Description,
                 Email = x.Email,
                 Phone = x.Phone,
+                Badges = x.BadgePosts.Where(b => b.Badge.DeletedAt == null).Select(b => b.Badge.Name).ToList(),
                 User = new UserDTO
                 {
                     Username = x.User.Username,

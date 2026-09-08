@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+using Application.Commands;
 using Application.Commands.Posts;
 using Application.DTO.Post;
 using Application.Queries.Posts;
@@ -28,7 +28,7 @@ namespace Backend.Controllers
 
             // Ovde mora da se uradi filtiracija
 
-            return Ok(_handler.ExecuteQuery(query, dto));
+            return Ok(query.Execute(dto));
 
         }
 
@@ -37,17 +37,29 @@ namespace Backend.Controllers
         public IActionResult GetPost(int id, [FromServices] IPostQuery query)
         {
 
-            return Ok(_handler.ExecuteQuery(query, id));
+            return Ok(query.Execute(id));
 
         }
         // kako ide sintaksa da ruta bude /posts/apply
+        [HttpPost("create")]
+
+        public IActionResult CreatePost([FromServices] ICreatePostCommand cmd, CreatePostDTO dto)
+        {
+
+            _handler.ExecuteCommand(cmd, dto);
+
+            return Created();
+
+        }
 
         [HttpPost]
+
 
         public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)
         {
 
 
+            dto.UserId = long.Parse(User.FindFirst("Id")!.Value);
             ApplyToPostDTO postDTO = new ApplyToPostDTO
             {
                 UserId = dto.UserId,
@@ -72,6 +84,7 @@ namespace Backend.Controllers
         // Iz rute mi treba id post-a koji update-ujem
         [HttpPatch("{PostId}")]
 
+
         // Update podaci dolaze iz body-a?
         // - Da
         public IActionResult UpdatePost([FromServices] IUpdatePostCommand cmd, [FromBody] UpdatePostDTO dto, [FromRoute] long PostId)
@@ -84,6 +97,8 @@ namespace Backend.Controllers
             _handler.ExecuteCommand(cmd, dto);
             return NoContent();
         }
+
+
 
 
 

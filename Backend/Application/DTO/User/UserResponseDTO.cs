@@ -1,4 +1,4 @@
-﻿namespace Application.DTO.User
+namespace Application.DTO.User
 {
     public class UserResponseDTO
     {
@@ -8,6 +8,7 @@
         // - Username
         // - Naziv role
 
+        public long Id { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
 

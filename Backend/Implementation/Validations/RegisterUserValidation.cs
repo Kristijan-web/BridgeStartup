@@ -1,4 +1,5 @@
-﻿using Application.DTO.Auth;
+using Microsoft.EntityFrameworkCore;
+using Application.DTO.Auth;
 using Data.Access;
 using FluentValidation;
 
@@ -30,7 +31,7 @@ namespace Implementation.Validations
 
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password must exist").MinimumLength(8).WithMessage("Password must contain at least 8 characters").Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter").Matches(@"\d").WithMessage("Password must contain at least one number");
 
-            RuleFor(x => x.Email).NotEmpty().WithMessage("Email must exist").EmailAddress().WithMessage("Email format is not valid").Must(x => !_context.Users.Any(y => y.Email == x)).WithMessage("Email already exists");
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email must exist").EmailAddress().WithMessage("Email format is not valid").Must(x => !_context.Users.IgnoreQueryFilters().Any(y => y.Email == x)).WithMessage("Email already exists");
 
         }
 

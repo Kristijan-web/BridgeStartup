@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "node tests/run.mjs",
+    "test:browser": "node tests/browser.mjs"
   },
   "private": true,
   "packageManager": "npm@11.11.1",

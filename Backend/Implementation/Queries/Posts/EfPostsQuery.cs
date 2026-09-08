@@ -1,4 +1,4 @@
-﻿using Application.DTO.Post;
+using Application.DTO.Post;
 using Application.Queries.Posts;
 using Data.Access;
 using Domain;
@@ -98,7 +98,7 @@ namespace Implementation.Queries.Posts
                     Username = x.User.Username,
                     Email = x.User.Email
                 },
-                Badges = x.BadgePosts.Select(x => x.Badge.Name)
+                Badges = x.BadgePosts.Where(b => b.Badge.DeletedAt == null).Select(b => b.Badge.Name)
 
             }).ToList();
 
