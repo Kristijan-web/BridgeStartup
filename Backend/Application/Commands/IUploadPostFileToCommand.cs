@@ -1,4 +1,4 @@
-﻿using Application.DTO.Post;
+using Application.DTO.Post;
 
 namespace Application.Commands
 {
@@ -25,7 +25,7 @@ namespace Application.Commands
     // Mogu li ovaj interfejs bolje da nazovem?
     // Cilj mi je da imam interfejs koji ce forsirati logiku za razlicite nacine uload-a fajla-, npr cloud, localno itd...
     // IUploadPostFileTo
-    public interface IUploadPostFileToCommand : ICommand<ApplyToPostDTO>
+    public interface IUploadPostFileToCommand : IAsyncCommand<ApplyToPostDTO>
     {
        // zar ne bih trebao da definisem id i name polja od use-case interfejsa?
     }

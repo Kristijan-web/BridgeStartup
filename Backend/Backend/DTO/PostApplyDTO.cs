@@ -1,4 +1,5 @@
-﻿namespace Application.DTO.Post;
+using System.ComponentModel.DataAnnotations;
+namespace Application.DTO.Post;
 
 
 public class PostApplyDTO
@@ -9,8 +10,9 @@ public class PostApplyDTO
     // - id post-a na koji apply-uje
 
     public long UserId { get; set; }
+    [Range(1, long.MaxValue)]
     public long PostId { get; set; }
-    public IFormFile userFile { get; set; }
+    [Required]
+    public IFormFile userFile { get; set; } = null!;
 
 }
-

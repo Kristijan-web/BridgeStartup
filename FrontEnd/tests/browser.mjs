@@ -30,7 +30,7 @@ const server = createServer(async (req, res) => {
       if (url.pathname === '/api/Auth/login') return json({ user: users[0],
         token: 'header.' + Buffer.from(JSON.stringify({ exp: Date.now() / 1000 + 3600 })).toString('base64url') + '.signature' });
       if (url.pathname === '/api/admin/roles') return json(roles);
-      if (url.pathname === '/api/Posts' && multipart) {
+      if (url.pathname === '/api/Posts/apply' && multipart) {
         const data = await new Request('http://localhost/api/Posts', { method: 'POST', headers: { 'Content-Type': req.headers['content-type'] }, body: raw }).formData();
         apiRequests.at(-1).body = { postId: data.get('PostId'), fileName: data.get('userFile').name };
         if (applications.has(data.get('PostId'))) return json({ message: 'You have already applied to this post.' }, 409);
@@ -40,21 +40,22 @@ const server = createServer(async (req, res) => {
       if (url.pathname === '/api/Posts' && req.method === 'GET') {
         const result = posts.filter(p => p.title.toLowerCase().includes((url.searchParams.get('Title') ?? '').toLowerCase()))
           .toSorted((a, b) => a.title.localeCompare(b.title) * (url.searchParams.get('SortOrder') === 'desc' ? -1 : 1));
-        return json(result);
+        const page = Number(url.searchParams.get('Page') ?? 1);
+        return json(result.slice((page - 1) * 5, page * 5).map(({ userId, ...post }) => post));
       }
       if (/^\/api\/Posts\/\d+$/.test(url.pathname) && req.method === 'GET') return json(posts.find(p => p.id === +url.pathname.split('/').at(-1)));
-      const match = /^\/api\/(Users|Posts)(?:\/(\d+))?$/.exec(url.pathname);
+      const match = /^\/api\/(?:admin\/)?(Users|Posts)(?:\/(\d+))?$/i.exec(url.pathname);
       if (!match) return json({ message: 'Unknown endpoint' }, 404);
       const kind = match[1].toLowerCase(), id = Number(match[2]);
       const records = kind === 'users' ? users : posts;
-      if (req.method === 'GET') return json(records);
+      if (req.method === 'GET') return json(id ? records.find(x => x.id === id) : records);
       if (req.method === 'DELETE') {
         if (kind === 'users') users = users.filter(x => x.id !== id);
         else posts = posts.filter(x => x.id !== id);
         return json(undefined, 204);
       }
       const value = kind === 'users'
-        ? { ...body, role: roles.find(r => r.id === body.roleId).name }
+        ? { ...body, role: roles.find(r => r.id === (body.roleId ?? records.find(x => x.id === id)?.roleId))?.name }
         : { ...body, user: users.find(u => u.id === body.userId) };
       if (req.method === 'POST') {
         const record = { ...value, id: Math.max(0, ...records.map(x => x.id)) + 1 };
@@ -140,7 +141,7 @@ try {
   await evaluate(`document.querySelector('button[aria-label="Edit NewFounder"]').click()`);
   await fill('username', 'EditedFounder'); await click('Save user');
   await waitFor(`!!document.querySelector('button[aria-label="Edit EditedFounder"]')`);
-  assert.equal(apiRequests.findLast(x => x.method === 'PUT' && x.path.includes('/Users/')).body.password, undefined);
+  assert.equal(apiRequests.findLast(x => x.method === 'PATCH' && x.path.includes('/Users/')).body.password, undefined);
   console.log('PASS user create and edit preserve blank passwords');
 
   await click('Posts'); await waitFor("location.pathname === '/admin/posts' && !!document.querySelector('tbody tr')");
@@ -149,7 +150,7 @@ try {
   await evaluate(`document.querySelector('button[aria-label="Edit Browser idea"]').click()`);
   await fill('badges', ''); await click('Save post');
   await waitFor("!document.querySelector('#post-form-title')");
-  assert.deepEqual(apiRequests.findLast(x => x.method === 'PATCH' && x.path.includes('/Posts/')).body.badges, []);
+  assert.deepEqual(apiRequests.findLast(x => x.method === 'PUT' && x.path.includes('/admin/posts/')).body.badges, []);
   await evaluate(`(() => { const e = document.querySelector('[name=sortOrder]'); e.value = 'desc'; e.dispatchEvent(new Event('change', { bubbles: true })); })()`);
   await waitFor("!document.querySelector('[name=sortOrder]').disabled");
   assert.match(apiRequests.findLast(x => x.method === 'GET' && x.path === '/api/Posts').query, /SortOrder=desc/);
@@ -169,6 +170,14 @@ try {
   assert.equal(await evaluate("localStorage.getItem('bridgestartup.session')"), null);
   await command('Page.navigate', { url: origin + '/admin/posts' });
   await waitFor("location.pathname === '/login'");
+  posts = Array.from({ length: 7 }, (_, i) => ({ ...posts[0], id: i + 1, title: 'Page idea ' + (i + 1) }));
+  await command('Page.navigate', { url: origin + '/' });
+  await waitFor("document.querySelectorAll('app-post-item').length === 5");
+  await click('Next');
+  await waitFor("document.querySelectorAll('app-post-item').length === 2 && document.body.innerText.includes('Page 2')");
+  await evaluate(`(() => { const e = document.querySelector('[name=sortOrder]'); e.value = 'desc'; e.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+  await waitFor("document.querySelectorAll('app-post-item').length === 5 && document.body.innerText.includes('Page 1')");
+  assert.match(await evaluate("document.querySelector('app-post-item').innerText"), /Page idea 7/);
   await command('Page.navigate', { url: origin + '/posts/1' });
   await waitFor("document.body.innerText.includes('Sign in to apply')");
   assert.equal(await evaluate("!!document.querySelector('a[href^=\"mailto:\"]')"), false);
@@ -179,7 +188,7 @@ try {
   await evaluate(`(() => { const transfer = new DataTransfer(); transfer.items.add(new File(['%PDF-1.4 resume'], 'my.resume.pdf', { type: 'application/pdf' })); const input = document.querySelector('[name=userFile]'); input.files = transfer.files; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);
   await click('Submit application');
   await waitFor("document.body.innerText.includes('Your application has been submitted.')");
-  assert.deepEqual(apiRequests.findLast(x => x.method === 'POST' && x.path === '/api/Posts').body, { postId: '1', fileName: 'my.resume.pdf' });
+  assert.deepEqual(apiRequests.findLast(x => x.method === 'POST' && x.path === '/api/Posts/apply').body, { postId: '1', fileName: 'my.resume.pdf' });
   await command('Page.navigate', { url: origin + '/posts/1' });
   await waitFor("!!document.querySelector('[name=userFile]')");
   await evaluate(`(() => { const transfer = new DataTransfer(); transfer.items.add(new File(['%PDF-1.4 resume'], 'resume.pdf')); const input = document.querySelector('[name=userFile]'); input.files = transfer.files; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);

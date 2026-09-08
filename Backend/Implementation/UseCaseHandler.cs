@@ -1,4 +1,4 @@
-﻿using Application;
+using Application;
 using Application.Commands;
 using Application.Exceptions;
 using Application.Queries;
@@ -38,6 +38,12 @@ namespace Implementation
 
         }
 
+
+        public Task ExecuteCommandAsync<T>(IAsyncCommand<T> cmd, T dto, CancellationToken cancellationToken = default)
+        {
+            IsAuthorized(cmd.Id);
+            return cmd.ExecuteAsync(dto, cancellationToken);
+        }
 
         public Tresponse ExecuteQuery<Tdata, Tresponse>(IQuery<Tdata, Tresponse> query, Tdata dto)
         {

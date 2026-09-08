@@ -6,8 +6,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize]
-    [ServiceFilter(typeof(Backend.Authorization.AdminAccessFilter))]
+
     public class SeederController : ControllerBase
     {
         [HttpGet]

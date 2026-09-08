@@ -399,11 +399,16 @@
         ],
         "parameters": [
           {
-            "name": "filters",
+            "name": "UserId",
             "in": "path",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/PostApplicationFilterDTO"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
             }
           },
           {
@@ -411,15 +416,52 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
             }
-          },
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PostApplications/{postId}/{userId}": {
+      "delete": {
+        "tags": [
+          "PostApplications"
+        ],
+        "parameters": [
           {
             "name": "UserId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "PostId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
             }
           }
         ],
@@ -582,7 +624,7 @@
         ],
         "requestBody": {
           "content": {
-            "application/x-www-form-urlencoded": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -595,6 +637,8 @@
                     "format": "int64"
                   },
                   "PostId": {
+                    "maximum": 9223372036854776000,
+                    "minimum": 1,
                     "pattern": "^-?(?:0|[1-9]\\d*)$",
                     "type": [
                       "integer",
@@ -770,10 +814,35 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDTO"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -972,9 +1041,6 @@
           }
         }
       },
-      "PostApplicationFilterDTO": {
-        "type": "object"
-      },
       "RegisterUserDTO": {
         "type": "object",
         "properties": {
@@ -1035,6 +1101,37 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "UpdateUserDTO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "username": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "password": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       }

@@ -62,28 +62,26 @@ namespace Backend.Controllers
         }
 
         [HttpPost("apply")]
-
-
-        public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(6 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 6 * 1024 * 1024)]
+        public async Task<IActionResult> ApplyToPost([FromServices] IUploadPostFileToCommand cmd,
+            [FromForm] PostApplyDTO dto, CancellationToken cancellationToken)
         {
-
-
-            dto.UserId = long.Parse(User.FindFirst("Id")!.Value);
-            ApplyToPostDTO postDTO = new ApplyToPostDTO
+            await using var stream = dto.userFile.OpenReadStream();
+            var application = new ApplyToPostDTO
             {
-                UserId = dto.UserId,
+                UserId = long.Parse(User.FindFirst("Id")!.Value),
                 PostId = dto.PostId,
                 FileName = dto.userFile.FileName,
                 ContentType = dto.userFile.ContentType,
                 FileLength = dto.userFile.Length,
-                FileStream = dto.userFile.OpenReadStream()
-
+                FileStream = stream
             };
-
-            _handler.ExecuteCommand(cmd, postDTO);
+            await _handler.ExecuteCommandAsync(cmd, application, cancellationToken);
             return NoContent();
         }
-
         // Treba mi update post-a
         // Koju http metodu cu da koristim?
         // - Radim update onda je put ili patch

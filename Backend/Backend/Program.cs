@@ -106,10 +106,13 @@ builder.Services.AddTransient<IDeletePostApplicationCommand, EfDeletePostApplica
 // Da li za x klasu koristiti Singleton?
 // - Genericko pitanje koje se postavlja je "Da li klasa x sadrzi polja(fields) i ako sadrzi da li mi pravi problem ako bi se ona menjala sa svakim novim request-om?
 
-builder.Services.AddTransient<IUploadPostFileToCommand, EfUploadPostFileToLocal>();
+builder.Services.AddTransient<IUploadPostFileToCommand>(services => new EfUploadPostFileToLocal(
+    services.GetRequiredService<ApplicationDbContext>(),
+    builder.Configuration["Uploads:ApplicationsPath"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Applications")));
 builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
+builder.Services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
 builder.Services.AddTransient<IGetUserPostsQuery, EfGetUserPosts>();
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
 builder.Services.AddTransient<IActivateAccountCommand, EfActivateAccountCommand>();

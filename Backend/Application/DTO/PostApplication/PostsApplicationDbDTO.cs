@@ -1,20 +1,20 @@
-﻿namespace Application.DTO.PostApplication
+namespace Application.DTO.PostApplication
 {
     public class PostsApplicationDbDTO
     {
 
 
-        public string FilePath;
+        public string FilePath { get; set; }
 
-        public long UserId;
+        public long UserId { get; set; }
 
-        public long PostId;
+        public long PostId { get; set; }
 
-        public DateTime CreatedAt;
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt;
+        public DateTime? UpdatedAt { get; set; }
 
-        public DateTime? DeletedAt;
+        public DateTime? DeletedAt { get; set; }
 
 
 

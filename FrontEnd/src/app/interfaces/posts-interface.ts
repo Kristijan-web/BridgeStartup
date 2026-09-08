@@ -1,6 +1,6 @@
 export interface PostsInterface {
   id: number;
-  userId: number;
+  userId?: number;
   title: string;
   description: string;
   email: string | null;

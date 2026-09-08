@@ -52,11 +52,12 @@ namespace Backend.Controllers
         // Pravi update uzer-a ali bez mogucnosti update-a sifre
         [HttpPatch("{id}")]
 
-        public IActionResult UpdateUser()
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        public IActionResult UpdateUser(int id, [FromBody] UpdateUserDTO dto, [FromServices] IUpdateUserCommand cmd)
         {
-
+            dto.UserId = id;
+            _handler.ExecuteCommand(cmd, dto);
             return NoContent();
-
         }
 
         [HttpDelete("{id}")]
@@ -70,5 +71,3 @@ namespace Backend.Controllers
 
     }
 }
-
-

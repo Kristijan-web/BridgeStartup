@@ -200,16 +200,17 @@ test('post sorting and filtering use the existing ASP.NET query parameters', asy
     assert.equal(parsed.searchParams.get('Title'), 'C# & design');
     assert.equal(parsed.searchParams.get('SortBy'), 'title');
     assert.equal(parsed.searchParams.get('SortOrder'), 'desc');
+    assert.equal(parsed.searchParams.get('Page'), '2');
     return new Response('[]');
   };
-  assert.deepEqual(await injector.get(PostsService).getAllPosts(' C# & design ', 'desc'), []);
+  assert.deepEqual(await injector.get(PostsService).getAllPosts(' C# & design ', 'desc', 2), []);
 });
 
 test('application sends the selected post and CV as multipart without overriding its boundary', async () => {
   const { injector } = setup([PostsService]); getAuth(injector).establish(session('user'));
   const cv = new File(['%PDF-1.4 resume'], 'my.resume.pdf', { type: 'application/pdf' });
   globalThis.fetch = async (url, options) => {
-    assert.equal(url, '/api/Posts');
+    assert.equal(url, '/api/Posts/apply');
     assert.equal(options.method, 'POST');
     assert.equal(options.headers.has('Content-Type'), false);
     assert.match(options.headers.get('Authorization'), /^Bearer /);
@@ -222,21 +223,40 @@ test('application sends the selected post and CV as multipart without overriding
   await injector.get(PostsService).applyToPost(42, cv);
 });
 
-test('admin CRUD calls Users and Posts resource endpoints, with PATCH for post edits', async () => {
+test('admin CRUD uses implemented endpoints and PATCH Users for profile edits', async () => {
   const { injector } = setup([AdminService, PostsService]); getAuth(injector).establish(session('admin'));
   const requests = [];
   globalThis.fetch = async (url, options) => {
     requests.push([new URL(url, 'http://localhost').pathname, options.method ?? 'GET']);
+    if (url === '/api/admin/users/2' && !options.method) return new Response('{"roleId":1,"isActive":true}');
     return new Response(options.method === 'GET' || !options.method ? '[]' : null,
       { status: options.method === 'GET' || !options.method ? 200 : 204 });
   };
   const service = injector.get(AdminService);
   await service.getUsers(); await service.getPosts('desc');
-  await service.createUser({}); await service.updateUser(2, {}); await service.deleteUser(2);
+  await service.createUser({}); await service.updateUser(2, { roleId: 1, isActive: true }); await service.deleteUser(2);
   await service.createPost({}); await service.updatePost(3, {}); await service.deletePost(3);
   assert.deepEqual(requests, [
-    ['/api/Users', 'GET'], ['/api/Posts', 'GET'], ['/api/Users', 'POST'], ['/api/Users/2', 'PUT'],
-    ['/api/Users/2', 'DELETE'], ['/api/Posts', 'POST'], ['/api/Posts/3', 'PATCH'], ['/api/Posts/3', 'DELETE']
+    ['/api/admin/users', 'GET'], ['/api/Posts', 'GET'], ['/api/admin/posts', 'GET'],
+    ['/api/admin/users', 'POST'], ['/api/admin/users/2', 'GET'], ['/api/Users/2', 'PATCH'],
+    ['/api/Users/2', 'DELETE'], ['/api/admin/posts', 'POST'], ['/api/admin/posts/3', 'PUT'], ['/api/Posts/3', 'DELETE']
+  ]);
+});
+
+test('role and activation edits use the admin endpoint that supports those fields', async () => {
+  const { injector } = setup([AdminService, PostsService]); getAuth(injector).establish(session('admin'));
+  const writes = [];
+  globalThis.fetch = async (url, options) => {
+    if (!options.method) return new Response('{"roleId":1,"isActive":true}');
+    writes.push({ url, method: options.method, body: JSON.parse(options.body) });
+    return new Response(null, { status: 204 });
+  };
+  const service = injector.get(AdminService);
+  await service.updateUser(2, { roleId: 2, isActive: true });
+  await service.updateUser(2, { roleId: 1, isActive: false });
+  assert.deepEqual(writes, [
+    { url: '/api/admin/users/2', method: 'PUT', body: { roleId: 2, isActive: true } },
+    { url: '/api/admin/users/2', method: 'PUT', body: { roleId: 1, isActive: false } }
   ]);
 });
 

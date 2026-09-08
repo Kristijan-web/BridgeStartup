@@ -1,4 +1,5 @@
-﻿using Application.DTO.PostApplication;
+using Application.DTO.PostApplication;
+using Application.Exceptions;
 using Application.Queries.PostApplications;
 using Data.Access;
 
@@ -34,7 +35,7 @@ namespace Implementation.Queries.PostsApplication
                 UpdatedAt = x.UpdatedAt,
                 DeletedAt = x.DeletedAt
 
-            }).First();
+            }).FirstOrDefault() ?? throw new EntityNotFoundException("This application does not exist.");
 
             return postApplication;
 

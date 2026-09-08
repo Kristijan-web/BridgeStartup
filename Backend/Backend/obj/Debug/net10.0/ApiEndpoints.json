@@ -233,6 +233,27 @@
   },
   {
     "ContainingType": "Backend.Controllers.PostApplicationsController",
+    "Method": "DeletePostApplication",
+    "RelativePath": "api/PostApplications/{postId}/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "PostId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostApplicationsController",
     "Method": "PostApplication",
     "RelativePath": "api/PostApplications/{PostId}/{UserId}",
     "HttpMethod": "GET",
@@ -240,18 +261,13 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "filters",
-        "Type": "Application.DTO.PostApplication.PostApplicationFilterDTO",
-        "IsRequired": false
-      },
-      {
-        "Name": "PostId",
-        "Type": "",
+        "Name": "UserId",
+        "Type": "System.Int64",
         "IsRequired": true
       },
       {
-        "Name": "UserId",
-        "Type": "",
+        "Name": "PostId",
+        "Type": "System.Int64",
         "IsRequired": true
       }
     ],
@@ -465,7 +481,12 @@
     "Parameters": [
       {
         "Name": "id",
-        "Type": "",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "Application.DTO.User.UpdateUserDTO",
         "IsRequired": true
       }
     ],

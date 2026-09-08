@@ -1,4 +1,4 @@
-﻿using Application.ExceptionLogging;
+using Application.ExceptionLogging;
 using Application.Exceptions;
 using FluentValidation;
 
@@ -39,6 +39,12 @@ namespace ASPLAB2.API.Middleware
                     });
 
                     await context.Response.WriteAsJsonAsync(errors); // -> upisuje podatke u response body, ova operacija je asinhrona
+                    return;
+                }
+                if (ex is ConflictException conflict)
+                {
+                    context.Response.StatusCode = 409;
+                    await context.Response.WriteAsJsonAsync(new { message = conflict.Message });
                     return;
                 }
                 if (ex is LoginException loginException)

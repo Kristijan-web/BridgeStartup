@@ -5,11 +5,12 @@ import { PostsInterface } from '../interfaces/posts-interface';
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private api = inject(ApiService);
-  getAllPosts(title = '', sortOrder: 'asc' | 'desc' = 'asc'): Promise<PostsInterface[]> {
+  getAllPosts(title = '', sortOrder: 'asc' | 'desc' = 'asc', page = 1): Promise<PostsInterface[]> {
     const query = new URLSearchParams();
     if (title.trim()) query.set('Title', title.trim());
     query.set('SortBy', 'title');
     query.set('SortOrder', sortOrder);
+    query.set('Page', String(page));
     return this.api.request('/Posts?' + query);
   }
   getPost(id: string | number): Promise<PostsInterface> {
@@ -19,6 +20,6 @@ export class PostsService {
     const form = new FormData();
     form.set('PostId', String(postId));
     form.set('userFile', file, file.name);
-    return this.api.request('/Posts', { method: 'POST', body: form });
+    return this.api.request('/Posts/apply', { method: 'POST', body: form });
   }
 }
