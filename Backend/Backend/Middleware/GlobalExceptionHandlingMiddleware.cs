@@ -74,6 +74,14 @@ namespace ASPLAB2.API.Middleware
 
 
                 }
+                if (ex is AccountNotVerified NotVerified)
+                {
+                    context.Response.StatusCode = 403;
+
+                    await context.Response.WriteAsJsonAsync(new { message = NotVerified.Message });
+
+                    return;
+                }
 
 
                 //if (ex is UnauthorizedUseCaseException)

@@ -7,6 +7,8 @@
         public string Email { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
+
+        //public DateTime? ActivatedAt { get; set; }
         public IEnumerable<string> AllowedUseCases { get; set; } = new List<string>();
 
     }

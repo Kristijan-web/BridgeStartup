@@ -1,5 +1,4 @@
 ﻿using Application.DTO.Auth;
-using Application.DTO.Post;
 using Application.DTO.User;
 using Application.Exceptions;
 using Application.Queries;
@@ -25,21 +24,34 @@ namespace Implementation.Queries.Auth
         public UserDbDTO Execute(LoginDTO dto)
         {
 
+            // NE SME DA RADI LOGIN AKO KORISNIK NIJE verifikaovao nalog
+            // Ako je ActivatedAt null ne sme da se izvrsi ova operacija
+
+
 
             // - FirstOrDefault ce biti null ako rezultat ne postoji
-            Boolean doesUserExist = _context.Users.Any(x => x.Email == dto.Email);
+            // samo ispod proveri dal je activatedAt rezlitit od null 
+            var user = _context.Users.FirstOrDefault(x => x.Email == dto.Email);
 
-            if (!doesUserExist)
+            if (user == null)
             {
 
                 throw new LoginException();
 
             }
 
+            if (user.ActivatedAt == null)
+            {
+                // Korisnik postoji i nalog je već aktiviran
+                throw new AccountNotVerified("Please activate your account.");
+            }
+
+
+
 
 
             // Bug je u bazi, nisu dodati usecase-vi za role-u admin
-            UserDbDTO user = _context.Users
+            UserDbDTO userDTO = _context.Users
                 .Where(x => x.Email == dto.Email)
                 .Select(x => new UserDbDTO
                 {
@@ -48,6 +60,7 @@ namespace Implementation.Queries.Auth
                     Email = x.Email,
                     Password = x.Password,
                     Role = x.Role.Name,
+
 
                     // Meni trebaju nazivi use-case-a za specificnu role-u
                     // Zasto ne mogu da napisem x.Role.RoleUseCases.UseCases.UseCaseId?
@@ -64,11 +77,10 @@ namespace Implementation.Queries.Auth
                     AllowedUseCases = x.Role.RoleUseCases.Select(y => y.UseCases.UseCaseId).ToList()
                 }).First();
 
-            Console.WriteLine("EHEEEJ");
-            Console.WriteLine(string.Join(", ", user.AllowedUseCases));
+            Console.WriteLine(string.Join(", ", userDTO.AllowedUseCases));
 
 
-            return user;
+            return userDTO;
 
 
 
