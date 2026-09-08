@@ -39,16 +39,23 @@ namespace Backend.Controllers
 
         [HttpGet("{id}/getPosts")]
 
-        // Sta je sve potrebno 
-        // - Handler
-        // - Query
-        // - Id
+
         public IActionResult getUserPosts([FromServices] IGetUserPostsQuery query, int id)
         {
 
 
 
             return Ok(_handler.ExecuteQuery(query, id));
+
+        }
+
+        // Pravi update uzer-a ali bez mogucnosti update-a sifre
+        [HttpPatch("{id}")]
+
+        public IActionResult UpdateUser()
+        {
+
+            return NoContent();
 
         }
 
@@ -64,4 +71,4 @@ namespace Backend.Controllers
     }
 }
 
-// MyPosts
+

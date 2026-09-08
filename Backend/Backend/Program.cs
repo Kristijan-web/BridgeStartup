@@ -96,6 +96,7 @@ builder.Services.AddTransient<IUpdatePostCommand, EfUpdatePostCommand>();
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
 builder.Services.AddTransient<IPostApplicationQuery, EfPostApplicationQuery>();
 builder.Services.AddTransient<IUpdatePostApplicationCommand, EfUpdatePostApplicationCommand>();
+builder.Services.AddTransient<IDeletePostApplicationCommand, EfDeletePostApplicationCommand>();
 // treba da dodam interface za upload fajla loklano
 // Da li cu koristiti Transient, Singleton ili Scoped?
 // - Singleton pravi instancu objekta za ceo tok rada aplikacije

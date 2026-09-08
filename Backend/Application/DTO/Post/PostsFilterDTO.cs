@@ -11,6 +11,8 @@
 
         public IEnumerable<string> SortOrder { get; set; } = new List<string>();
 
+        public int? Page { get; set; }
+
 
     }
 }

@@ -18,16 +18,25 @@ namespace Data.Access.Seeders
             // Treba da imam niz objekata UseCases
             List<UseCases> useCases = new List<UseCases> {
                 new UseCases { UseCaseId = "register-user" },
+                new UseCases { UseCaseId = "account-activate" },
                 new UseCases { UseCaseId = "login" },
                 new UseCases { UseCaseId = "get-post" },
                 new UseCases { UseCaseId = "get-all-posts" },
-                new UseCases { UseCaseId = "get-user" },
+                new UseCases { UseCaseId = "update-post" },
+                new UseCases { UseCaseId = "create-post" },
+                new UseCases { UseCaseId = "delete-post" },
                 new UseCases { UseCaseId = "get-all-users" },
+                new UseCases { UseCaseId = "get-user" },
+                new UseCases { UseCaseId = "delete-user" },
+                new UseCases { UseCaseId = "update-user" },
                 new UseCases { UseCaseId = "apply-to-post-locally" },
                 new UseCases { UseCaseId = "get-all-posts-applications" },
                 new UseCases { UseCaseId = "get-post-application" },
-                new UseCases { UseCaseId = "update-post" },
-                new UseCases { UseCaseId = "account-activate" }
+                new UseCases { UseCaseId = "delete-post-application" },
+              
+
+             
+          
 
             // mora ovo da se posalje ka bazi i napravi .cs fajl za RoleUseCases
             };

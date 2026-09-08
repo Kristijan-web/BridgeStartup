@@ -8,58 +8,40 @@ namespace Implementation.Queries.Posts
 {
     public class EfPostsQuery : IPostsQuery
     {
-        // Koji potpis forsira IPostsQUery?
-        // - Execute metodu koja vraca IEnumerable<Post> i prima PostsDTO
-
         public string Id { get; set; } = "get-all-posts";
         public string Name { get; set; } = "getting all posts";
 
-        ApplicationDbContext _context;
+        private ApplicationDbContext _context;
 
         public EfPostsQuery(ApplicationDbContext context)
         {
             _context = context;
-
         }
 
         public IEnumerable<PostsResponseDTO> Execute(PostsFilterDTO dto)
         {
+            IQueryable<Post> posts = _context.Posts
+                .Include(x => x.BadgePosts)
+                .ThenInclude(x => x.Badge);
 
 
-            IQueryable<Post> posts = _context.Posts.Include(x => x.BadgePosts).ThenInclude(x => x.Badge);
-
-
-
+            // FILTER PO TITLE-U
             if (!String.IsNullOrEmpty(dto.Title))
             {
-
-                // Da li trebam da dodelim rezultat promenljivoj posts ili ce se ovo chainovati na upit?
-                // - Pitanje je da li ce metoda nad kojoj pozivam promenljivu promeniti vrednost, to jest da li je metoda mutable?                 
-
                 posts = posts.Where(x => x.Title.Contains(dto.Title));
-
-
             }
 
 
-
+            // FILTER PO BADGE-U
             if (dto.Badge.Count > 0)
             {
-
-                posts = posts.Where(x => x.BadgePosts.Any(x => dto.Badge.Contains(x.Badge.Name)));
-
-
+                posts = posts.Where(x =>
+                    x.BadgePosts.Any(bp =>
+                        dto.Badge.Contains(bp.Badge.Name)));
             }
 
 
-
-
-
-
-            // Alloweed sorting fields
-            string allowedSortingFields = "title";
-
-            // Ako nije prosleđeno sortiranje radim defaultno sortiranje po title-u u ascending orderu
+            // SORTIRANJE
             if (!dto.SortBy.Any())
             {
                 posts = posts.OrderBy(x => x.Title);
@@ -73,7 +55,9 @@ namespace Implementation.Queries.Posts
                 {
                     string? sortDirection = dto.SortOrder.FirstOrDefault();
 
-                    if (sortDirection?.Equals("desc", StringComparison.OrdinalIgnoreCase) == true)
+                    if (sortDirection?.Equals(
+                        "desc",
+                        StringComparison.OrdinalIgnoreCase) == true)
                     {
                         posts = posts.OrderByDescending(x => x.Title);
                     }
@@ -85,24 +69,39 @@ namespace Implementation.Queries.Posts
             }
 
 
+            // PAGINACIJA
+            int currentPage = dto.Page ?? 1;
+            int pageSize = 5;
 
-            List<PostsResponseDTO> postsDTO = posts.Select(x => new PostsResponseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                Email = x.Email,
-                Phone = x.Phone,
-                User = new UserDTO
+            int skipPosts = (currentPage - 1) * pageSize;
+
+            posts = posts
+                .Skip(skipPosts)
+                .Take(pageSize);
+
+
+            // PROJEKCIJA
+            List<PostsResponseDTO> postsDTO = posts
+                .Select(x => new PostsResponseDTO
                 {
-                    Username = x.User.Username,
-                    Email = x.User.Email
-                },
-                Badges = x.BadgePosts.Where(b => b.Badge.DeletedAt == null).Select(b => b.Badge.Name)
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Email = x.Email,
+                    Phone = x.Phone,
 
-            }).ToList();
+                    User = new UserDTO
+                    {
+                        Username = x.User.Username,
+                        Email = x.User.Email
+                    },
 
+                    Badges = x.BadgePosts
+                        .Where(bp => bp.Badge.DeletedAt == null)
+                        .Select(bp => bp.Badge.Name)
 
+                })
+                .ToList();
 
 
             return postsDTO;

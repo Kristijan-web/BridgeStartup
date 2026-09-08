@@ -1,4 +1,5 @@
-﻿using Application.DTO.PostApplication;
+﻿using Application.Commands.PostApplications;
+using Application.DTO.PostApplication;
 using Application.Queries.PostApplications;
 using Implementation;
 using Microsoft.AspNetCore.Mvc;
@@ -34,31 +35,13 @@ namespace Backend.Controllers
             return Ok(_handler.ExecuteQuery(query, filters));
         }
 
-        // Sada update
+        [HttpDelete("{postId}/{userId}")]
+        public IActionResult DeletePostApplication([FromServices] IDeletePostApplicationCommand cmd, [FromRoute] DeletePostApplicationDTO dto)
+        {
+            _handler.ExecuteCommand(cmd, dto);
+            return NoContent();
+        }
 
-        // Da li za ovaj update da koristim put ili patch? PUT je ako update-ujem ceo objekat, ako update-ujem deo onda je PATCH
-        //[HttpPatch("{PostId}/{UserId}")]
-
-        //public IActionResult UpdatePostApplication([FromServices] IUpdatePostApplicationCommand cmd, long PostId, long UserId, [FromBody] PostApplicationUpdateDTO body)
-        //{
-
-
-        //    // ma necu dozvoliti update-ovanje vec submitovane prijave na post
-
-        //    // Nema smisla, update fajla treba da bude ponovno uploadovanje slike 
-
-        //    PostApplicationUpdateDTO dto = new PostApplicationUpdateDTO
-        //    {
-        //        FilePath = body.FilePath,
-        //        UserId = UserId,
-        //        PostId = PostId
-        //    };
-
-
-        //    _handler.ExecuteCommand(cmd, dto);
-
-        //    return NoContent();
-        //}
 
 
 
