@@ -146,8 +146,56 @@ public static class IntegrationRunner
         var applicationDto = await client.GetFromJsonAsync<JsonElement>($"/api/PostApplications/{postId}/{founderId}");
         Check(applicationDto.GetProperty("postId").GetInt64() == postId && applicationDto.GetProperty("userId").GetInt64() == founderId,
             "saved application can be retrieved with serialized DTO properties");
+        await Expect(client.GetAsync($"/api/Posts/{postId}/applications"), HttpStatusCode.NotFound, "even an admin cannot review another owner's applicants through the owner route");
+        await Expect(client.GetAsync($"/api/PostApplications/{postId}/{founderId}/file"), HttpStatusCode.NotFound, "another user cannot download an applicant CV");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
+        var ownPosts = await client.GetFromJsonAsync<JsonElement[]>("/api/Posts/mine");
+        var badgeChoices = await client.GetFromJsonAsync<JsonElement[]>("/api/Badges");
+        Check(badgeChoices!.Any(badge => badge.GetProperty("id").GetInt64() == badgeId && badge.GetProperty("name").GetString() == "TypeScript"), "regular user can load numeric badge IDs for the post form");
+        Check(ownPosts!.Length == 7 && ownPosts.All(post => post.GetProperty("title").GetString()!.StartsWith("Idea ")), "my posts includes only posts owned by the signed-in user");
+        Check(ownPosts.Single(post => post.GetProperty("id").GetInt64() == postId).GetProperty("applicationCount").GetInt32() == 1, "my posts includes applicant counts");
+        var applicants = await client.GetFromJsonAsync<JsonElement[]>($"/api/Posts/{postId}/applications");
+        Check(applicants!.Length == 1 && applicants[0].GetProperty("username").GetString() == "Founder" && applicants[0].GetProperty("userId").GetInt64() == founderId,
+            "owner can review applicant usernames and IDs");
+        Check(!applicants[0].TryGetProperty("filePath", out _) && applicants[0].GetProperty("fileName").GetString()!.EndsWith(".pdf"), "applicant list has a download name without exposing storage paths");
+        using var download = await client.GetAsync($"/api/PostApplications/{postId}/{founderId}/file");
+        Check(download.IsSuccessStatusCode && await download.Content.ReadAsStringAsync() == "%PDF-1.4 resume", "owner downloads the exact saved CV");
+        Check(download.Content.Headers.ContentType?.MediaType == "application/pdf" && download.Content.Headers.ContentDisposition?.DispositionType == "attachment", "CV has the correct type and download disposition");
+        Check(download.Headers.CacheControl?.NoStore == true, "CV responses are not cached");
+        await Expect(client.GetAsync($"/api/PostApplications/{postId}/999999/file"), HttpStatusCode.NotFound, "missing applicant file returns 404");
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var app = await db.PostApplications.SingleAsync();
+            app.FilePath = "Applications/../../outside.pdf";
+            await db.SaveChangesAsync();
+        }
+        await Expect(client.GetAsync($"/api/PostApplications/{postId}/{founderId}/file"), HttpStatusCode.NotFound, "stored traversal paths cannot escape the private upload directory");
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var app = await db.PostApplications.SingleAsync();
+            app.FilePath = "Applications/" + Path.GetFileName(filePath);
+            await db.SaveChangesAsync();
+        }
+        await Expect(client.PostAsJsonAsync("/api/Posts", new { title = "My published idea", description = "Published by a regular user", userId = adminId,
+            email = "founder@example.test", phone = "+381123", badges = new[] { badgeId } }), HttpStatusCode.Created, "regular active user can publish a post");
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            Check((await db.Posts.SingleAsync(post => post.Title == "My published idea")).UserId == founderId, "post ownership comes from the authenticated user, ignoring a forged owner ID");
+        }
+        await Expect(client.PostAsJsonAsync("/api/Posts", new { title = "x", description = "short", email = "invalid", phone = "", badges = new[] { badgeId } }),
+            HttpStatusCode.UnprocessableEntity, "create post now enforces the existing validator");
+        await Expect(client.PostAsJsonAsync("/api/Posts", new { title = "Unknown skill", description = "A valid description", email = "founder@example.test", phone = "123", badges = new[] { 999999 } }),
+            HttpStatusCode.UnprocessableEntity, "nonexistent badge IDs are rejected");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
         await Expect(client.GetAsync($"/api/PostApplications/999999/{founderId}"), HttpStatusCode.NotFound, "missing application returns 404");
         client.DefaultRequestHeaders.Authorization = null;
+        await Expect(client.GetAsync("/api/Posts/mine"), HttpStatusCode.Unauthorized, "guest cannot list owned posts");
+        await Expect(client.GetAsync($"/api/Posts/{postId}/applications"), HttpStatusCode.Unauthorized, "guest cannot list applicants");
+        await Expect(client.GetAsync($"/api/PostApplications/{postId}/{founderId}/file"), HttpStatusCode.Unauthorized, "guest cannot download CVs");
+        await Expect(client.PostAsJsonAsync("/api/Posts", new { title = "Guest idea", description = "No authenticated owner", email = "guest@example.test", phone = "123", badges = new[] { badgeId } }), HttpStatusCode.Unauthorized, "guest cannot publish a post");
         using var guestForm = ApplicationForm(otherPostId);
         await Expect(client.PostAsync("/api/Posts/apply", guestForm), HttpStatusCode.Unauthorized, "guest application requires login");
         await Expect(client.PatchAsJsonAsync("/api/Users/" + adminId, new { username = "Guest" }), HttpStatusCode.Unauthorized, "guest user update requires login");

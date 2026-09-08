@@ -14,6 +14,8 @@ import { AuthService } from '../../../services/auth-service';
         <a routerLink="/about" routerLinkActive="text-indigo-600">About us</a>
         <a routerLink="/contact" routerLinkActive="text-indigo-600">Contact us</a>
         @if (auth.user(); as user) {
+          <a routerLink="/my-posts" routerLinkActive="text-indigo-600">My posts</a>
+          <a routerLink="/my-posts" [queryParams]="{ create: '1' }" class="button">Create post</a>
           @if (auth.isAdmin()) { <a routerLink="/admin" class="button secondary">Admin panel</a> }
           <span class="text-slate-500">{{ user.username }}</span>
           <button type="button" class="button secondary" (click)="auth.logout()">Log out</button>

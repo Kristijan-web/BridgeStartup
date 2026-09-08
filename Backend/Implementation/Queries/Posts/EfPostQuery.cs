@@ -2,7 +2,6 @@ using Application.DTO.Post;
 using Application.Exceptions;
 using Application.Queries.Posts;
 using Data.Access;
-using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Implementation.Queries.Posts

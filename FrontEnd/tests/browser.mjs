@@ -13,7 +13,8 @@ let users = [
 let posts = [{ id: 1, title: 'Startup idea', description: 'A useful project.', email: null, phone: null,
   userId: 2, user: users[1], badges: ['TypeScript'] }];
 const apiRequests = [];
-const applications = new Set();
+const applications = new Map();
+const badgeChoices = [{ id: 1, name: 'TypeScript' }, { id: 2, name: 'Design' }];
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
@@ -27,14 +28,43 @@ const server = createServer(async (req, res) => {
         res.writeHead(status, { 'Content-Type': 'application/json' });
         res.end(data === undefined ? undefined : JSON.stringify(data));
       };
-      if (url.pathname === '/api/Auth/login') return json({ user: users[0],
-        token: 'header.' + Buffer.from(JSON.stringify({ exp: Date.now() / 1000 + 3600 })).toString('base64url') + '.signature' });
+      if (url.pathname === '/api/Auth/login') {
+        const user = users.find(user => user.email === body.email);
+        return json({ user, token: 'header.' + Buffer.from(JSON.stringify({ id: user.id, exp: Date.now() / 1000 + 3600 })).toString('base64url') + '.signature' });
+      }
+      const currentUser = req.headers.authorization ? users.find(user => user.id === JSON.parse(Buffer.from(req.headers.authorization.split('.')[1], 'base64url')).id) : undefined;
+      if (url.pathname === '/api/Badges') return json(badgeChoices);
+      if (url.pathname === '/api/Posts/mine') {
+        if (!currentUser) return json({}, 401);
+        const page = Number(url.searchParams.get('Page') ?? 1);
+        return json(posts.filter(post => post.userId === currentUser.id).toSorted((a, b) => b.id - a.id).slice((page - 1) * 10, page * 10)
+          .map(post => ({ id: post.id, title: post.title, applicationCount: [...applications.values()].filter(app => app.postId === post.id).length })));
+      }
+      const applicantsRoute = /^\/api\/Posts\/(\d+)\/applications$/.exec(url.pathname);
+      if (applicantsRoute) {
+        if (!currentUser || !posts.some(post => post.id === +applicantsRoute[1] && post.userId === currentUser.id)) return json({}, 404);
+        return json([...applications.values()].filter(app => app.postId === +applicantsRoute[1]).map(({ content, ...app }) => app));
+      }
+      const fileRoute = /^\/api\/PostApplications\/(\d+)\/(\d+)\/file$/.exec(url.pathname);
+      if (fileRoute) {
+        const application = applications.get(fileRoute[1] + ':' + fileRoute[2]);
+        if (!currentUser || !application || !posts.some(post => post.id === +fileRoute[1] && post.userId === currentUser.id)) return json({}, 404);
+        res.writeHead(200, { 'Content-Type': 'application/pdf', 'Content-Disposition': 'attachment; filename="' + application.fileName + '"' });
+        return res.end(application.content);
+      }
+      if (url.pathname === '/api/Posts' && req.method === 'POST' && !multipart) {
+        if (!currentUser) return json({}, 401);
+        posts.push({ ...body, id: Math.max(...posts.map(post => post.id)) + 1, userId: currentUser.id, user: currentUser, badges: body.badges.map(id => badgeChoices.find(badge => badge.id === id).name) });
+        return json(undefined, 201);
+      }
       if (url.pathname === '/api/admin/roles') return json(roles);
       if (url.pathname === '/api/Posts/apply' && multipart) {
         const data = await new Request('http://localhost/api/Posts', { method: 'POST', headers: { 'Content-Type': req.headers['content-type'] }, body: raw }).formData();
         apiRequests.at(-1).body = { postId: data.get('PostId'), fileName: data.get('userFile').name };
-        if (applications.has(data.get('PostId'))) return json({ message: 'You have already applied to this post.' }, 409);
-        applications.add(data.get('PostId'));
+        const key = data.get('PostId') + ':' + currentUser.id;
+        if (applications.has(key)) return json({ message: 'You have already applied to this post.' }, 409);
+        applications.set(key, { postId: +data.get('PostId'), userId: currentUser.id, username: currentUser.username,
+          createdAt: new Date().toISOString(), fileName: 'application-' + currentUser.id + '.pdf', content: await data.get('userFile').text() });
         return json(undefined, 204);
       }
       if (url.pathname === '/api/Posts' && req.method === 'GET') {
@@ -197,6 +227,39 @@ try {
   const applicationScreenshot = await command('Page.captureScreenshot', { format: 'png' });
   await writeFile('tmp/post-application.png', Buffer.from(applicationScreenshot.data, 'base64'));
   console.log('PASS server sorting, return-to-post login, multipart CV application, and duplicate handling');
+  await click('Log out');
+  await command('Page.navigate', { url: origin + '/my-posts?create=1' });
+  await waitFor("location.pathname === '/login' && !!document.querySelector('[name=email]')");
+  await fill('email', 'founder@example.test'); await fill('password', 'FounderPass1'); await click('Sign in');
+  await waitFor("location.pathname === '/my-posts' && !!document.querySelector('#create-post-title') && document.querySelectorAll('input[type=checkbox]').length === 2");
+  await fill('title', 'My founder idea'); await fill('description', 'A new idea published by a regular user'); await fill('phone', '+381123');
+  await evaluate("document.querySelector('input[type=checkbox]').click()");
+  await click('Publish post');
+  await waitFor("document.body.innerText.includes('Your post has been published.') && !document.querySelector('#create-post-title')");
+  const publication = apiRequests.findLast(request => request.path === '/api/Posts' && request.method === 'POST');
+  assert.deepEqual(publication.body.badges, [1]);
+  assert.equal(publication.body.userId, undefined);
+  await waitFor("!location.search.includes('create=1')");
+  await click('Create post');
+  await waitFor("!!document.querySelector('#create-post-title')");
+  await click('Cancel');
+  await waitFor("!document.querySelector('#create-post-title')");
+  await evaluate(`document.querySelector('button[aria-label="Review applicants for My founder idea"]').click()`);
+  await waitFor("document.body.innerText.includes('No one has applied yet.')");
+  await evaluate(`document.querySelector('button[aria-label="Review applicants for Page idea 1"]').click()`);
+  await waitFor(`!!document.querySelector('button[aria-label="Download CV from Admin"]')`);
+  const downloads = await mkdtemp(path.resolve('tmp/cv-downloads-'));
+  await command('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloads });
+  await click('Download CV');
+  await until(async () => {
+    try { return await readFile(path.join(downloads, 'application-1.pdf'), 'utf8') === '%PDF-1.4 resume'; }
+    catch { return false; }
+  }, 'authenticated CV download');
+  await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await waitFor("document.documentElement.scrollWidth <= 390");
+  const ownerScreenshot = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+  await writeFile('tmp/my-posts-mobile.png', Buffer.from(ownerScreenshot.data, 'base64'));
+  console.log('PASS regular-user publication, empty/applicant views, usernames, authenticated CV download, and mobile layout');
   assert.deepEqual(errors, []);
   console.log('PASS user deletion, logout, and protected navigation after logout');
   console.log('Browser checks passed with no runtime exceptions. Screenshot: tmp/admin-mobile.png');

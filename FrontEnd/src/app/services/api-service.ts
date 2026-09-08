@@ -32,23 +32,36 @@ export function responseMessage(body: unknown, status: number): string {
 export class ApiService {
   private auth = inject(AuthService);
   async request<T>(path: string, options: RequestInit = {}, authenticated = true): Promise<T> {
+    const response = await this.send(path, options, authenticated);
+    const raw = await response.text();
+    let body: unknown;
+    try { body = raw ? JSON.parse(raw) : undefined; } catch { body = undefined; }
+    if (raw && body === undefined) throw new ApiError(response.status, 'The server returned an invalid response.');
+    return body as T;
+  }
+  async download(path: string): Promise<Blob> {
+    const token = this.auth.getToken();
+    const response = await this.send(path, { headers: { Accept: 'application/octet-stream' } });
+    const blob = await response.blob();
+    if (!token || this.auth.getToken() !== token) throw new ApiError(401, 'Please sign in again.');
+    return blob;
+  }
+  private async send(path: string, options: RequestInit = {}, authenticated = true): Promise<Response> {
     const token = authenticated ? this.auth.getToken() : null;
     const headers = new Headers(options.headers);
-    headers.set('Accept', 'application/json');
+    if (!headers.has('Accept')) headers.set('Accept', 'application/json');
     if (typeof options.body === 'string') headers.set('Content-Type', 'application/json');
     if (token) headers.set('Authorization', 'Bearer ' + token);
     let response: Response;
     try { response = await fetch(API_BASE_URL + path, { ...options, headers }); }
     catch { throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.'); }
-    const raw = await response.text();
-    let body: unknown;
-    try { body = raw ? JSON.parse(raw) : undefined; } catch { body = undefined; }
     if (!response.ok) {
+      let body: unknown;
+      try { body = await response.json(); } catch { body = undefined; }
       // An old request must not log out a newly signed-in session.
       if (response.status === 401 && token && this.auth.getToken() === token) this.auth.logout(true);
       throw new ApiError(response.status, responseMessage(body, response.status));
     }
-    if (raw && body === undefined) throw new ApiError(response.status, 'The server returned an invalid response.');
-    return body as T;
+    return response;
   }
 }

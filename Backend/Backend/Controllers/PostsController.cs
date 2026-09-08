@@ -32,6 +32,21 @@ namespace Backend.Controllers
 
         }
 
+        [HttpGet("mine")]
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        public IActionResult MyPosts([FromServices] IMyPostsQuery query, [FromQuery] int page = 1)
+        {
+            return Ok(_handler.ExecuteQuery(query, page));
+        }
+
+        [HttpGet("{id:long}/applications")]
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public IActionResult Applicants(long id, [FromServices] IPostApplicantsQuery query)
+        {
+            return Ok(_handler.ExecuteQuery(query, id));
+        }
+
         [HttpGet("{id}")]
 
         public IActionResult GetPost(int id, [FromServices] IPostQuery query)
@@ -42,6 +57,7 @@ namespace Backend.Controllers
         }
         // kako ide sintaksa da ruta bude /posts/apply
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize]
 
         public IActionResult CreatePost([FromServices] ICreatePostCommand cmd, CreatePostDTO dto)
         {

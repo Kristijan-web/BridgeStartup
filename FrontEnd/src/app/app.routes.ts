@@ -4,7 +4,7 @@ import { UserLayout } from './layouts/user/user-layout';
 import { AboutUsPage } from './pages/about-us-page';
 import { ContactPage } from './pages/contact-page';
 import { PostDetailsPage } from './pages/post-details-page';
-import { adminGuard } from './guards/auth-guards';
+import { adminGuard, authGuard } from './guards/auth-guards';
 
 export const routes: Routes = [
   {
@@ -21,6 +21,7 @@ export const routes: Routes = [
       { path: '', component: HomePage, title: 'BridgeStartup' },
       { path: 'about', component: AboutUsPage, title: 'About us' },
       { path: 'contact', component: ContactPage, title: 'Contact us' },
+      { path: 'my-posts', canActivate: [authGuard], title: 'My posts | BridgeStartup', loadComponent: () => import('./pages/my-posts-page').then(m => m.MyPostsPage) },
       { path: 'posts/:id', component: PostDetailsPage, title: 'Post details' },
       { path: 'login', title: 'Sign in | BridgeStartup', loadComponent: () => import('./pages/login-page').then(m => m.LoginPage) },
       { path: 'register', title: 'Register | BridgeStartup', loadComponent: () => import('./pages/register-page').then(m => m.RegisterPage) },

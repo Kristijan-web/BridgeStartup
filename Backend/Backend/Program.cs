@@ -88,6 +88,12 @@ builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
+builder.Services.AddTransient<IMyPostsQuery, EfMyPostsQuery>();
+builder.Services.AddTransient<IBadgesQuery, EfBadgesQuery>();
+builder.Services.AddTransient<IPostApplicantsQuery, EfPostApplicantsQuery>();
+builder.Services.AddTransient<IApplicationFileQuery>(services => new LocalApplicationFileQuery(
+    services.GetRequiredService<ApplicationDbContext>(), services.GetRequiredService<IApplicationUser>(),
+    builder.Configuration["Uploads:ApplicationsPath"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Applications")));
 builder.Services.AddTransient<ICreatePostCommand, EfCreatePostCommand>();
 builder.Services.AddTransient<CreatePostValidation>();
 builder.Services.AddTransient<IDeletePostCommand, EfDeletePostCommand>();
@@ -97,6 +103,7 @@ builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
 builder.Services.AddTransient<IPostApplicationQuery, EfPostApplicationQuery>();
 builder.Services.AddTransient<IUpdatePostApplicationCommand, EfUpdatePostApplicationCommand>();
 builder.Services.AddTransient<IDeletePostApplicationCommand, EfDeletePostApplicationCommand>();
+builder.Services.AddTransient<IGetPostApplicationsForOwnerQuery, EfGetPostApplicationForOwnerQuery>();
 // treba da dodam interface za upload fajla loklano
 // Da li cu koristiti Transient, Singleton ili Scoped?
 // - Singleton pravi instancu objekta za ceo tok rada aplikacije
@@ -146,7 +153,9 @@ builder.Services.AddScoped<IApplicationUser>(container =>
         AllowedUseCases = user.Role.RoleUseCases
             .Where(x => x.DeletedAt == null && x.UseCases.DeletedAt == null)
             .Select(x => x.UseCases.UseCaseId)
-            .Union(new UnauthorizedUser().AllowedUseCases).ToList()
+            .Union(new UnauthorizedUser().AllowedUseCases)
+            // All active accounts can publish and review their own posts. Queries enforce ownership.
+            .Union(new[] { "create-post", "get-my-posts", "get-post-applicants", "get-application-file", "get-post-badges" }).ToList()
     };
 });
 builder.Services.AddAuthentication(options =>

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../tmp/frontend-tests/src/app/services/auth-service.mjs';
 import { ApiService, ApiError } from '../tmp/frontend-tests/src/app/services/api-service.mjs';
 import { SESSION_KEY, validSession, safeReturnUrl } from '../tmp/frontend-tests/src/app/services/session.mjs';
-import { adminGuard } from '../tmp/frontend-tests/src/app/guards/auth-guards.mjs';
+import { adminGuard, authGuard } from '../tmp/frontend-tests/src/app/guards/auth-guards.mjs';
 import { AdminService } from '../tmp/frontend-tests/src/app/services/user-service.mjs';
 import { AdminUsersPage } from '../tmp/frontend-tests/src/app/pages/admin-users-page.mjs';
 import { AdminPostsPage } from '../tmp/frontend-tests/src/app/pages/admin-posts-page.mjs';
@@ -265,4 +265,46 @@ test('CV validation rejects empty, oversized, and unsupported files', () => {
   assert.match(validateCv(new File(['test'], 'cv.exe')), /PDF/);
   assert.match(validateCv(new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'cv.pdf')), /5 MB/);
   assert.equal(validateCv(new File(['%PDF-1.4'], 'my.resume.PDF')), '');
+});
+
+test('my posts requires login but accepts a regular user and preserves the return URL', () => {
+  const { injector } = setup(); const auth = getAuth(injector);
+  const result = runInInjectionContext(injector, () => authGuard({}, { url: '/my-posts?create=1' }));
+  assert.deepEqual(result, { commands: ['/login'], extras: { queryParams: { returnUrl: '/my-posts?create=1' } } });
+  auth.establish(session('user'));
+  assert.equal(runInInjectionContext(injector, () => authGuard({}, { url: '/my-posts' })), true);
+});
+
+test('user publishing sends numeric badges and no client-controlled owner ID', async () => {
+  const { injector } = setup([PostsService]); getAuth(injector).establish(session('user'));
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, '/api/Posts'); assert.equal(options.method, 'POST');
+    const body = JSON.parse(options.body);
+    assert.deepEqual(body.badges, [2, 5]); assert.equal(body.userId, undefined);
+    return new Response(null, { status: 201 });
+  };
+  await injector.get(PostsService).createPost({ title: 'My idea', description: 'A useful new project', email: 'user@example.test', phone: '123', badges: [2, 5] });
+});
+
+test('CV download uses the selected post and applicant with a bearer token and keeps binary content', async () => {
+  const { injector } = setup([PostsService]); getAuth(injector).establish(session('user'));
+  const bytes = new Uint8Array([37, 80, 68, 70, 0, 255, 254, 1]);
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, '/api/PostApplications/42/7/file');
+    assert.match(options.headers.get('Authorization'), /^Bearer /);
+    assert.equal(options.headers.get('Accept'), 'application/octet-stream');
+    return new Response(bytes, { headers: { 'Content-Type': 'application/pdf' } });
+  };
+  const blob = await injector.get(PostsService).downloadCv(42, 7);
+  assert.deepEqual(new Uint8Array(await blob.arrayBuffer()), bytes);
+});
+
+test('download errors stay visible and an expired download signs the user out', async () => {
+  const { injector } = setup([PostsService]); const auth = getAuth(injector); auth.establish(session('user'));
+  globalThis.fetch = async () => new Response('{"message":"This CV is no longer available."}', { status: 404 });
+  await assert.rejects(injector.get(PostsService).downloadCv(42, 7), /no longer available/);
+  assert.ok(auth.getToken());
+  globalThis.fetch = async () => new Response('', { status: 401 });
+  await assert.rejects(injector.get(PostsService).downloadCv(42, 7), /sign in/);
+  assert.equal(auth.getToken(), null);
 });

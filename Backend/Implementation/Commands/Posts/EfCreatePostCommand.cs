@@ -1,4 +1,6 @@
-﻿using Application.Commands.Posts;
+using Application;
+using FluentValidation;
+using Application.Commands.Posts;
 using Application.DTO.Post;
 using Data.Access;
 using Domain;
@@ -11,11 +13,13 @@ namespace Implementation.Commands.Posts
         private readonly ApplicationDbContext _context;
 
         private CreatePostValidation _validator;
+        private readonly IApplicationUser _user;
 
-        public EfCreatePostCommand(ApplicationDbContext context, CreatePostValidation validator)
+        public EfCreatePostCommand(ApplicationDbContext context, CreatePostValidation validator, IApplicationUser user)
         {
             _context = context;
             _validator = validator;
+            _user = user;
         }
 
         public string Id => "create-post";
@@ -27,7 +31,8 @@ namespace Implementation.Commands.Posts
 
 
 
-            _validator.Validate(dto);
+            dto.UserId = _user.Id;
+            _validator.ValidateAndThrow(dto);
 
 
 
