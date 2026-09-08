@@ -41,7 +41,7 @@ namespace Backend.Controllers
 
         }
         // kako ide sintaksa da ruta bude /posts/apply
-        [HttpPost("create")]
+        [HttpPost]
 
         public IActionResult CreatePost([FromServices] ICreatePostCommand cmd, CreatePostDTO dto)
         {
@@ -52,7 +52,16 @@ namespace Backend.Controllers
 
         }
 
-        [HttpPost]
+        [HttpDelete("{id}")]
+
+        public IActionResult DeletePost([FromServices] IDeletePostCommand cmd, int id)
+        {
+
+            _handler.ExecuteCommand(cmd, id);
+            return NoContent();
+        }
+
+        [HttpPost("apply")]
 
 
         public IActionResult ApplyToPost([FromServices] UseCaseHandler _handler, [FromServices] IUploadPostFileToCommand cmd, [FromForm] PostApplyDTO dto)

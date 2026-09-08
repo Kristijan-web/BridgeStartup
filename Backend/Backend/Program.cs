@@ -88,6 +88,7 @@ builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
 builder.Services.AddTransient<ICreatePostCommand, EfCreatePostCommand>();
 builder.Services.AddTransient<CreatePostValidation>();
+builder.Services.AddTransient<IDeletePostCommand, EfDeletePostCommand>();
 builder.Services.AddTransient<IUpdatePostCommand, EfUpdatePostCommand>();
 
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
