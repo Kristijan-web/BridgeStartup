@@ -79,6 +79,14 @@
           }
         }
       },
+      "Handlebars.Net/2.4.3": {
+        "runtime": {
+          "lib/net10.0/Handlebars.dll": {
+            "assemblyVersion": "2.4.3.0",
+            "fileVersion": "2.4.3.0"
+          }
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "runtime": {
           "lib/net6.0/Humanizer.dll": {
@@ -864,7 +872,8 @@
           "Application": "1.0.0",
           "BCrypt.Net-Next": "4.2.0",
           "Data.Access": "1.0.0",
-          "FluentValidation": "12.1.1"
+          "FluentValidation": "12.1.1",
+          "Handlebars.Net": "2.4.3"
         },
         "runtime": {
           "Implementation.dll": {
@@ -922,6 +931,13 @@
       "sha512": "sha512-EPpkIe1yh1a0OXyC100oOA8WMbZvqUu5plwhvYcb7oSELfyUZzfxV48BLhvs3kKo4NwG7MGLNgy1RJiYtT8Dpw==",
       "path": "fluentvalidation/12.1.1",
       "hashPath": "fluentvalidation.12.1.1.nupkg.sha512"
+    },
+    "Handlebars.Net/2.4.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-arsZCVYV/2f39W7KBRD3jnsluHAI8cNFGGbcfmY92GRnpyXZoJHleevuS6BTXJgNE44vtSeB3FbK6udZPa7K6w==",
+      "path": "handlebars.net/2.4.3",
+      "hashPath": "handlebars.net.2.4.3.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

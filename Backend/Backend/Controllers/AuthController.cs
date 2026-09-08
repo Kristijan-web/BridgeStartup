@@ -33,6 +33,18 @@ namespace Backend.Controllers
 
         }
 
+        // TODO
+        // - Treba da iskopiram IActivate interfejs za application i implementation sloj
+        [HttpGet("/api/activate/{code}")]
+        public IActionResult Activate(string code,
+        [FromServices] IActivateAccountCommand cmd
+       )
+
+        {
+            _handler.ExecuteCommand(cmd, code);
+            return NoContent();
+        }
+
 
         [HttpPost("login")]
         public IActionResult Login([FromServices] ILoginQuery loginQuery, [FromServices] JwtHandler jwt, LoginDTO dto)

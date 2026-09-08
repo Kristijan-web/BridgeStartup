@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -68,6 +67,9 @@ namespace Data.Access.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RoleId = table.Column<long>(type: "bigint", nullable: false, defaultValue: 1L),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),

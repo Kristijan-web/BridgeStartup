@@ -11,6 +11,12 @@
         public string Password { get; set; }
         public string Email { get; set; }
 
+        public string? ActivationCode { get; set; }
+
+        public DateTime? ActivatedAt { get; set; }
+
+        public DateTime? RegisteredAt { get; set; }
+
         // Koga referencira User? Navigation Prop
         // - Role
 

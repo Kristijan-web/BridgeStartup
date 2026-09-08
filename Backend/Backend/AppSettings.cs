@@ -7,6 +7,10 @@
         // koji tip podatka bih uopste koristio?
         // string, int, bool, IEnumerble???
         public JwtSettings JwtSettings { get; set; }
+
+        public EmailSettings EmailSettings { get; set; }
+
+
     }
 
     public class JwtSettings
@@ -14,5 +18,11 @@
         public string SecretKey { get; set; }
         public string Issuer { get; set; }
         public int DurationSeconds { get; set; }
+    }
+
+    public class EmailSettings
+    {
+        public string FromEmail { get; set; }
+        public string AppPassword { get; set; }
     }
 }

@@ -26,8 +26,8 @@ namespace Data.Access.Seeders
                 new UseCases { UseCaseId = "apply-to-post-locally" },
                 new UseCases { UseCaseId = "get-all-posts-applications" },
                 new UseCases { UseCaseId = "get-post-application" },
-                new UseCases { UseCaseId = "update-post" }
-                
+                new UseCases { UseCaseId = "update-post" },
+                new UseCases { UseCaseId = "account-activate" }
 
             // mora ovo da se posalje ka bazi i napravi .cs fajl za RoleUseCases
             };

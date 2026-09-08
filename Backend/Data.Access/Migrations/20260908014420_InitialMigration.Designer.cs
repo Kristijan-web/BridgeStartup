@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Access.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260907150223_InitialMigration")]
+    [Migration("20260908014420_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -239,6 +239,12 @@ namespace Data.Access.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("ActivatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ActivationCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -252,6 +258,9 @@ namespace Data.Access.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RegisteredAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<long>("RoleId")
                         .ValueGeneratedOnAdd()

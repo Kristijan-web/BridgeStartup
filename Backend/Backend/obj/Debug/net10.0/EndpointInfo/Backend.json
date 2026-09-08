@@ -45,6 +45,28 @@
         }
       }
     },
+    "/api/activate/{code}": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/login": {
       "post": {
         "tags": [
@@ -457,6 +479,12 @@
           },
           "email": {
             "type": "string"
+          },
+          "link": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

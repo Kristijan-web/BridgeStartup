@@ -28,9 +28,9 @@ namespace Implementation
         public string Username => "unauthorized user";
 
         public string Email => "unauthorizeduser@gmail.com";
-         
+
         // treba mi niz stringova
-        public IEnumerable<string> AllowedUseCases => new List<string> { "register-user", "login" };
+        public IEnumerable<string> AllowedUseCases => new List<string> { "register-user", "login", "account-activate" };
     }
 
 }

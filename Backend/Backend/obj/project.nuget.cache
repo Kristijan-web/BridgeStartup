@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ynlRZQr9eEQ=",
+  "dgSpecHash": "p2QsSDm0KFE=",
   "success": true,
   "projectFilePath": "C:\\Users\\Kristijan\\Desktop\\BridgeStartup\\Backend\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\Kristijan\\.nuget\\packages\\bogus\\35.6.5\\bogus.35.6.5.nupkg.sha512",
     "C:\\Users\\Kristijan\\.nuget\\packages\\castle.core\\5.2.1\\castle.core.5.2.1.nupkg.sha512",
     "C:\\Users\\Kristijan\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
+    "C:\\Users\\Kristijan\\.nuget\\packages\\handlebars.net\\2.4.3\\handlebars.net.2.4.3.nupkg.sha512",
     "C:\\Users\\Kristijan\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Kristijan\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.9\\microsoft.aspnetcore.authentication.jwtbearer.10.0.9.nupkg.sha512",
     "C:\\Users\\Kristijan\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.9\\microsoft.aspnetcore.openapi.10.0.9.nupkg.sha512",

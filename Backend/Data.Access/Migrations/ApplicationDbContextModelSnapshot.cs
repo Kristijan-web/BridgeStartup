@@ -236,6 +236,12 @@ namespace Data.Access.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("ActivatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ActivationCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -249,6 +255,9 @@ namespace Data.Access.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RegisteredAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<long>("RoleId")
                         .ValueGeneratedOnAdd()

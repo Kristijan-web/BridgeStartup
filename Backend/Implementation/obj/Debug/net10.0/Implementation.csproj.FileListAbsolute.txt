@@ -38,3 +38,5 @@ C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Implementation\obj\Debug\net10.
 C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Implementation\obj\Debug\net10.0\ref\Implementation.dll
 C:\Users\krist\Desktop\BridgeStartup\Backend\Implementation\bin\Debug\net10.0\Data.Access.dll
 C:\Users\krist\Desktop\BridgeStartup\Backend\Implementation\bin\Debug\net10.0\Data.Access.pdb
+C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Implementation\bin\Debug\net10.0\Emails\templates\activation.html
+C:\Users\Kristijan\Desktop\BridgeStartup\Backend\Implementation\bin\Debug\net10.0\Emails\templates\register.html

@@ -2,6 +2,7 @@ using Application;
 using Application.Commands;
 using Application.Commands.PostApplications;
 using Application.Commands.Posts;
+using Application.Email;
 using Application.ExceptionLogging;
 using Application.Queries;
 using Application.Queries.PostApplications;
@@ -15,11 +16,13 @@ using Implementation;
 using Implementation.Commands;
 using Implementation.Commands.PostApplications;
 using Implementation.Commands.Posts;
+using Implementation.Emails;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
 using Implementation.Queries.Posts;
 using Implementation.Queries.PostsApplication;
 using Implementation.Queries.Users;
+using Implementation.UseCases.Commands;
 using Implementation.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -103,6 +106,12 @@ builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IGetUserPostsQuery, EfGetUserPosts>();
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
+builder.Services.AddTransient<IActivateAccountCommand, EfActivateAccountCommand>();
+builder.Services.AddTransient<EmailTemplateComposer>();
+builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>(x =>
+{
+    return new SmtpEmailSender(appSettings.EmailSettings.FromEmail, appSettings.EmailSettings.AppPassword);
+});
 builder.Services.AddTransient<JwtHandler>();
 builder.Services.AddScoped<UseCaseHandler>();
 

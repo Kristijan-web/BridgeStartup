@@ -86,6 +86,19 @@
           }
         }
       },
+      "Handlebars.Net/2.4.3": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/Handlebars.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Handlebars.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "type": "package",
         "compile": {
@@ -1188,7 +1201,8 @@
           "Application": "1.0.0",
           "BCrypt.Net-Next": "4.2.0",
           "Data.Access": "1.0.0",
-          "FluentValidation": "12.1.1"
+          "FluentValidation": "12.1.1",
+          "Handlebars.Net": "2.4.3"
         },
         "compile": {
           "bin/placeholder/Implementation.dll": {}
@@ -1323,6 +1337,27 @@
         "fluentvalidation.nuspec",
         "lib/net8.0/FluentValidation.dll",
         "lib/net8.0/FluentValidation.xml"
+      ]
+    },
+    "Handlebars.Net/2.4.3": {
+      "sha512": "arsZCVYV/2f39W7KBRD3jnsluHAI8cNFGGbcfmY92GRnpyXZoJHleevuS6BTXJgNE44vtSeB3FbK6udZPa7K6w==",
+      "type": "package",
+      "path": "handlebars.net/2.4.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "handlebars.net.2.4.3.nupkg.sha512",
+        "handlebars.net.nuspec",
+        "hbnet-icon.png",
+        "lib/net10.0/Handlebars.dll",
+        "lib/net10.0/Handlebars.xml",
+        "lib/net8.0/Handlebars.dll",
+        "lib/net8.0/Handlebars.xml",
+        "lib/netstandard2.0/Handlebars.dll",
+        "lib/netstandard2.0/Handlebars.xml",
+        "lib/netstandard2.1/Handlebars.dll",
+        "lib/netstandard2.1/Handlebars.xml"
       ]
     },
     "Humanizer.Core/2.14.1": {
