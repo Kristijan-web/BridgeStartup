@@ -1,8 +1,7 @@
-﻿using Application.Exceptions;
+﻿using Application.DTO.User;
+using Application.Exceptions;
 using Application.Queries;
 using Data.Access;
-using Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace Implementation.Queries.Users
 {
@@ -18,21 +17,28 @@ namespace Implementation.Queries.Users
             _context = context;
         }
 
-        public User Execute(int id)
+        public UserDbDTO Execute(int id)
         {
-
-            // Sada da dohvatim user-a
-
-            User? user = _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == id);
+            UserDbDTO? user = _context.Users
+                .Where(x => x.Id == id)
+                .Select(x => new UserDbDTO
+                {
+                    Id = x.Id,
+                    Username = x.Username,
+                    Email = x.Email,
+                    Password = x.Password,
+                    Role = x.Role.Name,
+                    AllowedUseCases = x.Role.RoleUseCases
+                        .Select(ru => ru.UseCases.UseCaseId)
+                })
+                .FirstOrDefault();
 
             if (user == null)
             {
-
-                throw new EntityNotFoundException($"User with the id of {id} not found");
-
+                throw new EntityNotFoundException(
+                    $"User with the id of {id} not found"
+                );
             }
-
-            // Sada ako se pronadje zeljeni user
 
             return user;
         }

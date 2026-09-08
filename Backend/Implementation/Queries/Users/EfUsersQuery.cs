@@ -2,30 +2,24 @@
 using Application.Queries;
 using Data.Access;
 using Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace Implementation.Queries.Users
 {
     public class EfUsersQuery : IUsersQuery
     {
-
-        // koja je povratna vrednost metode Execute?
-
         public string Id { get; } = "get-all-users";
         public string Name { get; } = "getting all users";
 
-        ApplicationDbContext _context;
+        private ApplicationDbContext _context;
 
         public EfUsersQuery(ApplicationDbContext context)
         {
-
             _context = context;
         }
 
-        public IEnumerable<User> Execute(SearchUsersDTO dto)
+        public IEnumerable<UserDbDTO> Execute(SearchUsersDTO dto)
         {
-            IQueryable<User> query = _context.Users
-                                              .Include(x => x.Role);
+            IQueryable<User> query = _context.Users;
 
             // FILTER
             if (!String.IsNullOrEmpty(dto.Username))
@@ -57,16 +51,26 @@ namespace Implementation.Queries.Users
 
             int skipUsers = (curPage - 1) * pageSize;
 
-            query = query.Skip(skipUsers)
-                         .Take(pageSize);
+            query = query
+                .Skip(skipUsers)
+                .Take(pageSize);
 
 
-            return query.ToList();
+            IQueryable<UserDbDTO> users = query.Select(x => new UserDbDTO
+            {
+                Id = x.Id,
+                Username = x.Username,
+                Email = x.Email,
+                Password = x.Password,
+
+                Role = x.Role.Name,
+
+                AllowedUseCases = x.Role.RoleUseCases
+                    .Select(ru => ru.UseCases.UseCaseId)
+            });
+
+
+            return users.ToList();
         }
-
-
     }
-
-
 }
-

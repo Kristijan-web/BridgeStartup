@@ -290,26 +290,16 @@
   },
   {
     "ContainingType": "Backend.Controllers.PostsController",
-    "Method": "ApplyToPost",
+    "Method": "CreatePost",
     "RelativePath": "api/Posts",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "UserId",
-        "Type": "System.Int64",
-        "IsRequired": false
-      },
-      {
-        "Name": "PostId",
-        "Type": "System.Int64",
-        "IsRequired": false
-      },
-      {
-        "Name": "userFile",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
+        "Name": "dto",
+        "Type": "Application.DTO.Post.CreatePostDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -319,6 +309,22 @@
     "Method": "GetPost",
     "RelativePath": "api/Posts/{id}",
     "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostsController",
+    "Method": "DeletePost",
+    "RelativePath": "api/Posts/{id}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -347,6 +353,32 @@
         "Name": "PostId",
         "Type": "System.Int64",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.PostsController",
+    "Method": "ApplyToPost",
+    "RelativePath": "api/Posts/apply",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "PostId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "userFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

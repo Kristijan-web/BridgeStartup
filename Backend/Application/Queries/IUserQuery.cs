@@ -1,8 +1,8 @@
-﻿using Domain;
+﻿using Application.DTO.User;
 
 namespace Application.Queries
 {
-    public interface IUserQuery : IQuery<int, User>
+    public interface IUserQuery : IQuery<int, UserDbDTO>
     {
 
     }
