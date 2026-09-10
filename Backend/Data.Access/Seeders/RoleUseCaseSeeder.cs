@@ -7,9 +7,9 @@ namespace Data.Access.Seeders
         public RoleUseCaseSeeder(ApplicationDbContext _context)
         {
             // Funkcionalnosti definisane ispod moraju da se zovu tacnu kao i u bazi
-            List<string> userUseCases = new List<string> { "register-user", "login", "get-post", "get-all-posts", "apply-to-post-locally", "get-post-application", "update-post", "account-activate", "create-post" };
+            List<string> userUseCases = new List<string> { "register-user", "login", "get-post", "get-all-posts", "apply-to-post-locally", "get-post-application", "update-post", "account-activate", "create-post", "create-contact" };
             // mora da se napravi za admin role-u
-            List<string> adminUseCases = new List<string> { "register-user", "login", "get-post", "get-all-posts", "get-user", "get-all-users", "apply-to-post-locally", "get-all-posts-applications", "get-post-application", "update-post", "account-activate", "create-post", "delete-post", "delete-user", "update-user", "delete-post-application" };
+            List<string> adminUseCases = new List<string> { "register-user", "login", "get-post", "get-all-posts", "get-user", "get-all-users", "apply-to-post-locally", "get-all-posts-applications", "get-post-application", "update-post", "account-activate", "create-post", "delete-post", "delete-user", "update-user", "delete-post-application", "create-contact", "get-contacts", "get-contact", "delete-contact" };
 
 
             // Zasto samo ne bih izvukao sve role iz baze

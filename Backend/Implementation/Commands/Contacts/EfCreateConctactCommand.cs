@@ -5,7 +5,7 @@ using Domain;
 
 namespace Implementation.Commands.Contacts
 {
-    public class CreateContactCommand : ICreateContactCommand
+    public class EfCreateConctactCommand : ICreateContactCommand
     {
         public string Id => "create-contact";
 
@@ -13,7 +13,7 @@ namespace Implementation.Commands.Contacts
 
         private ApplicationDbContext _context;
 
-        public CreateContactCommand(ApplicationDbContext context)
+        public EfCreateConctactCommand(ApplicationDbContext context)
         {
             _context = context;
 

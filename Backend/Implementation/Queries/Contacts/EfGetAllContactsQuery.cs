@@ -18,10 +18,10 @@ namespace Implementation.Queries.Contacts
         }
 
 
-        public IEnumerable<GetAllContactsDbDTO> Execute(FilterContactsDTO dto)
+        public IEnumerable<GetContactDbDTO> Execute(FilterContactsDTO dto)
         {
 
-            IEnumerable<GetAllContactsDbDTO> contacts = _context.Contacts.Include(x => x.User).ThenInclude(x => x.Role).Select(x => new GetAllContactsDbDTO
+            IEnumerable<GetContactDbDTO> contacts = _context.Contacts.Include(x => x.User).ThenInclude(x => x.Role).Select(x => new GetContactDbDTO
             {
                 Subject = x.Subject,
                 Message = x.Message,

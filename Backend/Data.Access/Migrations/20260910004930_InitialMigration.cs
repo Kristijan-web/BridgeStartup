@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -115,6 +114,30 @@ namespace Data.Access.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Contacts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -207,6 +230,11 @@ namespace Data.Access.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Contacts_UserId",
+                table: "Contacts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostApplications_PostId",
                 table: "PostApplications",
                 column: "PostId");
@@ -238,6 +266,9 @@ namespace Data.Access.Migrations
         {
             migrationBuilder.DropTable(
                 name: "BadgePosts");
+
+            migrationBuilder.DropTable(
+                name: "Contacts");
 
             migrationBuilder.DropTable(
                 name: "PostApplications");

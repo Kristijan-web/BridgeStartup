@@ -33,6 +33,13 @@ namespace Data.Access.Seeders
                 new UseCases { UseCaseId = "get-all-posts-applications" },
                 new UseCases { UseCaseId = "get-post-application" },
                 new UseCases { UseCaseId = "delete-post-application" },
+
+                // nazivi novih funkcionalnosti
+                 new UseCases { UseCaseId = "create-contact" },
+                 new UseCases { UseCaseId = "get-contacts" },
+                 new UseCases { UseCaseId = "get-contact" },
+                 new UseCases { UseCaseId = "delete-contact" },
+
               
 
              

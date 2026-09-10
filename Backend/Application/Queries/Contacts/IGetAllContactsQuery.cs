@@ -9,7 +9,7 @@ namespace Application.Queries.Contacts
 
     // Koliko tipova podataka ocekuje?
 
-    public interface IGetAllContactsQuery : IQuery<FilterContactsDTO, IEnumerable<GetAllContactsDbDTO>>
+    public interface IGetAllContactsQuery : IQuery<FilterContactsDTO, IEnumerable<GetContactDbDTO>>
     {
     }
 }

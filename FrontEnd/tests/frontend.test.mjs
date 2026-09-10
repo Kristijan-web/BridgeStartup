@@ -12,6 +12,8 @@ import { AdminUsersPage } from '../tmp/frontend-tests/src/app/pages/admin-users-
 import { AdminPostsPage } from '../tmp/frontend-tests/src/app/pages/admin-posts-page.mjs';
 import { PostsService } from '../tmp/frontend-tests/src/app/services/posts-service.mjs';
 import { validateCv } from '../tmp/frontend-tests/src/app/components/post-application-form.mjs';
+import { ContactsService } from '../tmp/frontend-tests/src/app/services/contacts-service.mjs';
+import { ContactForm } from '../tmp/frontend-tests/src/app/components/contact-form.mjs';
 
 const originalFetch = globalThis.fetch;
 const stores = new Map();
@@ -39,6 +41,59 @@ afterEach(() => {
   for (const auth of auths.splice(0)) auth.logout();
   for (const injector of injectors.splice(0)) injector.destroy();
   stores.clear(); listeners.clear(); globalThis.fetch = originalFetch;
+});
+
+test('contact submission sends the current user and trimmed fields, waits for success, and blocks duplicates', async () => {
+  const { injector } = setup([ContactsService]); getAuth(injector).establish(session('user'));
+  const component = runInInjectionContext(injector, () => new ContactForm());
+  component.subject = ' Partnership '; component.message = ' First line\nSecond line ';
+  let complete, calls = 0, reset;
+  const form = { invalid: false, resetForm: value => { reset = value; } };
+  globalThis.fetch = async (url, options) => {
+    calls++;
+    assert.equal(url, '/api/contacts'); assert.equal(options.method, 'POST');
+    assert.match(options.headers.get('Authorization'), /^Bearer /);
+    assert.equal(options.headers.get('Content-Type'), 'application/json');
+    assert.deepEqual(JSON.parse(options.body), { userId: 1, subject: 'Partnership', message: 'First line\nSecond line' });
+    return new Promise(resolve => { complete = resolve; });
+  };
+  const request = component.submit(form);
+  assert.equal(component.busy(), true); assert.equal(component.success(), false);
+  await component.submit(form); assert.equal(calls, 1);
+  complete(new Response(null, { status: 201 })); await request;
+  assert.equal(component.busy(), false); assert.equal(component.success(), true);
+  assert.deepEqual(reset, { subject: '', message: '' });
+  assert.equal(component.subject, ''); assert.equal(component.message, '');
+});
+
+test('contact submission rejects guests, invalid forms, and whitespace-only messages without an API call', async () => {
+  const { injector } = setup([ContactsService]); const auth = getAuth(injector);
+  const component = runInInjectionContext(injector, () => new ContactForm());
+  let touched = 0, calls = 0;
+  const form = { invalid: false, control: { markAllAsTouched: () => touched++ } };
+  globalThis.fetch = async () => { calls++; throw new Error('Unexpected request'); };
+  component.subject = 'Subject'; component.message = 'Message';
+  await component.submit(form); assert.match(component.error(), /sign in/);
+  auth.establish(session('user'));
+  component.message = ' \n\t '; await component.submit(form);
+  component.message = 'Message'; form.invalid = true; await component.submit(form);
+  assert.equal(touched, 2); assert.equal(calls, 0); assert.equal(component.busy(), false);
+});
+
+test('contact errors preserve the draft and permit retry after server and network failures', async () => {
+  const { injector } = setup([ContactsService]); getAuth(injector).establish(session('user'));
+  const component = runInInjectionContext(injector, () => new ContactForm());
+  component.subject = 'Help'; component.message = 'Please help with my post.';
+  const form = { invalid: false, resetForm: () => {} };
+  globalThis.fetch = async () => new Response('{"errors":{"Subject":["Subject is too long."]}}', { status: 400 });
+  await component.submit(form);
+  assert.equal(component.error(), 'Subject is too long.');
+  assert.equal(component.subject, 'Help'); assert.equal(component.success(), false); assert.equal(component.busy(), false);
+  globalThis.fetch = async () => { throw new TypeError('Failed to fetch'); };
+  await component.submit(form); assert.match(component.error(), /Cannot reach the server/);
+  assert.equal(component.message, 'Please help with my post.');
+  globalThis.fetch = async () => new Response(null, { status: 201 });
+  await component.submit(form); assert.equal(component.error(), ''); assert.equal(component.success(), true);
 });
 
 test('saved sessions reject expired, malformed and incomplete login data', () => {

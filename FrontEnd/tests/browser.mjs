@@ -15,6 +15,7 @@ let posts = [{ id: 1, title: 'Startup idea', description: 'A useful project.', e
 const apiRequests = [];
 const applications = new Map();
 const badgeChoices = [{ id: 1, name: 'TypeScript' }, { id: 2, name: 'Design' }];
+let contactFailure = false;
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
@@ -33,6 +34,11 @@ const server = createServer(async (req, res) => {
         return json({ user, token: 'header.' + Buffer.from(JSON.stringify({ id: user.id, exp: Date.now() / 1000 + 3600 })).toString('base64url') + '.signature' });
       }
       const currentUser = req.headers.authorization ? users.find(user => user.id === JSON.parse(Buffer.from(req.headers.authorization.split('.')[1], 'base64url')).id) : undefined;
+      if (url.pathname === '/api/contacts' && req.method === 'POST') {
+        if (!currentUser || body.userId !== currentUser.id) return json({}, 403);
+        if (contactFailure) return json({ message: 'Unable to save your message. Please try again.' }, 500);
+        return json(undefined, 201);
+      }
       if (url.pathname === '/api/Badges') return json(badgeChoices);
       if (url.pathname === '/api/Posts/mine') {
         if (!currentUser) return json({}, 401);
@@ -260,6 +266,35 @@ try {
   const ownerScreenshot = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
   await writeFile('tmp/my-posts-mobile.png', Buffer.from(ownerScreenshot.data, 'base64'));
   console.log('PASS regular-user publication, empty/applicant views, usernames, authenticated CV download, and mobile layout');
+  await click('Log out');
+  await command('Page.navigate', { url: origin + '/contact' });
+  await waitFor("document.body.innerText.includes('Sign in to contact us')");
+  assert.equal(await evaluate("!!document.querySelector('[name=subject]')"), false);
+  await click('Sign in to contact us');
+  await waitFor("location.pathname === '/login' && !!document.querySelector('[name=email]')");
+  await fill('email', 'founder@example.test'); await fill('password', 'FounderPass1'); await click('Sign in');
+  await waitFor("location.pathname === '/contact' && !!document.querySelector('[name=subject]')");
+  assert.equal(await evaluate("document.querySelector('[name=senderEmail]').value"), 'founder@example.test');
+  await click('Send message');
+  await waitFor("document.body.innerText.includes('Enter a subject.') && document.body.innerText.includes('Enter a message.')");
+  assert.equal(apiRequests.filter(x => x.path === '/api/contacts').length, 0);
+  await fill('subject', '  Partnership  '); await fill('message', ' \n '); await click('Send message');
+  assert.equal(apiRequests.filter(x => x.path === '/api/contacts').length, 0);
+  await fill('message', '  Hello team!\nI have an idea.  ');
+  contactFailure = true; await click('Send message');
+  await waitFor("document.body.innerText.includes('Unable to save your message.')");
+  assert.equal(await evaluate("document.querySelector('[name=subject]').value"), '  Partnership  ');
+  contactFailure = false; await click('Send message');
+  await waitFor("document.body.innerText.includes('Your message has been sent.')");
+  assert.deepEqual(apiRequests.findLast(x => x.path === '/api/contacts').body, {
+    userId: 2, subject: 'Partnership', message: 'Hello team!\nI have an idea.'
+  });
+  assert.equal(await evaluate("document.querySelector('[name=subject]').value"), '');
+  assert.equal(await evaluate("!!document.querySelector('#contact-subject-error')"), false);
+  await waitFor("document.documentElement.scrollWidth <= 390");
+  const contactScreenshot = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+  await writeFile('tmp/contact-mobile.png', Buffer.from(contactScreenshot.data, 'base64'));
+  console.log('PASS contact sign-in return, required/whitespace validation, API errors, retry, submission, and mobile layout');
   assert.deepEqual(errors, []);
   console.log('PASS user deletion, logout, and protected navigation after logout');
   console.log('Browser checks passed with no runtime exceptions. Screenshot: tmp/admin-mobile.png');

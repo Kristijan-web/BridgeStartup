@@ -2,7 +2,7 @@
 
 namespace Application.DTO.Contact
 {
-    public class GetAllContactsDbDTO
+    public class GetContactDbDTO
     {
         public string Subject { get; set; }
         public string Message { get; set; }

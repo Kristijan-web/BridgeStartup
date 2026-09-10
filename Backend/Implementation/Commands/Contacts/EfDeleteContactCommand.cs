@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Contacts;
-using Application.DTO.Contact;
 using Application.Exceptions;
 using Data.Access;
+using Domain;
 
 namespace Implementation.Commands.Contacts
 {
@@ -18,27 +18,21 @@ namespace Implementation.Commands.Contacts
             _context = context;
         }
 
-        public void Execute(long dto)
+        public void Execute(long id)
         {
-
-            // KAko se radi brisanje
-            // Ne postoji delete 
-            // Mora da dohvatim zapis iz baze i da mu promenim entity state
-
-            GetContactDbDTO? contact = _context.Contacts.Select(x => new GetContactDbDTO
-            {
-                Subject = x.Subject,
-                Message = x.Message
-            }).FirstOrDefault();
+            Contact? contact = _context.Contacts
+                .FirstOrDefault(x => x.Id == id);
 
             if (contact == null)
             {
-
-                throw new EntityNotFoundException("Contact for provided id does not exist");
-
+                throw new EntityNotFoundException(
+                    "Contact for provided id does not exist"
+                );
             }
 
+            _context.Contacts.Remove(contact);
 
+            _context.SaveChanges();
         }
     }
 }

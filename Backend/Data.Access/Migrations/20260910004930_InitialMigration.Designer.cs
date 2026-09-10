@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Access.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260908082244_InitialMigration")]
+    [Migration("20260910004930_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -84,6 +84,41 @@ namespace Data.Access.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("BadgePosts");
+                });
+
+            modelBuilder.Entity("Domain.Contact", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("Domain.Post", b =>
@@ -303,6 +338,17 @@ namespace Data.Access.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("Domain.Contact", b =>
+                {
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Post", b =>
                 {
                     b.HasOne("Domain.User", "User")
@@ -389,6 +435,8 @@ namespace Data.Access.Migrations
 
             modelBuilder.Entity("Domain.User", b =>
                 {
+                    b.Navigation("Contacts");
+
                     b.Navigation("PostApplications");
 
                     b.Navigation("Posts");

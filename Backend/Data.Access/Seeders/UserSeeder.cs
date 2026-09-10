@@ -20,7 +20,25 @@ namespace Data.Access.Seeders
             userFaker.RuleFor(x => x.ActivatedAt, f => f.Date.Recent(30));
             userFaker.RuleFor(x => x.ActivationCode, f => f.Random.Guid().ToString());
 
+
+            // napravi user-a sa mojim email-om i sifrom koji je validiran
+
             List<User> users = userFaker.Generate(10);
+
+            // treba da napravim user objekat i da ga dodam na users
+            // - Mora da ACtivatedAt ima datum
+            // - ACtivation code da bude null
+            User adminUser = new User
+            {
+                Username = "Kiki",
+                Password = "$2y$10$yR3YZbC/dYTxTGUlFANOFOs8GubWG0N.SAZBXgIIff3YY1iu5ZVPi",
+                Email = "kristijankiki884@gmail.com",
+                RoleId = 2,
+                ActivatedAt = DateTime.Now
+
+            };
+
+            users.Add(adminUser);
 
             _context.AddRange(users);
             _context.SaveChanges();

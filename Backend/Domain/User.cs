@@ -29,6 +29,8 @@
 
         public virtual HashSet<PostApplication> PostApplications { get; set; }
 
+        public virtual HashSet<Contact> Contacts { get; set; }
+
 
 
     }
