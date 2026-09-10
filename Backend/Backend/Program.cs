@@ -1,11 +1,13 @@
 using Application;
 using Application.Commands;
+using Application.Commands.Contacts;
 using Application.Commands.PostApplications;
 using Application.Commands.Posts;
 using Application.Commands.Users;
 using Application.Email;
 using Application.ExceptionLogging;
 using Application.Queries;
+using Application.Queries.Contacts;
 using Application.Queries.PostApplications;
 using Application.Queries.Posts;
 using ASPLAB2.API.JWT;
@@ -15,12 +17,14 @@ using Backend.JWT;
 using Data.Access;
 using Implementation;
 using Implementation.Commands;
+using Implementation.Commands.Contacts;
 using Implementation.Commands.PostApplications;
 using Implementation.Commands.Posts;
 using Implementation.Commands.Users;
 using Implementation.Emails;
 using Implementation.ExceptionLogging;
 using Implementation.Queries.Auth;
+using Implementation.Queries.Contacts;
 using Implementation.Queries.Posts;
 using Implementation.Queries.PostsApplication;
 using Implementation.Queries.Users;
@@ -83,9 +87,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // - JA bih isao sa Scoped -> 1 instanca na nivou request-a ili transient svaki put nova, ma transient
 // - Mozda bih cak isao i Singleton jer mi treba interfejs, ali prosledice istu klasu koja je vezana za taj interfejs i onda ako se ta klasa koja je vezana za interfejs prosledjuje u vise metoda onda ce sve one mutirati istu klasu, zato ne sme ni na nivou request-a (Scoped) vec mora biti Transient
 builder.Services.AddHttpContextAccessor();
+// AUITH
 builder.Services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
 builder.Services.AddTransient<RegisterUserValidation>();
 builder.Services.AddTransient<ILoginQuery, EfLoginQuery>();
+
+builder.Services.AddTransient<IActivateAccountCommand, EfActivateAccountCommand>();
+builder.Services.AddTransient<EmailTemplateComposer>();
+builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>(x =>
+{
+    return new SmtpEmailSender(appSettings.EmailSettings.FromEmail, appSettings.EmailSettings.AppPassword);
+});
+
+// POSTS
 builder.Services.AddTransient<IPostsQuery, EfPostsQuery>();
 builder.Services.AddTransient<IPostQuery, EfPostQuery>();
 builder.Services.AddTransient<IMyPostsQuery, EfMyPostsQuery>();
@@ -99,6 +113,7 @@ builder.Services.AddTransient<CreatePostValidation>();
 builder.Services.AddTransient<IDeletePostCommand, EfDeletePostCommand>();
 builder.Services.AddTransient<IUpdatePostCommand, EfUpdatePostCommand>();
 
+// POST APPLICATION
 builder.Services.AddTransient<IPostsApplicationQuery, PostsApplicationQuery>();
 builder.Services.AddTransient<IPostApplicationQuery, EfPostApplicationQuery>();
 builder.Services.AddTransient<IUpdatePostApplicationCommand, EfUpdatePostApplicationCommand>();
@@ -116,22 +131,26 @@ builder.Services.AddTransient<IGetPostApplicationsForOwnerQuery, EfGetPostApplic
 builder.Services.AddTransient<IUploadPostFileToCommand>(services => new EfUploadPostFileToLocal(
     services.GetRequiredService<ApplicationDbContext>(),
     builder.Configuration["Uploads:ApplicationsPath"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Applications")));
+
+// USERS
 builder.Services.AddTransient<IUsersQuery, EfUsersQuery>();
 builder.Services.AddTransient<IUserQuery, EfUserQuery>();
 builder.Services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
 builder.Services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
 builder.Services.AddTransient<IGetUserPostsQuery, EfGetUserPosts>();
+
+// Contacts
+builder.Services.AddTransient<ICreateContactCommand, EfCreateConctactCommand>();
+builder.Services.AddTransient<IGetAllContactsQuery, EfGetAllContactsQuery>();
+builder.Services.AddTransient<IGetContactQuery, EfGetContactQuery>();
+builder.Services.AddTransient<IDeleteContactCommand, EfDeleteContactCommand>();
+
+// EXCEPTIONS
 builder.Services.AddTransient<IExceptionLogger, ConsoleLogging>();
-builder.Services.AddTransient<IActivateAccountCommand, EfActivateAccountCommand>();
-builder.Services.AddTransient<EmailTemplateComposer>();
-builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>(x =>
-{
-    return new SmtpEmailSender(appSettings.EmailSettings.FromEmail, appSettings.EmailSettings.AppPassword);
-});
+
+// JWT
 builder.Services.AddTransient<JwtHandler>();
 builder.Services.AddScoped<UseCaseHandler>();
-
-
 builder.Services.AddScoped<Backend.Authorization.AdminAccessFilter>();
 builder.Services.AddScoped<IApplicationUser>(container =>
 {

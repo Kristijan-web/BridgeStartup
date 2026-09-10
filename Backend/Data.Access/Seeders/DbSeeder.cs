@@ -16,6 +16,7 @@
             UseCaseSeeder useCaseSeeder = new UseCaseSeeder(_context);
             RoleUseCaseSeeder roleUseCaseSeeder = new RoleUseCaseSeeder(_context);
             PostApplicationSeeder postApplicationSeeder = new PostApplicationSeeder(_context); // ocekuje da prvo postoji user i post
+            ContactSeeder contactSeeder = new ContactSeeder(_context);
 
 
         }

@@ -51,6 +51,8 @@ namespace Data.Access
         public DbSet<RoleUseCases> RoleUseCases { get; set; }
         public DbSet<UseCases> UseCases { get; set; }
 
+        public DbSet<Contact> Contacts { get; set; }
+
         public DbSet<PostApplication> PostApplications { get; set; }
 
     }
