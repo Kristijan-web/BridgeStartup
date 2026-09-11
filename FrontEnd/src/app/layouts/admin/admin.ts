@@ -15,9 +15,10 @@ import { AuthService } from '../../services/auth-service';
       </div>
     </header>
     <div class="mx-auto grid max-w-7xl gap-8 px-6 py-8 md:grid-cols-[180px_1fr]">
-      <nav class="flex gap-3 md:flex-col" aria-label="Admin navigation">
+      <nav class="flex flex-wrap gap-3 md:flex-col" aria-label="Admin navigation">
         <a routerLink="/admin/users" routerLinkActive="bg-indigo-100 text-indigo-800" class="rounded-lg px-4 py-3 font-bold">Users</a>
         <a routerLink="/admin/posts" routerLinkActive="bg-indigo-100 text-indigo-800" class="rounded-lg px-4 py-3 font-bold">Posts</a>
+        <a routerLink="/admin/contacts" routerLinkActive="bg-indigo-100 text-indigo-800" class="rounded-lg px-4 py-3 font-bold">Contacts</a>
       </nav>
       <main class="min-w-0"><router-outlet /></main>
     </div>

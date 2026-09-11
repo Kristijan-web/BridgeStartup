@@ -39,7 +39,7 @@ public static class IntegrationRunner
             var badge = new Badge { Name = "TypeScript" };
             db.Users.AddRange(admin, founder);
             db.Badges.Add(badge);
-            foreach (var name in new[] { "get-user", "get-all-users", "create-post", "update-post", "delete-post", "delete-user", "update-user", "get-post-application", "apply-to-post-locally" })
+            foreach (var name in new[] { "get-user", "get-all-users", "create-post", "update-post", "delete-post", "delete-user", "update-user", "get-post-application", "apply-to-post-locally", "create-contact", "get-contacts", "get-contact", "delete-contact" })
             {
                 var useCase = new UseCases { UseCaseId = name };
                 db.RoleUseCases.Add(new RoleUseCases { Role = adminRole, UseCases = useCase });
@@ -74,6 +74,46 @@ public static class IntegrationRunner
         var adminPosts = await client.GetFromJsonAsync<JsonElement[]>("/api/admin/posts");
         Check(adminPosts!.Length == 7 && adminPosts.All(x => x.TryGetProperty("userId", out _)), "admin post metadata supplies all founder IDs");
         await Expect(client.GetAsync("/api/admin/roles"), HttpStatusCode.OK, "existing role catalog is available");
+
+        await Expect(client.PostAsJsonAsync("/api/contacts", new { userId = founderId, subject = "Contact one", message = "First message" }),
+            HttpStatusCode.Created, "admin creates a contact for an existing sender");
+        await Expect(client.PostAsJsonAsync("/api/contacts", new { userId = adminId, subject = "Contact two", message = "Second message" }),
+            HttpStatusCode.Created, "admin creates a second contact");
+        var contacts = await client.GetFromJsonAsync<JsonElement[]>("/api/contacts");
+        Check(contacts!.Length == 2 && contacts.All(x => x.GetProperty("id").GetInt64() > 0), "contact list exposes record IDs");
+        var contactId = contacts.Single(x => x.GetProperty("subject").GetString() == "Contact one").GetProperty("id").GetInt64();
+        var otherContactId = contacts.Single(x => x.GetProperty("subject").GetString() == "Contact two").GetProperty("id").GetInt64();
+        var contactDetail = await client.GetFromJsonAsync<JsonElement>("/api/contacts/" + contactId);
+        Check(contactDetail.GetProperty("id").GetInt64() == contactId && contactDetail.GetProperty("user").GetProperty("id").GetInt64() == founderId,
+            "contact detail includes its ID and sender");
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { id = otherContactId, userId = adminId, subject = " Updated contact ", message = " Updated message " }),
+            HttpStatusCode.NoContent, "admin updates a contact through PUT");
+        contactDetail = await client.GetFromJsonAsync<JsonElement>("/api/contacts/" + contactId);
+        Check(contactDetail.GetProperty("subject").GetString() == "Updated contact" && contactDetail.GetProperty("message").GetString() == "Updated message" &&
+            contactDetail.GetProperty("user").GetProperty("id").GetInt64() == adminId, "contact update persists trimmed text and sender changes");
+        var unchangedContact = await client.GetFromJsonAsync<JsonElement>("/api/contacts/" + otherContactId);
+        Check(unchangedContact.GetProperty("subject").GetString() == "Contact two", "contact update uses route ID, ignoring forged body ID");
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { userId = adminId, subject = " \t ", message = "Message" }),
+            HttpStatusCode.BadRequest, "contact update rejects blank subjects");
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { userId = adminId, subject = "Subject", message = " \n " }),
+            HttpStatusCode.BadRequest, "contact update rejects blank messages");
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { userId = 999999, subject = "Subject", message = "Message" }),
+            HttpStatusCode.BadRequest, "contact update rejects nonexistent senders");
+        await Expect(client.PutAsJsonAsync("/api/contacts/999999", new { userId = adminId, subject = "Subject", message = "Message" }),
+            HttpStatusCode.NotFound, "contact update reports missing records");
+        var contactUserToken = await Login(client, "founder@example.test", "FounderPass1");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", contactUserToken);
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { userId = founderId, subject = "Forbidden", message = "Message" }),
+            HttpStatusCode.Forbidden, "regular users cannot edit contacts");
+        client.DefaultRequestHeaders.Authorization = null;
+        await Expect(client.PutAsJsonAsync("/api/contacts/" + contactId, new { userId = founderId, subject = "Forbidden", message = "Message" }),
+            HttpStatusCode.Unauthorized, "guest contact updates require authentication");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+        await Expect(client.DeleteAsync("/api/contacts/" + otherContactId), HttpStatusCode.NoContent, "contact delete removes the selected record");
+        await Expect(client.GetAsync("/api/contacts/" + otherContactId), HttpStatusCode.NotFound, "deleted contact is no longer readable");
+        contactDetail = await client.GetFromJsonAsync<JsonElement>("/api/contacts/" + contactId);
+        Check(contactDetail.GetProperty("subject").GetString() == "Updated contact", "failed updates and deleting another contact leave the record unchanged");
+        await Expect(client.DeleteAsync("/api/contacts/" + otherContactId), HttpStatusCode.NotFound, "repeated contact deletion reports missing records");
 
         var createdUser = await client.PostAsJsonAsync("/api/admin/users", new { username = "NewFounder", email = "new@example.test", password = "FounderPass1", roleId = userRoleId, isActive = true });
         await Expect(Task.FromResult(createdUser), HttpStatusCode.Created, "working admin route creates users");

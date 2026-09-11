@@ -1,4 +1,4 @@
-﻿using Application.DTO.Contact;
+using Application.DTO.Contact;
 using Application.Exceptions;
 using Application.Queries.Contacts;
 using Data.Access;
@@ -26,6 +26,7 @@ namespace Implementation.Queries.Contacts
             // Dovhati contact i user-a koji ga je objavio
             GetContactDbDTO? contact = _context.Contacts.Where(x => x.Id == id).Include(x => x.User).ThenInclude(x => x.Role).Select(x => new GetContactDbDTO
             {
+                Id = x.Id,
                 Subject = x.Subject,
                 Message = x.Message,
                 User = new Application.DTO.User.UserDbDTO

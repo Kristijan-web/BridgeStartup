@@ -14,6 +14,7 @@ import { PostsService } from '../tmp/frontend-tests/src/app/services/posts-servi
 import { validateCv } from '../tmp/frontend-tests/src/app/components/post-application-form.mjs';
 import { ContactsService } from '../tmp/frontend-tests/src/app/services/contacts-service.mjs';
 import { ContactForm } from '../tmp/frontend-tests/src/app/components/contact-form.mjs';
+import { AdminContactsPage } from '../tmp/frontend-tests/src/app/pages/admin-contacts-page.mjs';
 
 const originalFetch = globalThis.fetch;
 const stores = new Map();
@@ -41,6 +42,64 @@ afterEach(() => {
   for (const auth of auths.splice(0)) auth.logout();
   for (const injector of injectors.splice(0)) injector.destroy();
   stores.clear(); listeners.clear(); globalThis.fetch = originalFetch;
+});
+
+test('admin contact service uses resource IDs and HTTP methods for all CRUD operations', async () => {
+  const { injector } = setup([ContactsService]); getAuth(injector).establish(session('admin'));
+  const requests = [];
+  globalThis.fetch = async (url, options) => {
+    requests.push({ url, method: options.method ?? 'GET', body: options.body ? JSON.parse(options.body) : undefined });
+    assert.match(options.headers.get('Authorization'), /^Bearer /);
+    return new Response(options.method ? null : '[]', { status: options.method ? 204 : 200 });
+  };
+  const service = injector.get(ContactsService);
+  const input = { userId: 2, subject: 'Hello', message: 'Message' };
+  await service.getContacts(); await service.getContact(42); await service.createContact(input);
+  await service.updateContact(42, input); await service.deleteContact(42);
+  assert.deepEqual(requests, [
+    { url: '/api/contacts', method: 'GET', body: undefined },
+    { url: '/api/contacts/42', method: 'GET', body: undefined },
+    { url: '/api/contacts', method: 'POST', body: input },
+    { url: '/api/contacts/42', method: 'PUT', body: input },
+    { url: '/api/contacts/42', method: 'DELETE', body: undefined }
+  ]);
+});
+
+test('admin contact edits retain the record on failure and block duplicate saves until persistence finishes', async () => {
+  let calls = 0, finish;
+  const contact = { id: 42, subject: 'Original', message: 'Original message', user: { id: 2 } };
+  const service = {
+    getContacts: async () => [contact], getContact: async () => contact,
+    updateContact: async (id, input) => {
+      assert.equal(id, 42); assert.deepEqual(input, { userId: 2, subject: 'Updated', message: 'New message' });
+      calls++; return new Promise((resolve, reject) => { finish = { resolve, reject }; });
+    }
+  };
+  const { injector } = setup([{ provide: ContactsService, useValue: service }, { provide: AdminService, useValue: {} }]);
+  const page = runInInjectionContext(injector, () => new AdminContactsPage());
+  page.users.set([{ id: 2 }]); await page.open(contact, true);
+  const input = { userId: 2, subject: ' Updated ', message: ' New message ' };
+  const failed = page.save(input); await page.save(input); assert.equal(calls, 1);
+  finish.reject(new Error('Save failed')); await failed;
+  assert.equal(page.editing(), true); assert.equal(page.selected().id, 42);
+  assert.equal(page.actionError(), 'Save failed'); assert.equal(page.busy(), false);
+  const successful = page.save(input); finish.resolve(); await successful;
+  assert.equal(page.editing(), false); assert.equal(page.selected(), null);
+  assert.equal(page.success(), 'Contact saved.');
+});
+
+test('admin contacts retain delete confirmation on failure and keep reads available when sender loading fails', async () => {
+  const contact = { id: 42, subject: 'Test', message: 'Message', user: { id: 2 } };
+  const service = { getContacts: async () => [contact], deleteContact: async () => { throw new Error('Delete failed'); } };
+  const { injector } = setup([{ provide: ContactsService, useValue: service }, {
+    provide: AdminService, useValue: { getUsers: async () => { throw new Error('Users unavailable'); } }
+  }]);
+  const page = runInInjectionContext(injector, () => new AdminContactsPage());
+  await Promise.all([page.load(), page.loadUsers()]);
+  assert.equal(page.contacts().length, 1); assert.match(page.usersError(), /Users unavailable/);
+  page.askDelete(contact); await page.confirmDelete();
+  assert.equal(page.deleting().id, 42); assert.equal(page.success(), '');
+  assert.equal(page.actionError(), 'Delete failed'); assert.equal(page.busy(), false);
 });
 
 test('contact submission sends the current user and trimmed fields, waits for success, and blocks duplicates', async () => {

@@ -1,4 +1,4 @@
-﻿using Application.DTO.Contact;
+using Application.DTO.Contact;
 using Application.Queries.Contacts;
 using Data.Access;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,7 @@ namespace Implementation.Queries.Contacts
 
             IEnumerable<GetContactDbDTO> contacts = _context.Contacts.Include(x => x.User).ThenInclude(x => x.Role).Select(x => new GetContactDbDTO
             {
+                Id = x.Id,
                 Subject = x.Subject,
                 Message = x.Message,
                 User = new Application.DTO.User.UserDbDTO

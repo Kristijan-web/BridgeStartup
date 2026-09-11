@@ -13,7 +13,8 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'users' },
       { path: 'users', title: 'Manage users | BridgeStartup', loadComponent: () => import('./pages/admin-users-page').then(m => m.AdminUsersPage) },
-      { path: 'posts', title: 'Manage posts | BridgeStartup', loadComponent: () => import('./pages/admin-posts-page').then(m => m.AdminPostsPage) }
+      { path: 'posts', title: 'Manage posts | BridgeStartup', loadComponent: () => import('./pages/admin-posts-page').then(m => m.AdminPostsPage) },
+      { path: 'contacts', title: 'Manage contacts | BridgeStartup', loadComponent: () => import('./pages/admin-contacts-page').then(m => m.AdminContactsPage) }
     ]
   },
   {

@@ -19,7 +19,7 @@ namespace Implementation.Queries.Users
 
         public IEnumerable<UserDbDTO> Execute(SearchUsersDTO dto)
         {
-            IQueryable<User> query = _context.Users;
+            IQueryable<User> query = _context.Users.Where(x => x.DeletedAt == null);
 
             // FILTER
             if (!String.IsNullOrEmpty(dto.Username))

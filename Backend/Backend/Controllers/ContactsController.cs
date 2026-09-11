@@ -1,4 +1,8 @@
-﻿using Application.Commands.Contacts;
+using Backend.Authorization;
+using Data.Access;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Application.Commands.Contacts;
 using Application.DTO.Contact;
 using Application.Queries.Contacts;
 using Implementation;
@@ -48,6 +52,25 @@ namespace Backend.Controllers
 
             return Created();
 
+        }
+
+        [HttpPut("{id:long}")]
+        [Authorize]
+        [ServiceFilter(typeof(AdminAccessFilter))]
+        public async Task<IActionResult> UpdateContact(long id, [FromBody] CreateContactDTO dto,
+            [FromServices] ApplicationDbContext context)
+        {
+            var contact = await context.Contacts.SingleOrDefaultAsync(x => x.Id == id);
+            if (contact == null) return NotFound(new { message = "Contact not found." });
+            if (!await context.Users.AnyAsync(x => x.Id == dto.UserId))
+                return BadRequest(new { message = "Select an existing sender." });
+
+            contact.UserId = dto.UserId;
+            contact.Subject = dto.Subject.Trim();
+            contact.Message = dto.Message.Trim();
+            contact.UpdatedAt = DateTime.UtcNow;
+            await context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

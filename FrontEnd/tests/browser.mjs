@@ -16,6 +16,8 @@ const apiRequests = [];
 const applications = new Map();
 const badgeChoices = [{ id: 1, name: 'TypeScript' }, { id: 2, name: 'Design' }];
 let contactFailure = false;
+let contactDeleteFailure = false;
+let contacts = [{ id: 1, subject: 'Initial message', message: 'A message from the founder.', user: users[1] }];
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
@@ -35,9 +37,29 @@ const server = createServer(async (req, res) => {
       }
       const currentUser = req.headers.authorization ? users.find(user => user.id === JSON.parse(Buffer.from(req.headers.authorization.split('.')[1], 'base64url')).id) : undefined;
       if (url.pathname === '/api/contacts' && req.method === 'POST') {
-        if (!currentUser || body.userId !== currentUser.id) return json({}, 403);
+        if (!currentUser || (currentUser.role !== 'admin' && body.userId !== currentUser.id)) return json({}, 403);
         if (contactFailure) return json({ message: 'Unable to save your message. Please try again.' }, 500);
+        contacts.push({ id: Math.max(0, ...contacts.map(contact => contact.id)) + 1, subject: body.subject,
+          message: body.message, user: users.find(user => user.id === body.userId) });
         return json(undefined, 201);
+      }
+      const contactRoute = /^\/api\/contacts(?:\/(\d+))?$/.exec(url.pathname);
+      if (contactRoute) {
+        if (currentUser?.role !== 'admin') return json({}, 403);
+        const id = Number(contactRoute[1]);
+        if (!id && req.method === 'GET') return json(contacts);
+        const contact = contacts.find(contact => contact.id === id);
+        if (!contact) return json({ message: 'Contact not found.' }, 404);
+        if (req.method === 'GET') return json(contact);
+        if (req.method === 'DELETE') {
+          if (contactDeleteFailure) return json({ message: 'Could not delete the contact.' }, 500);
+          contacts = contacts.filter(contact => contact.id !== id); return json(undefined, 204);
+        }
+        if (req.method === 'PUT') {
+          if (contactFailure) return json({ message: 'Unable to save your message. Please try again.' }, 500);
+          Object.assign(contact, { subject: body.subject, message: body.message, user: users.find(user => user.id === body.userId) });
+          return json(undefined, 204);
+        }
       }
       if (url.pathname === '/api/Badges') return json(badgeChoices);
       if (url.pathname === '/api/Posts/mine') {
@@ -180,6 +202,49 @@ try {
   assert.equal(apiRequests.findLast(x => x.method === 'PATCH' && x.path.includes('/Users/')).body.password, undefined);
   console.log('PASS user create and edit preserve blank passwords');
 
+  await click('Contacts');
+  await waitFor("location.pathname === '/admin/contacts' && document.querySelectorAll('tbody tr').length === 1");
+  await click('Add contact'); await click('Save contact');
+  await waitFor("document.body.innerText.includes('Select an existing user.') && document.body.innerText.includes('Enter a subject.')");
+  assert.equal(apiRequests.filter(x => x.path === '/api/contacts' && x.method === 'POST').length, 0);
+  await evaluate(`(() => { const select = document.querySelector('[name=userId]'); select.value = [...select.options].find(option => option.textContent.startsWith('Founder (')).value; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+  await fill('subject', '  Admin contact  '); await fill('message', '  First line\nSecond line  '); await click('Save contact');
+  await waitFor("!document.querySelector('#contact-form-title') && document.querySelectorAll('tbody tr').length === 2");
+  const adminContact = contacts.find(contact => contact.subject === 'Admin contact');
+  assert.deepEqual(apiRequests.findLast(x => x.path === '/api/contacts' && x.method === 'POST').body,
+    { userId: 2, subject: 'Admin contact', message: 'First line\nSecond line' });
+  await fill('contactSearch', 'Second line');
+  await waitFor("document.querySelectorAll('tbody tr').length === 1");
+  await evaluate(`document.querySelector('button[aria-label="View contact ${adminContact.id}"]').click()`);
+  await waitFor("document.querySelector('#contact-detail-title')?.textContent === 'Admin contact'");
+  assert.ok(apiRequests.some(x => x.path === '/api/contacts/' + adminContact.id && x.method === 'GET'));
+  await evaluate(`document.querySelector('button[aria-label="Edit contact ${adminContact.id}"]').click()`);
+  await waitFor("document.querySelector('[name=subject]')?.value === 'Admin contact'");
+  await fill('subject', 'Updated admin contact');
+  contactFailure = true; await click('Save contact');
+  await waitFor("document.body.innerText.includes('Unable to save your message.')");
+  assert.equal(await evaluate("document.querySelector('[name=subject]').value"), 'Updated admin contact');
+  contactFailure = false; await click('Save contact');
+  await waitFor("!document.querySelector('#contact-form-title') && document.querySelector('tbody').innerText.includes('Updated admin contact')");
+  await fill('contactSearch', '');
+  await click('Refresh'); await waitFor("document.querySelectorAll('tbody tr').length === 2");
+  await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await waitFor("document.documentElement.scrollWidth <= 390");
+  const adminContactScreenshot = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+  await writeFile('tmp/admin-contacts-mobile.png', Buffer.from(adminContactScreenshot.data, 'base64'));
+  await command('Emulation.clearDeviceMetricsOverride');
+  await evaluate(`document.querySelector('button[aria-label="Delete contact ${adminContact.id}"]').click()`);
+  await click('Cancel');
+  assert.equal(apiRequests.filter(x => x.path === '/api/contacts/' + adminContact.id && x.method === 'DELETE').length, 0);
+  await evaluate(`document.querySelector('button[aria-label="Delete contact ${adminContact.id}"]').click()`);
+  contactDeleteFailure = true; await click('Delete contact');
+  await waitFor("document.body.innerText.includes('Could not delete the contact.')");
+  assert.ok(await evaluate("!!document.querySelector('#delete-contact-title')"));
+  contactDeleteFailure = false; await click('Delete contact');
+  await waitFor("!document.querySelector('#delete-contact-title') && document.querySelectorAll('tbody tr').length === 1");
+  assert.equal(contacts[0].subject, 'Initial message');
+  console.log('PASS admin contact CRUD, search, validation, save/delete errors, cancellation, and mobile layout');
+
   await click('Posts'); await waitFor("location.pathname === '/admin/posts' && !!document.querySelector('tbody tr')");
   await click('Add post'); await fill('title', 'Browser idea'); await fill('description', 'Created from the admin form'); await fill('badges', 'C#, TypeScript');
   await click('Save post'); await waitFor("document.querySelectorAll('tbody tr').length === 2");
@@ -277,9 +342,9 @@ try {
   assert.equal(await evaluate("document.querySelector('[name=senderEmail]').value"), 'founder@example.test');
   await click('Send message');
   await waitFor("document.body.innerText.includes('Enter a subject.') && document.body.innerText.includes('Enter a message.')");
-  assert.equal(apiRequests.filter(x => x.path === '/api/contacts').length, 0);
+  const contactRequestsBeforeInvalid = apiRequests.filter(x => x.path === '/api/contacts' && x.method === 'POST').length;
   await fill('subject', '  Partnership  '); await fill('message', ' \n '); await click('Send message');
-  assert.equal(apiRequests.filter(x => x.path === '/api/contacts').length, 0);
+  assert.equal(apiRequests.filter(x => x.path === '/api/contacts' && x.method === 'POST').length, contactRequestsBeforeInvalid);
   await fill('message', '  Hello team!\nI have an idea.  ');
   contactFailure = true; await click('Send message');
   await waitFor("document.body.innerText.includes('Unable to save your message.')");
