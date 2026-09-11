@@ -5,6 +5,7 @@ export interface UserInterface {
   role: string;
 }
 export interface AdminUser extends UserInterface { roleId: number; isActive: boolean }
+
 export interface UserInput {
   username: string;
   email: string;

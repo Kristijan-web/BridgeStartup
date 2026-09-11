@@ -8,13 +8,13 @@ import { ApiService, ApiError } from '../tmp/frontend-tests/src/app/services/api
 import { SESSION_KEY, validSession, safeReturnUrl } from '../tmp/frontend-tests/src/app/services/session.mjs';
 import { adminGuard, authGuard } from '../tmp/frontend-tests/src/app/guards/auth-guards.mjs';
 import { AdminService } from '../tmp/frontend-tests/src/app/services/user-service.mjs';
-import { AdminUsersPage } from '../tmp/frontend-tests/src/app/pages/admin-users-page.mjs';
-import { AdminPostsPage } from '../tmp/frontend-tests/src/app/pages/admin-posts-page.mjs';
+import { AdminUsersDesign } from '../tmp/frontend-tests/src/app/components/AdminUsersDesign/admin-users-design.mjs';
+import { AdminPostsDesign } from '../tmp/frontend-tests/src/app/components/AdminPostsDesign/admin-posts-design.mjs';
 import { PostsService } from '../tmp/frontend-tests/src/app/services/posts-service.mjs';
 import { validateCv } from '../tmp/frontend-tests/src/app/components/post-application-form.mjs';
 import { ContactsService } from '../tmp/frontend-tests/src/app/services/contacts-service.mjs';
 import { ContactForm } from '../tmp/frontend-tests/src/app/components/contact-form.mjs';
-import { AdminContactsPage } from '../tmp/frontend-tests/src/app/pages/admin-contacts-page.mjs';
+import { AdminContactsDesign } from '../tmp/frontend-tests/src/app/components/AdminContactsDesign/admin-contacts-design.mjs';
 
 const originalFetch = globalThis.fetch;
 const stores = new Map();
@@ -76,7 +76,7 @@ test('admin contact edits retain the record on failure and block duplicate saves
     }
   };
   const { injector } = setup([{ provide: ContactsService, useValue: service }, { provide: AdminService, useValue: {} }]);
-  const page = runInInjectionContext(injector, () => new AdminContactsPage());
+  const page = runInInjectionContext(injector, () => new AdminContactsDesign());
   page.users.set([{ id: 2 }]); await page.open(contact, true);
   const input = { userId: 2, subject: ' Updated ', message: ' New message ' };
   const failed = page.save(input); await page.save(input); assert.equal(calls, 1);
@@ -94,7 +94,7 @@ test('admin contacts retain delete confirmation on failure and keep reads availa
   const { injector } = setup([{ provide: ContactsService, useValue: service }, {
     provide: AdminService, useValue: { getUsers: async () => { throw new Error('Users unavailable'); } }
   }]);
-  const page = runInInjectionContext(injector, () => new AdminContactsPage());
+  const page = runInInjectionContext(injector, () => new AdminContactsDesign());
   await Promise.all([page.load(), page.loadUsers()]);
   assert.equal(page.contacts().length, 1); assert.match(page.usersError(), /Users unavailable/);
   page.askDelete(contact); await page.confirmDelete();
@@ -265,7 +265,7 @@ test('user edit omits an empty password and failed deletes keep confirmation ope
     deleteUser: async () => { throw new Error('Cannot delete'); } };
   const { injector } = setup([{ provide: AdminService, useValue: service }]);
   getAuth(injector).establish(session('admin'));
-  const page = runInInjectionContext(injector, () => new AdminUsersPage());
+  const page = runInInjectionContext(injector, () => new AdminUsersDesign());
   const user = { id: 2, username: 'Founder', email: 'founder@example.test', role: 'user', roleId: 2, isActive: true };
   page.edit(user);
   await page.save();
@@ -282,7 +282,7 @@ test('post edits can remove every badge and clear optional contact fields', asyn
   let saved;
   const service = { updatePost: async (id, input) => { saved = { id, input }; }, getUsers: async () => [], getPosts: async () => [] };
   const { injector } = setup([{ provide: AdminService, useValue: service }]);
-  const page = runInInjectionContext(injector, () => new AdminPostsPage());
+  const page = runInInjectionContext(injector, () => new AdminPostsDesign());
   page.edit({ id: 3, title: 'Idea', description: 'Details', userId: 2, badges: ['C#'], email: 'x@example.test', phone: '123' });
   page.badges = ''; page.draft.email = ''; page.draft.phone = '';
   await page.save();
@@ -297,7 +297,7 @@ test('post creation waits for the server and prevents duplicate submissions', as
   const service = { createPost: () => { count++; return new Promise(done => resolve = done); },
     getUsers: async () => [], getPosts: async () => [] };
   const { injector } = setup([{ provide: AdminService, useValue: service }]);
-  const page = runInInjectionContext(injector, () => new AdminPostsPage());
+  const page = runInInjectionContext(injector, () => new AdminPostsDesign());
   page.draft = { title: 'New idea', description: 'Details', userId: 2, email: '', phone: '', badges: [] };
   page.editing.set(true);
   const first = page.save(); await page.save();

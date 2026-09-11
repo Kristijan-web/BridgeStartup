@@ -28,13 +28,3 @@ import { Footer } from './static/footer';
 export class UserLayout {}
 
 
-// Sta sad treba da uradim?
-// - Da dodam head i body tagove, deo head-a treba dinamicki da se ucitava
-
-// Koji deo <head> taga dinamicki dobija vrednost?
-// - <title></title>
-// - keywords
-
-// Kako da se title unutar <head> taga promeni kada se promeni stranica?
-
-// head tag je unutar index.html

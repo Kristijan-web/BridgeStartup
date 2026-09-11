@@ -24,4 +24,6 @@ import { AuthService } from '../../services/auth-service';
     </div>
   </div>`
 })
+
+// Kako sam rekao da kada ruta pocinje sa /Admin da se koristi ovaj layout?
 export class Admin { readonly auth = inject(AuthService); }

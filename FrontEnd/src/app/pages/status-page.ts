@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { StatusDesign } from '../components/StatusDesign/status-design';
+
 @Component({
-  selector: 'app-status-page', imports: [RouterLink],
-  template: `<section class="auth-card"><h1>{{ forbidden ? 'Access denied' : 'Page not found' }}</h1>
-    <p class="my-5">{{ forbidden ? 'An administrator account is required to open this page.' : 'This page does not exist.' }}</p>
-    <a routerLink="/" class="button">Back to posts</a></section>`
+  selector: 'app-status-page',
+  imports: [StatusDesign],
+  template: `<app-status-design></app-status-design>`,
+  styles: ``,
 })
-export class StatusPage { forbidden = inject(ActivatedRoute).snapshot.data['forbidden'] === true; }
+export class StatusPage {}
